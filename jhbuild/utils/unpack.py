@@ -84,7 +84,7 @@ def unpack_zip_file(localfile, target_directory):
         os.chmod(os.path.join(target_directory, pkg_file), attr_to_file_perm(attr))
         
 
-def unpack_archive(buildscript, localfile, target_directory):
+def unpack_archive(buildscript, localfile, target_directory, enforce_standard=True):
     ext = os.path.splitext(localfile)[-1]
     if ext == '.lzma' and has_command('lzcat') and has_command('tar'):
         buildscript.execute('lzcat -d "%s" | tar xf -' % localfile,

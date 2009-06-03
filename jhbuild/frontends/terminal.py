@@ -139,7 +139,7 @@ class TerminalBuildScript(buildscript.BuildScript):
         sys.stdout.flush()
 
 
-    def execute(self, command, hint=None, cwd=None, extra_env=None):
+    def execute(self, command, hint=None, cwd=None, extra_env=None, output_file=None):
         if not command:
             raise CommandError(_('No command given'))
 
@@ -156,16 +156,20 @@ class TerminalBuildScript(buildscript.BuildScript):
             print pretty_command
 
         kws['stdin'] = subprocess.PIPE
-        if hint in ('cvs', 'svn', 'hg-update.py'):
-            kws['stdout'] = subprocess.PIPE
-            kws['stderr'] = subprocess.STDOUT
-        else:
-            kws['stdout'] = None
-            kws['stderr'] = None
 
-        if self.config.quiet_mode:
-            kws['stdout'] = subprocess.PIPE
-            kws['stderr'] = subprocess.STDOUT
+        if output_file != None:
+            kws['stdout'] = open(output_file, 'w')
+        else:
+            if hint in ('cvs', 'svn', 'hg-update.py'):
+                kws['stdout'] = subprocess.PIPE
+                kws['stderr'] = subprocess.STDOUT
+            else:
+                kws['stdout'] = None
+                kws['stderr'] = None
+
+            if self.config.quiet_mode:
+                kws['stdout'] = subprocess.PIPE
+                kws['stderr'] = subprocess.STDOUT
 
         if cwd is not None:
             kws['cwd'] = cwd
