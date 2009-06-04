@@ -106,17 +106,16 @@
         <dep package="crypt" />
         <dep package="perl" />
 
-    <!-- this prebuilt autoconf is now new enough for our needs. -->        
+        <!-- this prebuilt autoconf is now new enough for our needs. -->
         <dep package="autoconf" />
-        
         <dep package="automake" />
 
-    <!-- regex is needed for flex. flex and bison are needed to build
-         gstreamer, and various other packages. -->
-    <dep package="regex" />       
+        <!-- regex is needed for flex. flex and bison are needed to build
+             gstreamer, and various other packages. -->
+        <dep package="regex" />
         <dep package="flex" />
         <dep package="bison" />
-        
+
         <!-- cvs is needed for autopoint in gettext-tools. autopoint is used by some
              autogen.sh programs. -->
         <dep package="cvs" />
@@ -125,9 +124,9 @@
 
 
     <!-- BOOTSTRAP THINGS
-    
+
          Standard POSIX stuff and other things we need (taken from standard bootstrap.moduleset, 
-         but preferring binary packages and involving some hacks.) -->        
+         but preferring binary packages and involving some hacks.) -->
 
     <!-- I know there is a lightweight iconv available for win32 - but some packages
      (at least, gtk-engines) depend on the bin/iconv tool which is only available
@@ -161,7 +160,7 @@
     <metamodule id="gettext">
       <dependencies><dep package="gettext-runtime"/><dep package="gettext-tools"/></dependencies>
     </metamodule>
-     
+
     <!-- No point getting binary versions of a perl script - and Tor's binary package hardcodes
      Perl to some random location making it all the more pointless -->
     <!-- FIXME: would be nice if we could substitute $INTLTOOL_PERL for this hardcoded path. 
@@ -180,20 +179,20 @@
       <install>
         <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
       </install>
-    </binary> 
+    </binary>
     <binary id="glib-default-dev" version="2.16.5">
       <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.16/glib-dev-2.16.5.zip"/>
       <install>
         <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
       </install>
-    </binary> 
+    </binary>
     <metamodule id="glib-default">
       <dependencies>
         <dep package="gettext-runtime"/>
         <dep package="glib-default-binary"/><dep package="glib-default-dev"/>
       </dependencies>
     </metamodule>
-      
+
     <binary id="pkg-config-broken" version="0.23-2">
       <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/pkg-config-0.23-2.zip"/>
       <install>
@@ -203,8 +202,8 @@
     <!-- FIXME: binary dependencies are just being ignored for some reason. -->
         <dep package="glib-default"/>
       </dependencies>
-    </binary> 
-      
+    </binary>
+
     <tarball id="pkg-config" version="0.23">
       <source href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.23.tar.gz"
               size="1032839" md5sum="d922a88782b64441d06547632fd85744"/>
@@ -231,16 +230,16 @@
              some reason - well, try it, but it seems to subtly break sed. -->
         <cmd execute="['sed',  
             '-es,@VERSION@,1.10,',
-            '-es,@PACKAGE@,gtk-doc,',                   
+            '-es,@PACKAGE@,gtk-doc,',
             '-es,@prefix@,@@PREFIX@@,',
             '-es,@datarootdir@,@@PREFIX@@share,',
             '-es,@datadir@,@@PREFIX@@share,',
             '@@SRCDIR@@/gtk-doc-1.10/gtkdocize.in']"
             output-file='@@PREFIX@@/bin/gtkdocize'/>
         <cmd execute="['sed',  
-            '-es,@PERL@,/bin/perl,',                    
+            '-es,@PERL@,/bin/perl,',
             '-es,@VERSION@,1.10,',
-            '-es,@PACKAGE@,gtk-doc,',                   
+            '-es,@PACKAGE@,gtk-doc,',
             '-es,@prefix@,@@PREFIX@@,',
             '-es,@datarootdir@,@@PREFIX@@share,',
             '-es,@datadir@,@@PREFIX@@share,',
@@ -256,13 +255,13 @@
         <dep package="iconv"/>
         <dep package="gettext" />
         <dep package="intltool" />
-        
+
         <!-- FIXME: binary dependencies are just being ignored for some reason. -->
         <dep package="glib-default"/>
 
         <dep package="pkg-config" />        
         <dep package="libtool" />
-        
+
         <dep package="gtk-doc-fake" />
       </dependencies>
     </metamodule>

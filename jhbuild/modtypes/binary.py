@@ -34,7 +34,8 @@ class Binary(AutogenModule):
     '''Represents a binary distributed module which may need to have aditional
     actions operate on it post download'''
     type = 'binary'
-    
+
+    # FIXME: download = 'download' now we have new phases system ??
     PHASE_DOWNLOAD = 'checkout'
     #PHASE_DOWNLOAD  = 'download'
     #PHASE_CHECKOUT = 'checkout'
@@ -42,7 +43,6 @@ class Binary(AutogenModule):
     PHASE_CONFIGURE = 'configure'
     PHASE_BUILD     = 'build'
     PHASE_INSTALL   = 'install'
-    
 
     def __init__(self, config, name, version, source_url='', source_size='', source_md5=None,uri=[],
                  patches=[], configure_commands=[], build_commands=[], install_commands=[], 
@@ -55,17 +55,17 @@ class Binary(AutogenModule):
         self.name = name
         self.version = version
 
-        # Set a checkout dir, because zips normally unzip to cwd. We also set 
-        # expect_standard_tarball to False to allow these packages through.        
+        # Set a checkout dir, because zips normally unzip to cwd. We also set
+        # expect_standard_tarball to False to allow these packages through.
         checkoutdir = "%s-%s-binary" % (name, version)
 
-                # create a fake TarballRepository, and give it the moduleset uri
+        # create a fake TarballRepository, and give it the moduleset uri
         repo = TarballRepository(config, None, None)
         repo.moduleset_uri = uri
         branch = TarballBranch(repo, source_url, version, checkoutdir, source_size, source_md5, 
                                None, source_subdir=None, expect_standard_tarball=False)
         branch.patches = patches
-        
+
         #if not os.path.exists(branch.srcdir):
         #    os.makedirs(branch.srcdir)
 
@@ -102,7 +102,7 @@ class Binary(AutogenModule):
             # and the output path
             if output_file != None:
                 for k,v in PLACEHOLDERS.items():
-                    output_file = output_file.replace(k,v)                    
+                    output_file = output_file.replace(k,v)
             try:
                 buildscript.execute(cmd, cwd=cwd, output_file=output_file)
             except CommandError, e:
@@ -113,7 +113,7 @@ class Binary(AutogenModule):
         srcdir = self.get_srcdir(buildscript)
         buildscript.set_action(_('Checking out'), self)
         self.branch.checkout(buildscript)
-        
+
         # FIXME: check for success, but not like this
         #if not os.path.exists(srcdir):
         #    raise BuildStateError(_('source directory %s was not created') % srcdir)
@@ -134,9 +134,9 @@ class Binary(AutogenModule):
     #        os.makedirs(srcdir)
     #    return srcdir
         
-    def do_download(self, buildscript):    
+    def do_download(self, buildscript):
         print "DOWNLOAD: ", self.branch.module
-   
+
     #def do_unpack(self, buildscript):
     #    if self.source_url != None:
     #        #unpack the binary into its own custom folder
@@ -149,12 +149,11 @@ class Binary(AutogenModule):
     #            raise BuildStateError('could not unpack tarball %s' % srcdir)
     #do_unpack.next_state = PHASE_CONFIGURE
     #do_unpack.error_states = []
-            
+
     def do_configure(self, buildscript):
         buildscript.set_action('Configure', self)
         self._exec_commands(buildscript, self.configure_commands)
     do_configure.depends = [PHASE_DOWNLOAD]    
-    
 
     def do_build(self, buildscript):
         buildscript.set_action('Building', self)
