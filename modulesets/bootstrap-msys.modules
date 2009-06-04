@@ -165,8 +165,8 @@
      Perl to some random location making it all the more pointless -->
     <!-- FIXME: would be nice if we could substitute $INTLTOOL_PERL for this hardcoded path. 
          Or if intltool paid attention to INTLTOOL_PERL. -->
-    <autotools id="intltool" version="0.40.0">
-      <branch repo="ftp.gnome.org" module="/intltool/0.40/intltool-0.40.0.tar.bz2" version="0.40.0"/>
+    <autotools id="intltool" version="0.40.6">
+      <branch repo="ftp.gnome.org" module="intltool/0.40/intltool-0.40.6.tar.bz2" version="0.40.6"/>
     </autotools>
 
     <!-- This is something quite nasty. To build pkg-config on win32 requires glib, which
