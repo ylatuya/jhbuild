@@ -1,0 +1,14 @@
+diff -Nau3rp pkg-config-0.23-orig/main.c pkg-config-0.23/main.c
+--- pkg-config-0.23-orig/main.c	Wed Jan 16 22:06:48 2008
++++ pkg-config-0.23/main.c	Sat Aug 16 03:25:11 2008
+@@ -660,8 +660,10 @@ main (int argc, char **argv)
+       need_newline = TRUE;
+     }
+ 
++  #ifndef G_OS_WIN32 
+   if (need_newline)
+     printf ("\n");
++  #endif
+ 
+   return 0;
+ }

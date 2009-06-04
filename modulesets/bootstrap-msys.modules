@@ -8,261 +8,272 @@
      only requires Python. -->
 
 <moduleset>
-    <repository type="tarball" name="ftp.gnome.org" href="http://ftp.gnome.org/pub/gnome/sources/"/>
+  <repository type="tarball" name="ftp.gnome.org" 
+              href="http://ftp.gnome.org/pub/gnome/sources/"/>
+  <repository type="tarball" name="ftp.gnu.org" 
+              href="ftp://ftp.gnu.org/gnu/"/>
+  <repository type="tarball" name="pkgconfig"
+              href="http://pkgconfig.freedesktop.org/releases/"/>
 
-    <!-- MSYS UPDATE SECTION:
+  <!-- MSYS UPDATE SECTION:
 
-         Everything here is installed to / rather than @@PREFIX@@, which is a cheap way of
-         ensuring all of the new msys packages go in the msys directory rather than /build. -->
+       Everything here is installed to / rather than @@PREFIX@@, which is a cheap way of
+       ensuring all of the new msys packages go in the msys directory rather than /build. -->
 
-    <!-- File is needed by libtool .. but, file is included in newest (20080826) msysCORE -->
-    <!--<binary id="file" version="4.16-MSYS">
-      <source href="http://downloads.sourceforge.net/mingw/file-4.16-MSYS.tar.bz2"/>
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/usr/*', '/']"/>
-      </install>
-    </binary>-->
+  <!-- File is needed by libtool .. but, file is included in newest (20080826) msysCORE -->
+  <!--<binary id="file" version="4.16-MSYS">
+    <source href="http://downloads.sourceforge.net/mingw/file-4.16-MSYS.tar.bz2"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/usr/*', '/']"/>
+    </install>
+  </binary>-->
 
-    <binary id="crypt" version="1.1.1-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/crypt-1.1-1-MSYS-1.0.11-1.tar.bz2" />
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-    </binary>
+  <binary id="crypt" version="1.1.1-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/crypt-1.1-1-MSYS-1.0.11-1.tar.bz2" />
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>
 
-    <binary id="perl" version="5.6.1-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/perl-5.6.1-MSYS-1.0.11-1.tar.bz2" />
-      <install>
-        <!-- Need to delete these symlinks; msys's cp fails to create them if they exist -->
-        <cmd execute="['rm', '-f', '@@PREFIX@@/bin/perl5.6.1.exe']"/>
-        <cmd execute="['rm', '-f', '@@PREFIX@@/bin/pstruct']"/>
-        <cmd execute="['cp', '-rf', '@@SRCDIR@@/*', '/']"/>
-      </install>
-      <dependencies>
-        <!-- This is ignored by jhbuild for some reason -->
-        <dep package="crypt" />
-      </dependencies>
-    </binary>
+  <binary id="perl" version="5.6.1-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/perl-5.6.1-MSYS-1.0.11-1.tar.bz2" />
+    <install>
+      <!-- Need to delete these symlinks; msys's cp fails to create them if they exist -->
+      <cmd execute="['rm', '-f', '@@PREFIX@@/bin/perl5.6.1.exe']"/>
+      <cmd execute="['rm', '-f', '@@PREFIX@@/bin/pstruct']"/>
+      <cmd execute="['cp', '-rf', '@@SRCDIR@@/*', '/']"/>
+    </install>
+    <dependencies>
+      <!-- This is ignored by jhbuild for some reason -->
+      <dep package="crypt" />
+    </dependencies>
+  </binary>
 
-    <!-- M4 1.4.7 is included in newest msysCORE -->
-    <!--<binary id="m4" version="1.4.7-MSYS">
-      <source href="http://downloads.sourceforge.net/mingw/m4-1.4.7-MSYS.tar.bz2" />
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-    </binary>-->
+  <!-- M4 1.4.7 is included in newest msysCORE -->
+  <!--<binary id="m4" version="1.4.7-MSYS">
+    <source href="http://downloads.sourceforge.net/mingw/m4-1.4.7-MSYS.tar.bz2" />
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>-->
 
-    <binary id="autoconf" version="2.61-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/autoconf-2.61-MSYS-1.0.11-1.tar.bz2" />
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-    </binary>
+  <binary id="autoconf" version="2.61-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/autoconf-2.61-MSYS-1.0.11-1.tar.bz2" />
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>
 
-    <binary id="automake" version="1.10-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/automake-1.10-MSYS-1.0.11-1.tar.bz2" />
-      <install>
-    <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-    </binary>
+  <binary id="automake" version="1.10-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/automake-1.10-MSYS-1.0.11-1.tar.bz2" />
+    <install>
+  <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>
 
-    <binary id="regex" version="0.12-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/regex-0.12-MSYS-1.0.11-1.tar.bz2" />
-      <install>
-    <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-    </binary>
+  <binary id="regex" version="0.12-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/regex-0.12-MSYS-1.0.11-1.tar.bz2" />
+    <install>
+  <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>
 
-    <binary id="flex" version="2.5.33-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/flex-2.5.33-MSYS-1.0.11-1.tar.bz2" />
-      <install>
-    <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-      <dependencies>
-    <dep package="regex" />
-      </dependencies>
-    </binary>
+  <binary id="flex" version="2.5.33-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/flex-2.5.33-MSYS-1.0.11-1.tar.bz2" />
+    <install>
+  <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+    <dependencies>
+  <dep package="regex" />
+    </dependencies>
+  </binary>
 
-    <binary id="bison" version="2.3-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/bison-2.3-MSYS-1.0.11-1.tar.bz2" />
-      <install>
-    <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-    </binary>
+  <binary id="bison" version="2.3-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/bison-2.3-MSYS-1.0.11-1.tar.bz2" />
+    <install>
+  <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>
 
-    <!-- Needed for GNU autopoint in gettext-tools. Autopoint is needed by some autogen.sh's -->
-    <binary id="cvs" version="1.11.22-MSYS-1.0.11-1">
-      <source href="http://downloads.sourceforge.net/mingw/cvs-1.11.22-MSYS-1.0.11-1-bin.tar.gz" />
-      <install>
-    <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-      </install>
-    </binary>
+  <!-- Needed for GNU autopoint in gettext-tools. Autopoint is needed by some autogen.sh's -->
+  <binary id="cvs" version="1.11.22-MSYS-1.0.11-1">
+    <source href="http://downloads.sourceforge.net/mingw/cvs-1.11.22-MSYS-1.0.11-1-bin.tar.gz" />
+    <install>
+  <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>
 
-    <metamodule id="msys-bootstrap">
-      <dependencies>
-        <!-- you *also* need ActiveState perl (or to install the XML::Parser module) for
-             intltool, but you need msys perl for at least autoconf -->
-        <!-- perl is required for crypt. -->
-        <dep package="crypt" />
-        <dep package="perl" />
+  <metamodule id="msys-bootstrap">
+    <dependencies>
+      <!-- you *also* need ActiveState perl (or to install the XML::Parser module) for
+           intltool, but you need msys perl for at least autoconf -->
+      <!-- perl is required for crypt. -->
+      <dep package="crypt" />
+      <dep package="perl" />
 
-        <!-- this prebuilt autoconf is now new enough for our needs. -->
-        <dep package="autoconf" />
-        <dep package="automake" />
+      <!-- this prebuilt autoconf is now new enough for our needs. -->
+      <dep package="autoconf" />
+      <dep package="automake" />
 
-        <!-- regex is needed for flex. flex and bison are needed to build
-             gstreamer, and various other packages. -->
-        <dep package="regex" />
-        <dep package="flex" />
-        <dep package="bison" />
+      <!-- regex is needed for flex. flex and bison are needed to build
+           gstreamer, and various other packages. -->
+      <dep package="regex" />
+      <dep package="flex" />
+      <dep package="bison" />
 
-        <!-- cvs is needed for autopoint in gettext-tools. autopoint is used by some
-             autogen.sh programs. -->
-        <dep package="cvs" />
-      </dependencies>
-    </metamodule>
-
-
-    <!-- BOOTSTRAP THINGS
-
-         Standard POSIX stuff and other things we need (taken from standard bootstrap.moduleset, 
-         but preferring binary packages and involving some hacks.) -->
-
-    <!-- I know there is a lightweight iconv available for win32 - but some packages
-     (at least, gtk-engines) depend on the bin/iconv tool which is only available
-     through GNU iconv. glib contains this lightweight iconv as part of the 
-     download anyway.   -->
-    <binary id="iconv" version="1.9.1">
-      <source href="http://www.gimp.org/~tml/gimp/win32/libiconv-1.9.1.bin.woe32.zip"/>
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
-      </install>
-    </binary>
+      <!-- cvs is needed for autopoint in gettext-tools. autopoint is used by some
+           autogen.sh programs. -->
+      <dep package="cvs" />
+    </dependencies>
+  </metamodule>
 
 
-    <binary id="gettext-runtime-bin" version="0.17-1">
-      <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-0.17-1.zip"/>
-      <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>    
-    </binary>
-    <binary id="gettext-runtime-dev" version="0.17-1">
-      <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-dev-0.17-1.zip"/>
-      <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>    
-    </binary>
-    <metamodule id="gettext-runtime">
-      <dependencies><dep package="gettext-runtime-bin"/><dep package="gettext-runtime-dev"/></dependencies>
-    </metamodule>
-    
-    <binary id="gettext-tools" version="0.17">
-      <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-tools-0.17.zip"/>
-      <install><cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>     
-    </binary>
+  <!-- BOOTSTRAP THINGS
 
-    <metamodule id="gettext">
-      <dependencies><dep package="gettext-runtime"/><dep package="gettext-tools"/></dependencies>
-    </metamodule>
+       Standard POSIX stuff and other things we need (taken from standard bootstrap.moduleset, 
+       but preferring binary packages and involving some hacks.) -->
 
-    <!-- No point getting binary versions of a perl script - and Tor's binary package hardcodes
-     Perl to some random location making it all the more pointless -->
-    <!-- FIXME: would be nice if we could substitute $INTLTOOL_PERL for this hardcoded path. 
-         Or if intltool paid attention to INTLTOOL_PERL. -->
-    <autotools id="intltool" version="0.40.6">
-      <branch repo="ftp.gnome.org" module="intltool/0.40/intltool-0.40.6.tar.bz2" version="0.40.6"/>
-    </autotools>
+  <!-- I know there is a lightweight iconv available for win32 - but some packages
+       (at least, gtk-engines) depend on the bin/iconv tool which is only available
+       through GNU iconv. glib contains this lightweight iconv as part of the 
+       download anyway.   -->
+  <binary id="iconv" version="1.9.1">
+    <source href="http://www.gimp.org/~tml/gimp/win32/libiconv-1.9.1.bin.woe32.zip"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>
 
-    <!-- This is something quite nasty. To build pkg-config on win32 requires glib, which
-     requires pkgconfig. We need to rebuild pkg-config to work around bug 17053:
-        http://bugs.freedesktop.org/show_bug.cgi?id=17053
-     So first we install prebuilt pkg-config and prebuilt glib, which works okay with broken
-     pkg-config, and *then* we can build pkg-config from source and apply my patch.  -->
-    <binary id="glib-default-binary" version="2.16.5">
-      <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.16/glib-2.16.5.zip"/>
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
-      </install>
-    </binary>
-    <binary id="glib-default-dev" version="2.16.5">
-      <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.16/glib-dev-2.16.5.zip"/>
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
-      </install>
-    </binary>
-    <metamodule id="glib-default">
-      <dependencies>
-        <dep package="gettext-runtime"/>
-        <dep package="glib-default-binary"/><dep package="glib-default-dev"/>
-      </dependencies>
-    </metamodule>
 
-    <binary id="pkg-config-broken" version="0.23-2">
-      <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/pkg-config-0.23-2.zip"/>
-      <install>
-        <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
-      </install>
-      <dependencies>
-    <!-- FIXME: binary dependencies are just being ignored for some reason. -->
-        <dep package="glib-default"/>
-      </dependencies>
-    </binary>
+  <binary id="gettext-runtime-bin" version="0.17-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-0.17-1.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>    
+  </binary>
+  <binary id="gettext-runtime-dev" version="0.17-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-dev-0.17-1.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>    
+  </binary>
+  <metamodule id="gettext-runtime">
+    <dependencies><dep package="gettext-runtime-bin"/><dep package="gettext-runtime-dev"/></dependencies>
+  </metamodule>
 
-    <tarball id="pkg-config" version="0.23">
-      <source href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.23.tar.gz"
-              size="1032839" md5sum="d922a88782b64441d06547632fd85744"/>
-      <patches>
-        <!-- Patch to fix http://bugs.freedesktop.org/show_bug.cgi?id=17053 -->
-        <patch file="pkg-config-win32.patch" strip="1"/>
-      </patches>
-      <dependencies>
-        <dep package="iconv"/>
-        <dep package="pkg-config-broken"/>
-      </dependencies>
-    </tarball>
+  <binary id="gettext-tools" version="0.17">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-tools-0.17.zip"/>
+    <install><cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>     
+  </binary>
 
-    <tarball id="libtool" version="2.2.6a">
-      <source href="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz"/>
-    </tarball>
+  <metamodule id="gettext">
+    <dependencies><dep package="gettext-runtime"/><dep package="gettext-tools"/></dependencies>
+  </metamodule>
 
-    <binary id="gtk-doc-fake" version="1.10">
-      <source href="http://ftp.gnome.org/pub/gnome/sources/gtk-doc/1.10/gtk-doc-1.10.tar.bz2"/>
-      <install>
-    <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.10/gtk-doc.m4', '@@PREFIX@@/share/aclocal/']"/>
+  <!-- No point getting binary versions of a perl script - and Tor's binary package hardcodes
+   Perl to some random location making it all the more pointless -->
+  <!-- FIXME: would be nice if we could substitute $INTLTOOL_PERL for this hardcoded path. 
+       Or if intltool paid attention to INTLTOOL_PERL. -->
+  <autotools id="intltool" version="0.40.6">
+    <branch repo="ftp.gnome.org" module="intltool/0.40/intltool-0.40.6.tar.bz2" version="0.40.6"/>
+  </autotools>
 
-        <!-- We are one step away from meltdown :(. Note you *can't* put &quot; in these for
-             some reason - well, try it, but it seems to subtly break sed. -->
-        <cmd execute="['sed',  
-            '-es,@VERSION@,1.10,',
-            '-es,@PACKAGE@,gtk-doc,',
-            '-es,@prefix@,@@PREFIX@@,',
-            '-es,@datarootdir@,@@PREFIX@@share,',
-            '-es,@datadir@,@@PREFIX@@share,',
-            '@@SRCDIR@@/gtk-doc-1.10/gtkdocize.in']"
-            output-file='@@PREFIX@@/bin/gtkdocize'/>
-        <cmd execute="['sed',  
-            '-es,@PERL@,/bin/perl,',
-            '-es,@VERSION@,1.10,',
-            '-es,@PACKAGE@,gtk-doc,',
-            '-es,@prefix@,@@PREFIX@@,',
-            '-es,@datarootdir@,@@PREFIX@@share,',
-            '-es,@datadir@,@@PREFIX@@share,',
-            '@@SRCDIR@@/gtk-doc-1.10/gtkdoc-rebase.in']"
-            output-file='@@PREFIX@@/bin/gtkdoc-rebase'/>
-        <cmd execute="['mkdir', '-p', '@@PREFIX@@/share/gtk-doc/data/']"/>
-    <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.10/gtk-doc.make', '@@PREFIX@@/share/gtk-doc/data/']"/>
-      </install>
-    </binary>
+  <!-- This is something quite nasty. To build pkg-config on win32 requires glib, which
+   requires pkgconfig. We need to rebuild pkg-config to work around bug 17053:
+      http://bugs.freedesktop.org/show_bug.cgi?id=17053
+   So first we install prebuilt pkg-config and prebuilt glib, which works okay with broken
+   pkg-config, and *then* we can build pkg-config from source and apply my patch.  -->
+  <binary id="glib-default-binary" version="2.16.5">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.16/glib-2.16.5.zip"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>
+  <binary id="glib-default-dev" version="2.16.5">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.16/glib-dev-2.16.5.zip"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>
+  <metamodule id="glib-default">
+    <dependencies>
+      <dep package="gettext-runtime"/>
+      <dep package="glib-default-binary"/><dep package="glib-default-dev"/>
+    </dependencies>
+  </metamodule>
 
-    <metamodule id="meta-bootstrap">
-      <dependencies>
-        <dep package="iconv"/>
-        <dep package="gettext" />
-        <dep package="intltool" />
+  <binary id="pkg-config-broken" version="0.23-2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/pkg-config-0.23-2.zip"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+    <dependencies>
+  <!-- FIXME: binary dependencies are just being ignored for some reason. -->
+      <dep package="glib-default"/>
+    </dependencies>
+  </binary>
 
-        <!-- FIXME: binary dependencies are just being ignored for some reason. -->
-        <dep package="glib-default"/>
+  <!-- FIXME: need to run this moduleset with - - ignore-system or the broken pkg-config will
+       cause this one to not be installed -->
+  <autotools id="pkg-config" autogen-sh="configure">
+    <branch repo="pkgconfig"
+            module="pkg-config-0.23.tar.gz" version="0.23"
+            size="1032839" md5sum="d922a88782b64441d06547632fd85744" />
+    <patches>
+      <!-- Patch to fix http://bugs.freedesktop.org/show_bug.cgi?id=17053 -->
+      <patch file="pkg-config-win32.patch" strip="1"/>
+    </patches>
+    <dependencies>
+      <dep package="iconv"/>
+      <dep package="pkg-config-broken"/>
+    </dependencies>
+  </autotools>
 
-        <dep package="pkg-config" />        
-        <dep package="libtool" />
+  <autotools id="libtool" autogen-sh="configure">
+    <branch repo="ftp.gnu.org"
+            module="libtool/libtool-2.2.6a.tar.gz" version="2.2.6a"
+            size="2870524" md5sum="8ca1ea241cd27ff9832e045fe9afe4fd"
+            checkoutdir="libtool-2.2.6" />
+  </autotools>
 
-        <dep package="gtk-doc-fake" />
-      </dependencies>
-    </metamodule>
+  <binary id="gtk-doc-fake" version="1.10">
+    <source href="http://ftp.gnome.org/pub/gnome/sources/gtk-doc/1.10/gtk-doc-1.10.tar.bz2"/>
+    <install>
+  <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.10/gtk-doc.m4', '@@PREFIX@@/share/aclocal/']"/>
+
+      <!-- We are one step away from meltdown :(. Note you *can't* put &quot; in these for
+           some reason - well, try it, but it seems to subtly break sed. -->
+      <cmd execute="['sed',  
+          '-es,@VERSION@,1.10,',
+          '-es,@PACKAGE@,gtk-doc,',
+          '-es,@prefix@,@@PREFIX@@,',
+          '-es,@datarootdir@,@@PREFIX@@share,',
+          '-es,@datadir@,@@PREFIX@@share,',
+          '@@SRCDIR@@/gtk-doc-1.10/gtkdocize.in']"
+          output-file='@@PREFIX@@/bin/gtkdocize'/>
+      <cmd execute="['sed',  
+          '-es,@PERL@,/bin/perl,',
+          '-es,@VERSION@,1.10,',
+          '-es,@PACKAGE@,gtk-doc,',
+          '-es,@prefix@,@@PREFIX@@,',
+          '-es,@datarootdir@,@@PREFIX@@share,',
+          '-es,@datadir@,@@PREFIX@@share,',
+          '@@SRCDIR@@/gtk-doc-1.10/gtkdoc-rebase.in']"
+          output-file='@@PREFIX@@/bin/gtkdoc-rebase'/>
+      <cmd execute="['mkdir', '-p', '@@PREFIX@@/share/gtk-doc/data/']"/>
+  <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.10/gtk-doc.make', '@@PREFIX@@/share/gtk-doc/data/']"/>
+    </install>
+  </binary>
+
+  <metamodule id="meta-bootstrap">
+    <dependencies>
+      <dep package="iconv"/>
+      <dep package="gettext" />
+      <dep package="intltool" />
+
+      <!-- FIXME: binary dependencies are just being ignored for some reason. -->
+      <dep package="glib-default"/>
+
+      <dep package="pkg-config" />        
+      <dep package="libtool" />
+
+      <dep package="gtk-doc-fake" />
+    </dependencies>
+  </metamodule>
 </moduleset>
