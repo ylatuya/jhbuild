@@ -25,6 +25,8 @@ import sys
 from signal import SIGINT
 from jhbuild.errors import CommandError
 
+import time
+
 def get_output(cmd, cwd=None, extra_env=None, get_stderr = True):
     '''Return the output (stdout and stderr) from the command.
 
@@ -174,8 +176,12 @@ def pprint_output(pipe, format_line):
     out_data = err_data = ''
     try:
         while read_set:
-            rlist, wlist, xlist = select.select(read_set, [], [])
-
+            if not sys.platform.startswith('win'): 
+                rlist, wlist, xlist = select.select(read_set, [], [])
+            else:
+                # FIXME: hack because select isn't going to happen on Windows
+                rlist = read_set
+                
             if pipe.stdout in rlist:
                 out_chunk = os.read(pipe.stdout.fileno(), 1024)
                 if out_chunk == '':
@@ -198,7 +204,10 @@ def pprint_output(pipe, format_line):
                     format_line(err_data[:pos+1], True)
                     err_data = err_data[pos+1:]
         
-            select.select([],[],[],.1) # give a little time for buffers to fill
+            if not sys.platform.startswith('win'): 
+                select.select([],[],[],.1) # give a little time for buffers to fill
+            else:
+                time.sleep(0.1)
     except KeyboardInterrupt:
         # interrupt received.  Send SIGINT to child process.
         try:
