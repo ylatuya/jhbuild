@@ -24,7 +24,7 @@ from jhbuild.utils import packagedb
 from jhbuild.errors import FatalError, CommandError, SkipToPhase, SkipToEnd
 
 class BuildScript:
-    def __init__(self, config, module_list=None):
+    def __init__(self, config, module_list):
         if self.__class__ is BuildScript:
             raise NotImplementedError('BuildScript is an abstract base class')
 
@@ -64,7 +64,7 @@ class BuildScript:
         self.packagedb = packagedb.PackageDB(os.path.join(packagedbdir,
                                                           'packagedb.xml'))
 
-    def execute(self, command, hint=None, cwd=None, extra_env=None):
+    def execute(self, command, hint=None, cwd=None, extra_env=None, output_file=None):
         '''Executes the given command.
 
         If an error occurs, CommandError is raised.  The hint argument
