@@ -293,6 +293,10 @@ class Config:
     def setup_env(self):
         '''set environment variables for using prefix'''
 
+        if self.prefix[len(self.prefix)-1] != '/':
+            self.prefix += '/'
+            print "Warning: added '/' to prefix '%s'\n" % self.prefix
+
         if not os.path.exists(self.prefix):
             try:
                 os.makedirs(self.prefix)
