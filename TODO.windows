@@ -1,0 +1,36 @@
+Aims
+----
+
+* Build gtk from its own moduleset
+
+* Build soc stuff from its own moduleset
+
+* Make all unit tests pass
+
+* Use for calliope
+
+
+Todo
+----
+
+* Cleanup git stuff & submit as a patch.
+   -> better error msg when git not found
+   
+* Sort out https://launchpad.net/jhbuild-win32
+
+* Don't use -windows modulesets - allow platform-specific dependencies ?? Or just make -windows modulesets
+  work on top of the normal ones
+
+* Doc, upload etc.
+
+
+Long term things
+----------------
+
+* Ctrl+C in jhbuild's shell bug: 'jhbuild shell' doesn't work, and cutting to shell during error 
+  sometimes breaks if you ctrl+c in it .. :(
+   
+* Fix all the FIXME's ..
+
+* Git: it would be great if Git wasn't so awkward on Windows. One day hopefully it will be runnable 
+  without its own MSYS. Then we can be happy!

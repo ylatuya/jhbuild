@@ -1,0 +1,23 @@
+jhbuild things on MS Windows using mingw and MSYS
+---------------------------------------
+
+Although I'd love to fix every bug and make jhbuild as reliable as possible, on as crazy a platform as Windows/MSYS that's just not going to happen. So, here is some advice to make jhbuild least likely to break.
+
+* Don't run under rxvt - if you use msys.bat, run msys.bat --norxvt. This is because rxvt buffers the output wrongly so jhbuild appears to hang, when it's in fact waiting for input but has not yet displayed any output.
+
+* Use c:/ format paths everywhere - the /c/ paths are converted by MSYS but not inside the autotools or python which can break various things in weird ways.
+
+Git notes
+---------
+
+Git is especially awkward on Windows!
+
+* core.autocrlf is forced to 'input' inside of jhbuild. Remember most of the 
+  tools involved here are Unix-based, so Unix line endings will hardly confuse 
+  them but Windows line endings probably will.
+
+  In particular, if you get an error from aclocal or autogen.sh that says:
+	' is already registered with AC_CONFIG_FILES.
+	autoconf/status.m4:848: AC_CONFIG_FILES is expanded from...
+  and things like that, that's the autotools being confused by Windows line 
+  endings in configure.in ...
