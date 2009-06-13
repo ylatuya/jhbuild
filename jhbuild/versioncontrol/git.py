@@ -316,7 +316,9 @@ class GitBranch(Branch):
         return True
 
     def checkout(self, buildscript):
-        if not inpath('git', os.environ['PATH'].split(os.pathsep)):
+        if not inpath('git', os.environ['PATH'].split(os.pathsep)) and
+            (sys.platform.startswith('win') and 
+             not inpath('git.bat', os.environ['PATH'].split(os.pathsep)):
             raise CommandError(_('%s not found') % 'git')
         Branch.checkout(self, buildscript)
 

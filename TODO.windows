@@ -23,6 +23,8 @@ Todo
 
 * Doc, upload etc.
 
+* An install script, including configuring git
+* Maybe, an installer (jhbuild-based? ?) which sets up a complete MSYS build environment for you ...
 
 Long term things
 ----------------
@@ -34,3 +36,4 @@ Long term things
 
 * Git: it would be great if Git wasn't so awkward on Windows. One day hopefully it will be runnable 
   without its own MSYS. Then we can be happy!
+  -> http://code.google.com/p/msysgit/issues/detail?id=56
