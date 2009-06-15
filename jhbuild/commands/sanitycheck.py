@@ -40,6 +40,7 @@ def get_aclocal_path(version):
 
 def inpath(filename, path):
     for dir in path:
+        print os.path.join(dir, filename)
         if os.path.isfile(os.path.join(dir, filename)):
             return True
         # also check for filename.exe on Windows
