@@ -9,8 +9,10 @@ jhbuild least likely to break.
   buffers the output wrongly so jhbuild appears to hang, when it's in fact waiting for input 
   but has not yet displayed any output.
 
-* Use c:/ format paths everywhere - the /c/ paths are converted by MSYS but not inside the 
-  autotools or python which can break various things in weird ways.
+* Use c:/ format paths everywhere. MSYS normally deals with /c/ paths, but they can confuse
+  autotools and python which in turn can break various things in weird ways.
+
+* Make sure you set up Git following according to the notes below
 
 
 Git notes
@@ -18,8 +20,11 @@ Git notes
 
 Git is especially awkward on Windows!
 
-* create a /bin/git.bat which reads something like this:
-    c:\tools\git\bin\sh.exe -c "/c/tools/git/bin/git $@"
+* The best bet is to use MSYSgit, from http://code.google.com/p/msysgit/
+
+* create a /bin/git.bat which reads something like this (exactly like this but with the
+  correct paths, this is a very delicate hack):
+    @c:\\tools\\msys\\1.0\\bin\\sh.exe -c "/c/tools/git/bin/git %*"
 
 * Set core.autocrlf to 'input':
     git config core.autocrlf input
@@ -32,4 +37,3 @@ Git is especially awkward on Windows!
     autoconf/status.m4:848: AC_CONFIG_FILES is expanded from...
   and things like that, that's the autotools being confused by Windows line endings in 
   configure.in ...
-  
