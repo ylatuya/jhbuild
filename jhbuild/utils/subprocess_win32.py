@@ -123,6 +123,18 @@ class Popen(real_subprocess.Popen):
             kws['close_fds'] = False
             self.__emulate_close_fds = True
 
+        # If there's no extension, CreateProcess adds '.exe'. We try a .bat extension first 
+        # (to make wrappers like git.bat work).
+        if '.' not in command[0]:
+            command_base = command[0]
+            try:
+                command[0] = command_base + '.bat'
+                real_subprocess.Popen.__init__(self, command, **kws)
+                return
+            except WindowsError:
+                # file not found
+                command[0] = command_base
+
         real_subprocess.Popen.__init__(self, command, **kws)
 
     def __del__(self):
