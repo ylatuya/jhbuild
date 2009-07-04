@@ -96,7 +96,7 @@ class Popen(real_subprocess.Popen):
         # ./ confuses windows, and these are normally shell scripts so use
         # sh.exe
         if command[0].startswith('./'):
-            command = ['sh', command[0].replace('./','')] + command[1:]
+            command = ['sh', '-c', ' '.join([command[0]] + command[1:])]
         elif not command[0].endswith('.exe'):
             # check if program has no extension or has .sh extension - it
             # probably needs executing by sh rather than by Windows directly
