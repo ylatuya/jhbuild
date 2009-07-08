@@ -3,31 +3,71 @@ Aims
 
 * Build gtk from its own moduleset
 
-* Build soc stuff from its own moduleset
+* Build gtk + soc stuff from its own moduleset, with no interference
 
 * Make all unit tests pass
-
-* Use for calliope
 
 
 Todo
 ----
 
-* Cleanup git stuff & submit as a patch.
-   -> better error msg when git not found
-   
+- Cleanup git stuff & submit as a patch.
+  .. #585620
+
+* Glib: po/be.po has some CR-LF line endings instead of LF.
+
+* Atk:  po/tk.po has some CR-LF line endings instead of LF.
+
+* Gtk:  po/li.po and tests/testclientmessage.c both CRLF
+
+* Pixman: fix autogen.sh, or fix autoreconf
+  -> or, try using just setting ACLOCAL
+
+* Cairo: doesn't seem to build on win32 after maybe 1.8.6
+
+* Git LF madness :(
+
+* shared-mime-info cvs case-sensitivity mess
+
+* Atk & Pango :(
+  a 1-character patch for atk/Makefile.am and pango/Makefile.am: into a bug? (it's a bit of a hack) or into jhbuild patches ..
+  on one hand it's a platform-specific hack, but on the other hand it's probably not going to be fixed ever, and automake is nothing but platform specific hacks anyway.
+  -> Make these packages use a template file instead?
+
+* Gtk: cairo-pdf not found for some stupid reason.
+
+* Merge intltool-update perl patch
+
 * Sort out https://launchpad.net/jhbuild-win32
 
 * Don't use -windows modulesets - allow platform-specific dependencies ?? Or just make -windows modulesets
   work on top of the normal ones
 
-* Doc, upload etc.
+* Test from scratch, doc, upload etc.
+
+* Install xml::Parser module instead of using ActiveState perl
 
 * An install script, including configuring git
 * Maybe, an installer (jhbuild-based? ?) which sets up a complete MSYS build environment for you ...
 
+
+Little things
+-------------
+
+* An error in an included moduleset gives the filename of the original one it was included from
+
 Long term things
 ----------------
+
+* If jhbuild is becoming a binary package manager, can it also manage mingw and msys ??
+
+  Or, since there's opposition to that, and inspired by http://bugzilla.gnome.org/show_bug.cgi?id=564373
+  Build a seperate entity, an 'msys-package-tool' or something which can keep a mingw and MSYS installations
+  up to date, and install Tor's binary packages, all in a consistent way. Integrate this into jhbuild
+  in a similar way to PackageKit: allow it to be used to bootstrap (where building from latest git doesn't
+  matter), and allow replacing from-source builds with binary packages wherever that's okay.
+  I don't see an easy way to indicate what should be build from source and what shouldn't be, but that's
+  another issue.
 
 * Ctrl+C in jhbuild's shell bug: 'jhbuild shell' doesn't work, and cutting to shell during error 
   sometimes breaks if you ctrl+c in it .. :(
@@ -37,3 +77,9 @@ Long term things
 * Git: it would be great if Git wasn't so awkward on Windows. One day hopefully it will be runnable 
   without its own MSYS. Then we can be happy!
   -> http://code.google.com/p/msysgit/issues/detail?id=56
+
+  I actually had my regular MSYS shell calling git accidentally for a while and it seemed to work fine.
+
+  The motivation for having it in its own MSYS environment is so weird version errors don't break it,
+  but if the environment was managed by jhbuild or something, it would be 
+
