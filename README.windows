@@ -24,7 +24,7 @@ Git is especially awkward on Windows!
 
 * create a /bin/git.bat which reads something like this (exactly like this but with the
   correct paths, this is a very delicate hack):
-    @c:\\tools\\msys\\1.0\\bin\\sh.exe -c "/c/tools/git/bin/git %*"
+    @c:\\tools\\git\\bin\\sh.exe -c "/c/tools/git/bin/git %*"
 
 * Set core.autocrlf to 'input':
     git config core.autocrlf input
