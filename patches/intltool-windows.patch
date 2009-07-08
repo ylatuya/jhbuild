@@ -1,0 +1,50 @@
+=== modified file 'intltool-update.in'
+--- intltool-update.in	2009-04-21 01:58:31 +0000
++++ intltool-update.in	2009-07-05 15:43:46 +0000
+@@ -637,7 +637,7 @@
+ {
+     my ($file) = @_;
+     # If either a file exists, or when run it returns 0 exit status
+-    return 1 if ((-x $file) or (system("$file --version >$devnull") == 0));
++    return 1 if ((-e $file) or (system("$file --version >$devnull") == 0));
+     return 0;
+ }
+ 
+@@ -657,8 +657,6 @@
+ {
+     my $EXTRACT = $ENV{"INTLTOOL_EXTRACT"} || "intltool-extract";
+ 
+-    $EXTRACT = "$^X $EXTRACT" if ($^O eq 'MSWin32' && !($EXTRACT =~ /perl/));
+-
+     ## Generate the .h header files, so we can allow glade and
+     ## xml translation support
+     if (! isProgramInPath ("$EXTRACT"))
+@@ -685,18 +683,15 @@
+ 	   {
+ 	       s/^\[[^\[].*]\s*//;
+ 
+-	       my $filename = "../$_";
+-
+-	       if ($VERBOSE)
+-	       {
+-		   system ($EXTRACT, "--update", "--srcdir=$SRCDIR",
+-			   "--type=$gettext_type", $filename);
+-	       } 
+-	       else 
+-	       {
+-	 	   system ($EXTRACT, "--update", "--type=$gettext_type", 
+-			   "--srcdir=$SRCDIR", "--quiet", $filename);
+-	       }
++	       my @cmd = ($EXTRACT, "--update", "--type=$gettext_type", 
++	                  "--srcdir=$SRCDIR");
++
++	       unshift (@cmd, $^X) if ($^O eq 'MSWin32' && !($EXTRACT =~ /perl/));
++
++	       push (@cmd, "--quiet") if (! $VERBOSE);
++	       push (@cmd, "../$_");
++
++	       system (@cmd);
+ 	   }
+        }
+        close FILE;
+

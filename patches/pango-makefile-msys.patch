@@ -1,0 +1,13 @@
+diff --git a/pango/Makefile.am b/pango/Makefile.am
+index 9c3bcbb..c216afd 100644
+--- a/pango/Makefile.am
++++ b/pango/Makefile.am
+@@ -135,7 +135,7 @@ pango-enum-types.h: s-enum-types-h
+ s-enum-types-h: @REBUILD@ $(pango_headers) Makefile
+ 	( cd $(srcdir) && glib-mkenums \
+ 			--fhead "#ifndef __PANGO_ENUM_TYPES_H__\n#define __PANGO_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+-			--fprod "/* enumerations from \"@filename@\" */\n" \
++			--fprod " /* enumerations from \"@filename@\" */\n" \
+ 			--vhead "GType @enum_name@_get_type (void);\n#define @ENUMPREFIX@_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" 	\
+ 			--ftail "G_END_DECLS\n\n#endif /* __PANGO_ENUM_TYPES_H__ */" \
+ 		$(pango_headers) ) > tmp-pango-enum-types.h \

@@ -170,6 +170,8 @@
    Perl to some random location making it all the more pointless -->
   <!-- FIXME: would be nice if we could substitute $INTLTOOL_PERL for this hardcoded path. 
        Or if intltool paid attention to INTLTOOL_PERL. -->
+  <!-- FIXME: this is also build from bzr in external-windows.modules. Do we need it in the bootstrap
+       modules? -->
   <autotools id="intltool" version="0.40.6">
     <branch repo="ftp.gnome.org" module="intltool/0.40/intltool-0.40.6.tar.bz2" version="0.40.6"/>
   </autotools>
