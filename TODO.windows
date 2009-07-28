@@ -39,7 +39,7 @@ Line endings:
    configure.in broke on non-UNIX systems.
 
 * glib's autogen is weirdly broken.
-  -> Should jhbuild prefer autoreconf ?? Add an option for this.
+  -> can't use autoreconf, because of gettextize
 
 * Merge intltool-update perl patch
 
