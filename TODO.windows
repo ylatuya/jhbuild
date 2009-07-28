@@ -1,8 +1,6 @@
 Aims
 ----
 
-* Build gtk from its own moduleset
-
 * Build gtk + soc stuff from its own moduleset, with no interference
 
 * Make all unit tests pass
@@ -11,21 +9,24 @@ Aims
 Todo
 ----
 
-- Cleanup git stuff & submit as a patch.
-  .. #585620
+- Makefile.plain
 
-* Glib: po/be.po has some CR-LF line endings instead of LF.
+- Document
 
-* Atk:  po/tk.po has some CR-LF line endings instead of LF.
+Line endings:
+ http://mail.gnome.org/archives/gtk-devel-list/2009-July/msg00041.html
+	* Glib: po/be.po has some CR-LF line endings instead of LF.
 
-* Gtk:  po/li.po and tests/testclientmessage.c both CRLF
+	* Atk:  po/tk.po has some CR-LF line endings instead of LF.
 
-* Pixman: fix autogen.sh, or fix autoreconf
-  -> or, try using just setting ACLOCAL
+	* Gtk:  po/li.po and tests/testclientmessage.c both CRLF
+
+	* libpng: projects/*
+
+* -> Jhbuild should set ACLOCAL not ACLOCAL_FLAGS
+  Affects: Pixman
 
 * Cairo: doesn't seem to build on win32 after maybe 1.8.6
-
-* Git LF madness :(
 
 * shared-mime-info cvs case-sensitivity mess
 
@@ -34,7 +35,11 @@ Todo
   on one hand it's a platform-specific hack, but on the other hand it's probably not going to be fixed ever, and automake is nothing but platform specific hacks anyway.
   -> Make these packages use a template file instead?
 
-* Gtk: cairo-pdf not found for some stupid reason.
+* Gtk: cairo-pdf not found for some stupid reason. 
+   configure.in broke on non-UNIX systems.
+
+* glib's autogen is weirdly broken.
+  -> Should jhbuild prefer autoreconf ?? Add an option for this.
 
 * Merge intltool-update perl patch
 
@@ -51,13 +56,25 @@ Todo
 * Maybe, an installer (jhbuild-based? ?) which sets up a complete MSYS build environment for you ...
 
 
+Bugs upstream
+-------------
+
+- git.bat support: 
+  http://bugzilla.gnome.org/show_bug.cgi?id=585620
+
+
 Little things
 -------------
 
 * An error in an included moduleset gives the filename of the original one it was included from
 
+* Gtk: gtk-demo / pixbufs segfaults
+    io-gdip-utils.c:356  - stream==NULL
+
 Long term things
 ----------------
+
+* It's SO SLOW !@!@!!!
 
 * If jhbuild is becoming a binary package manager, can it also manage mingw and msys ??
 
@@ -68,6 +85,9 @@ Long term things
   matter), and allow replacing from-source builds with binary packages wherever that's okay.
   I don't see an easy way to indicate what should be build from source and what shouldn't be, but that's
   another issue.
+  
+  Existing windows package managers:
+    http://code.google.com/p/msys-cn/wiki/EnglishHomepage
 
 * Ctrl+C in jhbuild's shell bug: 'jhbuild shell' doesn't work, and cutting to shell during error 
   sometimes breaks if you ctrl+c in it .. :(
