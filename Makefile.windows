@@ -1,0 +1,51 @@
+PACKAGE = jhbuild
+VERSION = 0.1
+
+DISABLE_GETTEXT = yes
+
+CC = gcc
+CFLAGS = -Wall -O2
+
+MAKE ?= make
+
+bindir=$(PREFIX)/bin
+datarootdir=$(PREFIX)/share
+desktopdir=$(datarootdir)/applications
+
+all: install-check
+	@echo 'Run "make install" to install.'
+
+install-check: install-check.sh
+	@cp install-check.sh install-check
+	@chmod +x install-check 
+
+update:
+	git pull --rebase
+	@if [ "x$(DISABLE_GETTEXT)" = x ]; then (cd po && $(MAKE) -f Makefile.plain); fi
+
+install: install-check
+	@if [ "x$(DISABLE_GETTEXT)" = x ]; then (cd po && $(MAKE) -f Makefile.plain install); fi
+	@echo "Creating $(bindir)/jhbuild"
+	@mkdir -p $(bindir)
+	@sed -e "s,@jhbuilddir@,`pwd -W`,g" \
+		-e "s,USE_CHECKOUT_SRC = False,USE_CHECKOUT_SRC = True," < \
+		scripts/jhbuild.in > $(bindir)/jhbuild
+	@chmod a+x $(bindir)/jhbuild
+
+	@echo "Creating $(desktopdir)/jhbuild.desktop"
+	@mkdir -p $(desktopdir)
+	@sed "s,^_,,g;s,^Exec=.*$$,Exec=$(bindir)/jhbuild gui,;s,^X-GNOME-Bugzilla-Version=.*$$,," \
+		< jhbuild.desktop.in.in > $(desktopdir)/jhbuild.desktop
+
+	@[ -f $(HOME)/.jhbuildrc ]||echo "Don't forget to create ~/.jhbuildrc"
+	#install -m755 install-check $(bindir)/install-check
+
+	# if ~/bin/jbuild exists, it is most likely an old version, and it will
+	# not work; so rename it and install a symlink to the new version
+	# instead.
+	@if [ -e "$(HOME)/bin/jhbuild" ] && [ ! $(bindir) -ef $(HOME)/bin ]; then \
+		mv "$(HOME)/bin/jhbuild" "$(HOME)/bin/jhbuild.old" ; \
+		ln -s $(bindir)/jhbuild "$(HOME)/bin/jhbuild" ; \
+	fi
+
+.PHONY: all update install
