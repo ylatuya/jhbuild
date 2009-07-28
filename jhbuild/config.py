@@ -64,14 +64,19 @@ def prependpath(envvar, path):
 
 def addpath(envvar, path):
     '''Adds a path to an environment variable.'''
-    # special case ACLOCAL_FLAGS
-    if envvar in [ 'ACLOCAL_FLAGS' ]:
+
+    # special case ACLOCAL/ACLOCAL_FLAGS
+    if envvar in [ 'ACLOCAL', 'ACLOCAL_FLAGS' ] :
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
 
-        envval = os.environ.get(envvar, '-I %s' % path)
-        parts = ['-I', path] + envval.split()
-        i = 2
+        # Always set both vars, the worst that can happen is redundant path entries. To do the Right
+        # Thing we need to access config.use_autoreconf.
+        envvar = 'ACLOCAL'
+        envval = os.environ.get(envvar, 'aclocal -I %s' % path)
+        parts = ['aclocal', '-I', path] + envval.split()[1:]
+        i = 3
+
         while i < len(parts)-1:
             if parts[i] == '-I':
                 # check if "-I parts[i]" comes earlier
@@ -84,6 +89,9 @@ def addpath(envvar, path):
             else:
                 i += 1
         envval = ' '.join(parts)
+
+        os.environ['ACLOCAL_FLAGS'] = ' '.join(parts[1:])
+
     elif envvar in [ 'LDFLAGS', 'CFLAGS', 'CXXFLAGS' ]:
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
@@ -354,14 +362,14 @@ class Config:
         xcursordir = os.path.join(self.prefix, 'share', 'icons')
         addpath('XCURSOR_PATH', xcursordir)
 
-        # ACLOCAL_FLAGS
+        # ACLOCAL
         aclocaldir = os.path.join(self.prefix, 'share', 'aclocal')
         if not os.path.exists(aclocaldir):
             try:
                 os.makedirs(aclocaldir)
             except:
                 raise FatalError(_("Can't create %s directory") % aclocaldir)
-        addpath('ACLOCAL_FLAGS', aclocaldir)
+        addpath('ACLOCAL', aclocaldir)
 
         # PERL5LIB
         perl5lib = os.path.join(self.prefix, 'lib', 'perl5')

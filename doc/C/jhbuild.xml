@@ -1778,6 +1778,14 @@ libgnomecanvas is missing branch definition for gnome-2-20
 	    it.</simpara>
 	  </listitem>
 	</varlistentry>
+	<varlistentry id="cfg-use-autoreconf">
+	  <term><varname>use_autoreconf</varname></term>
+	  <listitem>
+	    <simpara>A boolean value: when <constant>True</constant>, <command>autogen.sh</command>
+	    scripts are ignored and <command>autoreconf</command> is run instead. The
+	    <sgmltag class="attribute">autogen-sh</sgmltag> attribute is still honored if set.
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </section>
 
@@ -1812,9 +1820,10 @@ libgnomecanvas is missing branch definition for gnome-2-20
 	    end of an environment variable can have unexpected
 	    consequences).</para>
 	    <para>This function has special handling for the
-	    <envar>ACLOCAL_FLAGS</envar> environment variable, which
-	    expects paths to be listed in the form <literal>-I
-	    <replaceable>pathname</replaceable></literal>.</para>
+	    <envar>ACLOCAL</envar> and <envvar>ACLOCAL_FLAGS</envvar> environment variables, which
+	    expect paths to be listed in the form <literal>-I
+	    <replaceable>pathname</replaceable></literal> (and in the case of 
+	    <envvar>ACLOCAL</envvar>, prefixed by <literal>aclocal</literal>).</para>
 	  </listitem>
 	</varlistentry>
 	<varlistentry>
@@ -2187,7 +2196,7 @@ libgnomecanvas is missing branch definition for gnome-2-20
 	module has no <command>autogen.sh</command> script
 	equivalent. In that case, JHBuild will run <command>autoreconf
 	-i</command>, followed by the proper
-	<command>configure</command>.
+	<command>configure</command>. Note that if the
 
 	<sgmltag class="attribute">skip-autogen</sgmltag> chooses whether
 	or not to run autogen.sh, it is a boolean with an extra

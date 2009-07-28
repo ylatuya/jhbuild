@@ -655,7 +655,7 @@ class EndToEndTest(unittest.TestCase):
         self.assertEquals(proc.wait(), 0)
 
     # Won't pass under stock MSYS because pkgconfig isn't installed in base
-    # path. Will work if you set ACLOCAL_FLAGS, PATH and PKG_CONFIG_PATH to
+    # path. Will work if you set ACLOCAL, PATH and PKG_CONFIG_PATH to
     # a prefix where pkg-config is installed.
     def test_autotools_with_libtool(self):
         config = self.make_config()

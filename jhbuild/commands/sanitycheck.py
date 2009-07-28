@@ -28,8 +28,8 @@ from jhbuild.errors import UsageError, FatalError
 def get_aclocal_path(version):
     data = get_output(['aclocal-%s' % version, '--print-ac-dir'])
     path = [data[:-1]]
-    env = os.environ.get('ACLOCAL_FLAGS', '').split()
-    i = 0
+    env = os.environ.get('ACLOCAL', '').split()
+    i = 1
     while i < len(env):
         if env[i] == '-I':
             path.append(env[i+1])
