@@ -311,16 +311,11 @@ def parse_autotools(node, config, uri, repositories, default_repo):
     makeargs = ''
     makeinstallargs = ''
     supports_non_srcdir_builds = True
+    autogen_sh = 'autogen.sh'
     skip_autogen = False
     check_target = True
     makefile = 'Makefile'
     autogen_template = None
-
-    if config.use_autoreconf:
-        autogen_sh = 'autoreconf'
-    else:
-        autogen_sh ='autogen.sh'
-
     if node.hasAttribute('autogenargs'):
         autogenargs = node.getAttribute('autogenargs')
     if node.hasAttribute('makeargs'):

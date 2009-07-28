@@ -67,11 +67,6 @@ class cmd_sanitycheck(Command):
             uprint(_('install prefix (%s) is not writable') % config.prefix)
 
         # check whether various tools are installed
-        if config.use_autoreconf:
-            if not check_version(['autoreconf', '--version'],
-                                 r'autoreconf \([^)]*\) ([\d.]+)', '2.53'):
-                uprint(_('%s not found') % 'autoreconf >= 2.53')
-
         if not check_version(['libtoolize', '--version'],
                              r'libtoolize \([^)]*\) ([\d.]+)', '1.5'):
             uprint(_('%s not found') % 'libtool >= 1.5')
