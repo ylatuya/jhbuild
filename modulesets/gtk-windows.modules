@@ -85,6 +85,9 @@
   <!-- Avoid client-side-windows at the moment since it doesn't work on win32 at all -->
   <autotools id="gtk+">
     <branch />
+    <patches>
+      <patch file="gtk-configure.patch" strip="1"/>
+    </patches>
     <dependencies>
       <dep package="pango"/>
       <dep package="cairo"/>
