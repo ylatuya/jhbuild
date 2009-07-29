@@ -1,0 +1,12 @@
+diff --git a/libxml-2.0.pc.in b/libxml-2.0.pc.in
+index 075848c..62bc720 100644
+--- a/libxml-2.0.pc.in
++++ b/libxml-2.0.pc.in
+@@ -8,6 +8,5 @@ Name: libXML
+ Version: @VERSION@
+ Description: libXML library version2.
+ Requires:
+-Libs: -L${libdir} -lxml2
+-Libs.private: @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @LIBS@
++Libs: -L${libdir} -lxml2 @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @LIBS@ @WIN32_EXTRA_LIBADD@
+ Cflags: @XML_INCLUDEDIR@ @XML_CFLAGS@
