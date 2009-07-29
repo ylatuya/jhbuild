@@ -22,6 +22,9 @@
   <!-- libpng's autogen.sh isn't brilliant -->
   <autotools id="libpng" autogen-sh="autoreconf">
     <branch repo="libpng.git.sourceforge.net"/>
+    <dependencies>
+      <dep package="zlib"/>
+    </dependencies>
   </autotools>
   
   <autotools id="intltool">
