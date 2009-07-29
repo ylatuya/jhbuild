@@ -211,11 +211,8 @@ class TarballBranch(Branch):
 
             self._check_tarball()
 
-        # now to unpack it. Make sure we honour checkoutdir, as for binary packages we want to
-        # extract the inconsistant zip files to a clean directory.
+        # now to unpack it.
         unpack_dir = self.checkoutroot;
-        if self.checkoutdir:
-            unpack_dir = os.path.join(unpack_dir, self.checkoutdir)
         if not os.path.exists(unpack_dir):
             os.makedirs(unpack_dir)
 
