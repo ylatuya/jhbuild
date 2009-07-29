@@ -1,0 +1,31 @@
+diff --git a/include/libxml/xmlexports.h b/include/libxml/xmlexports.h
+index 29a6f54..1eb41c1 100644
+--- a/include/libxml/xmlexports.h
++++ b/include/libxml/xmlexports.h
+@@ -104,23 +104,12 @@
+ 
+ /* Windows platform with GNU compiler (Mingw) */
+ #if defined(_WIN32) && defined(__MINGW32__)
+-  #undef XMLPUBFUN
+   #undef XMLPUBVAR
+-  #undef XMLCALL
+-  #undef XMLCDECL
+-  #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)
+-    #define XMLPUBFUN __declspec(dllexport)
+-    #define XMLPUBVAR __declspec(dllexport)
++  #ifdef __cplusplus
++    #define XMLPUBVAR extern
+   #else
+-    #define XMLPUBFUN
+-    #if !defined(LIBXML_STATIC)
+-      #define XMLPUBVAR __declspec(dllimport) extern
+-    #else
+-      #define XMLPUBVAR extern
+-    #endif
++    #define XMLPUBVAR
+   #endif
+-  #define XMLCALL __cdecl
+-  #define XMLCDECL __cdecl
+   #if !defined _REENTRANT
+     #define _REENTRANT
+   #endif

@@ -17,6 +17,7 @@
     <branch />
     <patches>
       <patch file="libxml2-configure-windows.patch" strip="1" />
+      <patch file="libxml2-mingw-exports.patch" strip="1" />
     </patches>
   </autotools>
   <autotools id="libxslt">
