@@ -86,6 +86,7 @@
   <autotools id="gtk+">
     <branch />
     <patches>
+      <!-- http://bugzilla.gnome.org/show_bug.cgi?id=590086 -->
       <patch file="gtk-configure.patch" strip="1"/>
     </patches>
     <dependencies>

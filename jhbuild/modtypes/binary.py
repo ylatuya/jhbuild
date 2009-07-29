@@ -37,8 +37,6 @@ class Binary(AutogenModule):
 
     # FIXME: download = 'download' now we have new phases system ??
     PHASE_DOWNLOAD = 'checkout'
-    #PHASE_DOWNLOAD  = 'download'
-    #PHASE_CHECKOUT = 'checkout'
     PHASE_UNPACK    = 'unpack'
     PHASE_CONFIGURE = 'configure'
     PHASE_BUILD     = 'build'
@@ -47,34 +45,23 @@ class Binary(AutogenModule):
     def __init__(self, config, name, version, source_url='', source_size='', source_md5=None,uri=[],
                  patches=[], configure_commands=[], build_commands=[], install_commands=[], 
                  dependencies=[], after=[], suggests=[]):
-        #AutogenModule.__init__(self, name, version, source_url, source_size, source_md5,
-        #                 uri, patches=[], checkoutdir=None,autogenargs='', makeargs='',
-        #                 dependencies=dependencies,after=after,suggests=suggests, 
-        #                 supports_non_srcdir_builds=False)
-
         self.name = name
         self.version = version
-
-        # Set a checkout dir, because zips normally unzip to cwd. We also set
-        # expect_standard_tarball to False to allow these packages through.
-        checkoutdir = "%s-%s-binary" % (name, version)
 
         # create a fake TarballRepository, and give it the moduleset uri
         repo = TarballRepository(config, None, None)
         repo.moduleset_uri = uri
-        branch = TarballBranch(repo, source_url, version, checkoutdir, source_size, source_md5, 
+        branch = TarballBranch(repo, source_url, version, None, source_size, source_md5, 
                                None, source_subdir=None, expect_standard_tarball=False)
         branch.patches = patches
 
-        #if not os.path.exists(branch.srcdir):
-        #    os.makedirs(branch.srcdir)
-
-        #branch.checkoutroot=self.get_srcdir_config(config)
+        # Set a second-level checkout root, because binary archives often unzip to cwd. We also set
+        # expect_standard_tarball to False to allow these packages through.
+        branch.checkoutroot = os.path.join(config.checkoutroot, "%s-%s-binary" % (name, version))
 
         AutogenModule.__init__(self, name, branch, None, None, '', dependencies,
                               after, suggests, supports_non_srcdir_builds=False,
                               skip_autogen=False)
-        #, extra_env=None)
 
         self.static = True
         self.configure_commands = configure_commands
@@ -87,8 +74,6 @@ class Binary(AutogenModule):
             "@@PREFIX@@"    :   buildscript.config.prefix,
             "@@SRCDIR@@"    :   self.get_srcdir(buildscript)
             }
-
-        print "a", self.branch.srcdir, "b", self.branch.source_subdir
 
         for cmd,cwd,output_file in commands:
             #a command can have many args
@@ -121,34 +106,12 @@ class Binary(AutogenModule):
         if self.check_build_policy(buildscript) == self.PHASE_DONE:
             raise SkipToEnd()
 
-    #def checkout(self, buildscript):
-    #    print 'On checkout'
-    #    Package.checkout(self, buildscript)
-
-    #def get_srcdir(self, buildscript):
-    #    #Binary tarballs can have random formats so always unpack into their own dir
-    #    srcdir = os.path.abspath(os.path.join(
-    #                                 buildscript.config.checkoutroot,
-    #                                    "%s-%s-binary" % (self.name, self.version)))
-    #    if not os.path.exists(srcdir):
-    #        os.makedirs(srcdir)
-    #    return srcdir
+    def get_srcdir(self, buildscript):
+        # Binary tarballs can have random formats so always unpack into their own dir
+        return self.branch.checkoutroot
         
     def do_download(self, buildscript):
         print "DOWNLOAD: ", self.branch.module
-
-    #def do_unpack(self, buildscript):
-    #    if self.source_url != None:
-    #        #unpack the binary into its own custom folder
-    #        localfile = self.get_localfile(buildscript)
-    #        srcdir = self.get_srcdir(buildscript)
-    #        buildscript.set_action('Unpacking', self)
-    #        try:
-    #            unpack_archive(buildscript, localfile, self.get_srcdir(buildscript))
-    #        except:
-    #            raise BuildStateError('could not unpack tarball %s' % srcdir)
-    #do_unpack.next_state = PHASE_CONFIGURE
-    #do_unpack.error_states = []
 
     def do_configure(self, buildscript):
         buildscript.set_action('Configure', self)
