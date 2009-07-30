@@ -64,6 +64,15 @@
     </install>
   </binary>
 
+  <!-- FIXME: need this to compile Gtk+ still - would be great if they would just use am 1.10
+         like everyone else :) -->
+  <binary id="automake-1.7" version="1.79-1-mingw32">
+    <source href="http://downloads.sourceforge.net/project/mingw/MinGW%20automake/automake1.7/automake1.7-1.7.9-1/automake1.7-1.7.9-1-mingw32-bin.tar.lzma" />
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+    </install>
+  </binary>
+
   <binary id="automake" version="1.10-MSYS-1.0.11-1">
     <source href="http://downloads.sourceforge.net/mingw/automake-1.10-MSYS-1.0.11-1.tar.bz2" />
     <install>
@@ -113,6 +122,7 @@
 
       <!-- this prebuilt autoconf is now new enough for our needs. -->
       <dep package="autoconf" />
+      <dep package="automake-1.7" />
       <dep package="automake" />
 
       <!-- regex is needed for flex. flex and bison are needed to build
