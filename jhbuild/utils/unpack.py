@@ -86,18 +86,17 @@ def unpack_zip_file(localfile, target_directory):
 
 def unpack_archive(buildscript, localfile, target_directory, enforce_standard=True):
     ext = os.path.splitext(localfile)[-1]
-    print "file %s, target %s" % (localfile[:-5], target_directory)
     if ext == '.lzma':
         if has_command('lzcat') and has_command('tar'):
             buildscript.execute('lzcat -d "%s" | tar xf -' % localfile,
                     cwd = target_directory)
         # MSYS has lzma but not lzcat
         elif has_command('lzma') and has_command('tar'):
-            tarfile = localfile[:-5]
-            if tarfile[1]==':':
-                tarfile='/'+tarfile[0]+tarfile[2:]
+            tar_file = localfile[:-5]
+            if tar_file[1]==':':
+                tar_file='/'+tar_file[0]+tar_file[2:]
             buildscript.execute('sh -c "lzma -d -f -k \"%s\" && tar xf \"%s\"' % 
-                    (localfile, tarfile), cwd=target_directory)
+                    (localfile, tar_file), cwd=target_directory)
     elif ext == '.bz2' and has_command('bunzip2') and has_command('tar'):
         buildscript.execute('bunzip2 -dc "%s" | tar xf -' % localfile,
                 cwd = target_directory)
