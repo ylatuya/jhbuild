@@ -8,7 +8,9 @@
      only requires Python. -->
 
 <moduleset>
-  <repository type="tarball" name="ftp.gnome.org" 
+  <repository type="tarball" name="ftp.csx.cam.ac.uk"
+              href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/"/>
+  <repository type="tarball" name="ftp.gnome.org"
               href="http://ftp.gnome.org/pub/gnome/sources/"/>
   <repository type="tarball" name="ftp.gnu.org" 
               href="ftp://ftp.gnu.org/gnu/"/>
@@ -275,6 +277,29 @@
     </install>
   </binary>
 
+  <!-- Need grep with -o option to build gtk+. MSYS 1.0.11 ships with 2.4.2 which is too old. Of
+       course, grep won't build from source on Windows, and gnuwin32's grep doesn't work well with
+       our versions of its deps. They all have different dll names from ours so just stick them
+       in PREFIX/bin and hope for the best. -->
+  <binary id="grep-bin" version="2.5.4">
+    <source href="http://downloads.sourceforge.net/gnuwin32/grep-2.5.4-bin.zip" />
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>  
+  <binary id="grep-dep" version="2.5.4">
+    <source href="http://downloads.sourceforge.net/gnuwin32/grep-2.5.4-dep.zip" />
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>  
+  <metamodule id="grep">
+    <dependencies>
+      <dep package="grep-bin" />
+      <dep package="grep-dep" />
+    </dependencies>
+  </metamodule>
+
   <metamodule id="meta-bootstrap">
     <dependencies>
       <dep package="iconv"/>
@@ -288,6 +313,8 @@
       <dep package="libtool" />
 
       <dep package="gtk-doc-fake" />
+
+      <dep package="grep" />
     </dependencies>
   </metamodule>
 </moduleset>
