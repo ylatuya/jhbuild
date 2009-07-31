@@ -1,8 +1,8 @@
 diff --git a/include/libxml/xmlexports.h b/include/libxml/xmlexports.h
-index 29a6f54..1eb41c1 100644
+index 29a6f54..877836a 100644
 --- a/include/libxml/xmlexports.h
 +++ b/include/libxml/xmlexports.h
-@@ -104,23 +104,12 @@
+@@ -104,28 +104,19 @@
  
  /* Windows platform with GNU compiler (Mingw) */
  #if defined(_WIN32) && defined(__MINGW32__)
@@ -13,7 +13,7 @@ index 29a6f54..1eb41c1 100644
 -  #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)
 -    #define XMLPUBFUN __declspec(dllexport)
 -    #define XMLPUBVAR __declspec(dllexport)
-+  #ifdef __cplusplus
++  #ifdef __cpluscplus
 +    #define XMLPUBVAR extern
    #else
 -    #define XMLPUBFUN
@@ -29,3 +29,27 @@ index 29a6f54..1eb41c1 100644
    #if !defined _REENTRANT
      #define _REENTRANT
    #endif
+ #endif
+ 
++
++
+ /* Cygwin platform, GNU compiler */
+ #if defined(_WIN32) && defined(__CYGWIN__)
+   #undef XMLPUBFUN
+diff --git a/python/setup.py b/python/setup.py
+index 1fc700c..b1ae20f 100755
+--- a/python/setup.py
++++ b/python/setup.py
+@@ -8,10 +8,10 @@ from distutils.core import setup, Extension
+ # Below ROOT, we expect to find include, include/libxml2, lib and bin.
+ # On *nix, it is not needed (but should not harm), 
+ # on Windows, it is set by configure.js.
+-ROOT = r'/usr' 
++ROOT = r'c:/build/' 
+ 
+ # Thread-enabled libxml2
+-with_threads = 1
++with_threads = 0
+ 
+ # If this flag is set (windows only), 
+ # a private copy of the dlls are included in the package.
