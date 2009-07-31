@@ -66,10 +66,12 @@
 
   <!-- FIXME: need this to compile Gtk+ still - would be great if they would just use am 1.10
          like everyone else :) -->
+  <!-- It's (especially) untidy installing this to /mingw, but that's where it's configured to
+       run from. -->
   <binary id="automake-1.7" version="1.79-1-mingw32">
     <source href="http://downloads.sourceforge.net/project/mingw/MinGW%20automake/automake1.7/automake1.7-1.7.9-1/automake1.7-1.7.9-1-mingw32-bin.tar.lzma" />
     <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/mingw']"/>
     </install>
   </binary>
 
