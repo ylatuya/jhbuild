@@ -64,18 +64,12 @@
        such instead. -->
   <autotools id="atk">
     <branch/>
-    <patches>
-      <patch file="atk-makefile-msys.patch" strip="1"/>
-    </patches>
     <dependencies>
       <dep package="glib"/>
     </dependencies>
   </autotools>
   <autotools id="pango">
     <branch />
-    <patches>
-      <patch file="pango-makefile-msys.patch" strip="1"/>
-    </patches>
     <dependencies>
       <dep package="gnome-common"/>
       <dep package="glib"/>
@@ -85,10 +79,6 @@
   <!-- Avoid client-side-windows at the moment since it doesn't work on win32 at all -->
   <autotools id="gtk+">
     <branch />
-    <patches>
-      <!-- http://bugzilla.gnome.org/show_bug.cgi?id=590086 -->
-      <patch file="gtk-configure.patch" strip="1"/>
-    </patches>
     <dependencies>
       <dep package="pango"/>
       <dep package="cairo"/>

@@ -31,9 +31,6 @@
     <branch repo="launchpad.net"
             module="~intltool/intltool/trunk"
             checkoutdir="intltool"/>
-    <patches>
-      <patch file="intltool-windows.patch" strip="1"/>
-    </patches>
     <dependencies>
       <dep package="gnome-common"/>
     </dependencies>
