@@ -1,3 +1,13 @@
+PATCHES
+
+libxml2
+    <patches>
+      <patch file="libxml2-configure-windows.patch" strip="1" />
+      <patch file="libxml2-mingw-exports.patch" strip="1" />
+      <patch file="libxml2-pc-windows.patch" strip="1" />
+    </patches>
+
+
 Aims
 ----
 
@@ -9,10 +19,6 @@ Aims
 Todo
 ----
 
-- Makefile.plain
-
-- Document
-
 Line endings:
  http://mail.gnome.org/archives/gtk-devel-list/2009-July/msg00041.html
 	* Glib: po/be.po has some CR-LF line endings instead of LF.
@@ -23,9 +29,6 @@ Line endings:
 
 	* libpng: projects/*
 
-* -> Jhbuild should set ACLOCAL not ACLOCAL_FLAGS
-  Affects: Pixman
-
 * Cairo: doesn't seem to build on win32 after maybe 1.8.6
 
 * shared-mime-info cvs case-sensitivity mess
@@ -35,32 +38,22 @@ Line endings:
   on one hand it's a platform-specific hack, but on the other hand it's probably not going to be fixed ever, and automake is nothing but platform specific hacks anyway.
   -> Make these packages use a template file instead?
 
-* Gtk: cairo-pdf not found for some stupid reason. 
-   configure.in broke on non-UNIX systems.
-
 * glib's autogen is weirdly broken.
   -> can't use autoreconf, because of gettextize
 
 * Merge intltool-update perl patch
 
-* Sort out https://launchpad.net/jhbuild-win32
+
+More longterm
+-------------
 
 * Don't use -windows modulesets - allow platform-specific dependencies ?? Or just make -windows modulesets
   work on top of the normal ones
-
-* Test from scratch, doc, upload etc.
 
 * Install xml::Parser module instead of using ActiveState perl
 
 * An install script, including configuring git
 * Maybe, an installer (jhbuild-based? ?) which sets up a complete MSYS build environment for you ...
-
-
-Bugs upstream
--------------
-
-- git.bat support: 
-  http://bugzilla.gnome.org/show_bug.cgi?id=585620
 
 
 Little things
@@ -70,6 +63,8 @@ Little things
 
 * Gtk: gtk-demo / pixbufs segfaults
     io-gdip-utils.c:356  - stream==NULL
+
+* Fix all the FIXME's ..
 
 Long term things
 ----------------
@@ -92,8 +87,6 @@ Long term things
 * Ctrl+C in jhbuild's shell bug: 'jhbuild shell' doesn't work, and cutting to shell during error 
   sometimes breaks if you ctrl+c in it .. :(
    
-* Fix all the FIXME's ..
-
 * Git: it would be great if Git wasn't so awkward on Windows. One day hopefully it will be runnable 
   without its own MSYS. Then we can be happy!
   -> http://code.google.com/p/msysgit/issues/detail?id=56
