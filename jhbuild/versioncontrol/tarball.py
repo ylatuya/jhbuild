@@ -273,8 +273,9 @@ class TarballBranch(Branch):
                 else:
                     raise CommandError(_('Failed to find patch: %s') % patch)
 
+            patchfile = os.path.abspath (patchfile)
             buildscript.set_action(_('Applying patch'), self, action_target=patch)
-            buildscript.execute('patch -p%d < "%s"'
+            buildscript.execute('patch -p%d -i "%s"'
                                 % (patchstrip, patchfile),
                                 cwd=self.raw_srcdir)
 
