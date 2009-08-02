@@ -37,3 +37,31 @@ Git is especially awkward on Windows!
     autoconf/status.m4:848: AC_CONFIG_FILES is expanded from...
   and things like that, that's the autotools being confused by Windows line endings in 
   configure.in ...
+
+
+Things that can go wrong
+------------------------
+
+* libtool and DLL's: Sometimes you'll find a library is only building a static version. If you look
+    closer, you might see a verbose error message from libtool in the build output, like:
+
+        *** Warning: This system can not link to static lib archive
+        /usr/local/lib/libpixman-1.la.
+        *** I have the capability to make that library automatically link in when
+        *** you link to this library.  But I can only do this if you have a
+        *** shared version of the library, which you do not appear to have.
+
+    further down it may announce that it decided not to build a shared version of the library you
+    are no doubt trying to build a shared version of, because the platform does not allow undefined
+    symbols in shared libraries.
+
+    The cause is that somehow, libtool hasn't found a .dll of one of the dependant libraries. Maybe
+    you didn't build a shared one, but that's unlikely. In older versions of MSYS, the 'file'
+    program is old and causes libtool not to recognise dll import libraries when it finds them. If
+    you have file 4.16 or newer, I doubt that is the problem. It's also possible you have a shared
+    version of the library, in the library path, but it doesn't end in .dll.a. libz creates
+    'libzdll.a', for example, which libtool won't notice, and you need to make a copy called
+    'libz.dll.a'.
+
+    If none of these things work, good luck finding a cure. If you do, mail me and I'll add it
+    to this document.

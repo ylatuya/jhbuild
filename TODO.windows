@@ -91,7 +91,9 @@ Long term things
 
 * Ctrl+C in jhbuild's shell bug: 'jhbuild shell' doesn't work, and cutting to shell during error 
   sometimes breaks if you ctrl+c in it .. :(
-   
+
+* Merge everything upstream
+
 * Fix all the FIXME's ..
 
 * Git: it would be great if Git wasn't so awkward on Windows. One day hopefully it will be runnable 
