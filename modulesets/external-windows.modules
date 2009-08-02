@@ -15,7 +15,7 @@
       href="http://bazaar.launchpad.net/"/>
 
   <autotools id="zlib" version="1.2.3" makeargs="-f win32/Makefile.gcc"
-      makeinstallargs="install -f win32/Makefile.gcc INCLUDE_PATH=${prefix}include LIBRARY_PATH=${prefix}lib">
+      makeinstallargs="install -f win32/Makefile.gcc INCLUDE_PATH=${prefix}include LIBRARY_PATH=${prefix}lib BIN_PATH=${prefix}bin">
     <branch repo="zlib.net" module="zlib-1.2.3.tar.gz" version="1.2.3">
       <patch file="zlib-dll-msys.patch" strip="1"/>
     </branch>
