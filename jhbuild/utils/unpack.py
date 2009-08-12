@@ -32,22 +32,25 @@ def unpack_tar_file(localfile, target_directory):
 
 
 def unpack_zip_file(localfile, target_directory):
-    # Attributes are stored in ZIP files in a host-dependent way. The zipinfo.create_system value
-    # describes the host OS. I have seen:
+    # Attributes are stored in ZIP files in a host-dependent way.
+    # The zipinfo.create_system value describes the host OS.
+    # Known values:
     #   * 3 (UNIX)
     #   * 11 (undefined, seems to be UNIX)
     #   * 0 (MSDOS)
     # Reference: http://www.opennet.ru/docs/formats/zip.txt
 
     def attr_check_symlink(host, attr):
-        if host==0:
+        if host == 0:
             return False
         return attr == 0xA1ED0000
 
     def attr_to_file_perm(host, attr):
-        if host==0:
-            if attr & 1: perm = 0444
-            else:        perm = 0666
+        if host == 0:
+            if attr & 1:
+                perm = 0444
+            else:
+                perm = 0666
         else:
             perm = attr
             perm &= 0x08FF0000
@@ -58,8 +61,10 @@ def unpack_zip_file(localfile, target_directory):
     def attr_to_dir_perm(host, attr):
         if host==0:
             # attr & 16 should be true (this is directory bit)
-            if attr & 1: perm = 0444
-            else:        perm = 0666
+            if attr & 1:
+                perm = 0444
+            else:
+                perm = 0666
         else:
             perm = attr
             perm &= 0xFFFF0000
@@ -94,7 +99,7 @@ def unpack_zip_file(localfile, target_directory):
             dir = os.path.dirname(pkg_file)
             dir = os.path.join(target_directory, dir)
             makedirs(dir)
-            
+
         data = pkg.read(pkg_file)
         file = open(os.path.join(target_directory, pkg_file), 'wb')
         file.write(data)

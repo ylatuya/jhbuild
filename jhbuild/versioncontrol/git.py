@@ -119,19 +119,12 @@ class GitBranch(Branch):
         self.tag = tag
         self.unmirrored_module = unmirrored_module
 
-    def get_basename(self):
+    def get_module_basename(self):
         name = os.path.basename(self.module)
-        if name.endswith('.git'): name = name[:-4]
-        return name;
-
-    def get_checkoutdir(self):
-        if self.checkout_mode == 'copy' and self.config.copy_dir:
-            return get_os.path.join(self.config.copy_dir, self.get_basename())
-        if self.checkoutdir:
-            return os.path.join(self.checkoutroot, self.checkoutdir)
-        else:
-            return os.path.join(self.checkoutroot, self.get_basename())
-
+        if name.endswith('.git'):
+            name = name[:-4]
+        return name
+ 
     def srcdir(self):
         path_elements = [self.checkoutroot]
         if self.checkoutdir:
