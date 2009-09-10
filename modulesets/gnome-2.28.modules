@@ -102,8 +102,6 @@
     href="git://diracvideo.org/git/"/>
   <repository type="git" name="git.collabora"
       href="git://git.collabora.co.uk/git/"/>
-  <repository type="bzr" name="bzr.dvb-daemon.gnome.org"
-    href="http://bzr-playground.gnome.org/~sebp/"/>
   <repository type="tarball" name="people.suug.ch/~tgr/libnl/"
       href="http://people.suug.ch/~tgr/libnl/"/>
   <repository type="svn" name="liferea.svn.sourceforge.net"
@@ -575,6 +573,14 @@
     </dependencies>
   </autotools>
 
+  <autotools id="libsoupmm">
+    <branch/>
+    <dependencies>
+      <dep package="glibmm"/>
+      <dep package="libsoup"/>
+    </dependencies>
+  </autotools>
+
   <autotools id="gnet" autogenargs="--enable-glib2">
     <branch/>
     <dependencies>
@@ -738,7 +744,7 @@
   </autotools>
 
   <autotools id="epiphany-extensions">
-    <branch revision="gnome-2-24"/>
+    <branch/>
     <dependencies>
       <dep package="epiphany"/>
     </dependencies>
@@ -2157,9 +2163,9 @@
   </autotools>
 
   <autotools id="dvb-daemon">
-    <branch repo="bzr.dvb-daemon.gnome.org"
-            module="dvb-daemon"
-            checkoutdir="dvb-daemon/"/>
+    <branch repo="launchpad.net"
+            module="~gnome-dvb-daemon/gnome-dvb-daemon/trunk"
+            checkoutdir="gnome-dvb-daemon/"/>
    <dependencies>
      <dep package="glib"/>
      <dep package="gstreamer"/>
@@ -2392,5 +2398,32 @@
     </suggests>
   </autotools>
 
+  <autotools id="libvtemm">
+    <branch/>
+    <dependencies>
+      <dep package="mm-common"/>
+      <dep package="vte"/>
+      <dep package="glibmm"/>
+      <dep package="gtkmm"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gnome-pilot">
+    <branch/>
+    <dependencies>
+      <dep package="libxml2"/>
+      <dep package="libgnomeui"/>
+      <dep package="libgnome"/>
+      <dep package="libglade"/>
+      <dep package="ORBit2"/>
+      <dep package="libbonobo"/>
+      <dep package="gnome-panel"/>
+      <dep package="gconf"/>
+    </dependencies>
+    <suggests>
+      <dep package="hal"/>
+      <dep package="gnome-vfs"/>
+    </suggests>
+  </autotools>
 
 </moduleset>
