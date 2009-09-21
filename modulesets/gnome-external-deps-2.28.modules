@@ -71,34 +71,27 @@
   </autotools>
 
   <autotools id="clutter">
-    <branch module="clutter/0.9/clutter-0.9.6.tar.bz2" version="0.9.6"
+    <branch module="clutter/1.0/clutter-1.0.4.tar.bz2" version="1.0.4"
 	    repo="clutter-project.org"
-	    hash="sha256:1aa87d840f93dd84b46684780da053543d1c708d673c6068459a400b356a8b8b"
-	    md5sum="30653168bca6d36a560562e14867b804" size="2034624"/>
+	    hash="sha256:56d9751f5623dbd8554a120deb9e47f4426cedd992daa0f41516b25f05d78cf7"
+	    md5sum="7e587d9406e362ea1151a81d37d5460c" size="2040023"/>
     <dependencies>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="cairo"/>
+      <dep package="pango"/>
       <dep package="gtk-doc"/>
     </dependencies>
-  </autotools>
-
-  <autotools id="clutter-cairo">
-    <branch module="clutter-cairo/0.8/clutter-cairo-0.8.2.tar.bz2" version="0.8.2"
-	    repo="clutter-project.org"
-	    hash="sha256:5ffa79df55a0b61a580d5f95156de48409250570ef9dc4b32d4e31f3d6189615"
-	    md5sum="e3cae14ffd1e375d63046352b505788f" size="245558"/>
-    <dependencies>
-      <dep package="glib"/>
+    <suggests>
+      <dep package="gobject-introspection"/>
       <dep package="gtk+"/>
-      <dep package="gtk-doc"/>
-    </dependencies>
+    </suggests>
   </autotools>
 
   <autotools id="clutter-gtk">
-    <branch module="clutter-gtk/0.9/clutter-gtk-0.9.2.tar.bz2" version="0.9.2"
+    <branch module="clutter-gtk/0.10/clutter-gtk-0.10.2.tar.bz2" version="0.10.2"
 	    repo="clutter-project.org"
-	    hash="sha256:5a6a69ffae59e12f88db1eb72fcf61e46d14d71abdb0991a854828829019d9b8"
-	    md5sum="31ebc2dd549accd3f6b61d95a93eb456" size="309238"/>
+	    hash="sha256:de2af20d44d2237811f27ee081b9df999a0af30ee0d410cd7c2872622386b0c9"
+	    md5sum="bb275b07f722631ff1764dd212843d11" size="314372"/>
     <dependencies>
       <dep package="gtk+"/>
       <dep package="clutter"/>
@@ -106,10 +99,10 @@
   </autotools>
 
   <autotools id="dbus" supports-non-srcdir-builds="no">
-    <branch module="dbus/dbus-1.2.12.tar.gz" version="1.2.12"
+    <branch module="dbus/dbus-1.2.16.tar.gz" version="1.2.16"
 	    repo="dbus"
-	    hash="sha256:b2ec81e7d9fa5e24f67baccfd9af2755a7797a65cb4c3cad10d023867f2bd220"
-	    md5sum="39bd582c3b06a261cac44d4cab6fd60b" size="1574756">
+	    hash="sha256:968a31c16a6c4bbbdb603cbaa3d60d6d19bc8ae30c0ed55d7f8c2e254413e4c8"
+	    md5sum="c7a47b851ebe02f6726b65b78d1b730b" size="1576209">
     </branch>
     <dependencies>
       <dep package="expat"/>
@@ -121,10 +114,10 @@
   </autotools>
 
   <autotools id="dbus-glib">
-    <branch module="dbus-glib/dbus-glib-0.80.tar.gz" version="0.80"
+    <branch module="dbus-glib/dbus-glib-0.82.tar.gz" version="0.82"
 	    repo="dbus"
-	    hash="sha256:b5330b91b3131757103da2b3147e211e71214475f5d77640022ea9bb587f645b"
-	    md5sum="86ea60ba2118a1b9deafe8257f6a6a1a" size="688789">
+	    hash="sha256:ddfb062797341b5c5a22555ffe80138953cc61a67ba805647b2746f519bfbde1"
+	    md5sum="aa2a4517de0e9144be3bce2cf8cdd924" size="674953">
     </branch>
     <dependencies>
       <dep package="libxml2"/>
@@ -166,10 +159,10 @@
     </dependencies>
   </tarball>
 
-  <tarball id="fontconfig" version="2.6.0">
-    <source href="http://www.fontconfig.org/release/fontconfig-2.6.0.tar.gz"
-            hash="sha256:a9a639eaa0e5666606a4657cc1494eb6df820fac7e5a2aa0c3f7e703b7c8d8a5"
-            md5sum="ab54ec1d4ddd836313fdbc0cd5299d6d" size="1403857"/>
+  <tarball id="fontconfig" version="2.7.1">
+    <source href="http://www.fontconfig.org/release/fontconfig-2.7.1.tar.gz"
+            hash="sha256:08502404aa451ddc5f9ca4bf45cc3b3f1e86e3f0779ff273c72e1c48e0c25b94"
+            md5sum="41024d11765acdd7520d1f5458e751db" size="1539165"/>
     <dependencies>
       <dep package="expat"/>
     </dependencies>
@@ -205,27 +198,23 @@
     </dependencies>
   </tarball>
 
-  <tarball id="DeviceKit" version="002">
-    <source href="http://hal.freedesktop.org/releases/DeviceKit-002.tar.gz"
-	    hash="sha256:a9d21facbab3598d43d3a0a9c5c849118f25afe6ef2e2212821735f63f3d6202"
-	    md5sum="0049da1b9e1137ed18c4f68088f6dea7" size="432688"/>
+  <tarball id="DeviceKit" version="003">
+    <source href="http://hal.freedesktop.org/releases/DeviceKit-003.tar.gz"
+            hash="sha256:d2d21f995d1a152ca2d8beea6d37f31e48cca034b82ceb7322f39422e849e9cf"
+            md5sum="8b311547f4a2c8c6b6598e3318d66cd7" size="384408"/>
     <dependencies>
-      <dep package="dbus-glib"/>
-      <dep package="libxslt"/>
+      <dep package="glib"/>
     </dependencies>
-    <suggests>
-      <dep package="gtk-doc"/>
-    </suggests>
   </tarball>
 
   <tarball id="DeviceKit-power" version="008">
     <source href="http://hal.freedesktop.org/releases/DeviceKit-power-008.tar.gz"
-	    hash="sha256:9093246baf049fb2b8992bd5c1ceaadf5d4c3616a3bb77efa8f24f23f81731ee"
-	    md5sum="37ae30623524d4f476790079930049c8" size="480110"/>
-    
+            hash="sha256:9093246baf049fb2b8992bd5c1ceaadf5d4c3616a3bb77efa8f24f23f81731ee"
+            md5sum="37ae30623524d4f476790079930049c8" size="480110"/>
     <dependencies>
       <dep package="DeviceKit"/>
-      <dep package="PolicyKit"/>
+      <dep package="polkit"/>
+      <dep package="glib"/>
     </dependencies>
   </tarball>
 
@@ -357,10 +346,10 @@
     </dependencies>
   </autotools>
 
-  <tarball id="gtk-vnc" version="0.3.8">
-    <source href="http://download.gnome.org/sources/gtk-vnc/0.3/gtk-vnc-0.3.8.tar.bz2"
-            hash="sha256:f56159d6e85ce2c039992bd3b32de968f64af2f625a8f1d3d008beeeab2032f5"
-            md5sum="7c7b07a868568206acd3f6e9e4d18ba1" size="442950"/>
+  <tarball id="gtk-vnc" version="0.3.9">
+    <source href="http://download.gnome.org/sources/gtk-vnc/0.3/gtk-vnc-0.3.9.tar.bz2"
+            hash="sha256:ab84ccc04d15c4fb4409a689f9afd6e71ea49f0fff704dd10a648bdce11b56e9"
+            md5sum="18cbf50b393fea57b691987e5ea62259" size="460629"/>
     <dependencies>
       <dep package="gtk+"/>
     </dependencies>
@@ -470,11 +459,11 @@
     </dependencies>
   </tarball>
 
-  <tarball id="system-tools-backends" version="2.6.1"
+  <tarball id="system-tools-backends" version="2.8.1"
            supports-non-srcdir-builds="no">
-    <source href="http://download.gnome.org/sources/system-tools-backends/2.6/system-tools-backends-2.6.1.tar.bz2"
-            hash="sha256:7f56dd08cf5425218b697d5db82e6ce03aff4f7b57f58d3053f0a7af632b3747"
-            md5sum="c82a9d305c3a1bf924bba6b1bced3e86" size="441586"/>
+    <source href="http://download.gnome.org/sources/system-tools-backends/2.8/system-tools-backends-2.8.1.tar.bz2"
+            hash="sha256:c1f5746d22ef439ee47c9b012273ccbefbb2621075f05876bdb6ad5cfe4e1bbe"
+            md5sum="2aecff382af4d8ba7fcd69298cc79413" size="455050"/>
     <suggests>
       <dep package="dbus"/>
       <dep package="perl-net-dbus"/>
@@ -484,20 +473,10 @@
     </suggests>
   </tarball>
 
-  <!-- Note: libtelepathy is deprecated in favour of Telepathy GLib -->
-  <tarball id="libtelepathy" version="0.3.3">
-    <source href="http://telepathy.freedesktop.org/releases/libtelepathy/libtelepathy-0.3.3.tar.gz"
-            hash="sha256:e0d230be855125163579743418203c6f6be2f10f98c4f065735c1dc9ed115878"
-            md5sum="490ca1a0c614d4466394b72d43bf7370" size="439764"/>
-    <dependencies>
-      <dep package="telepathy-glib"/>
-    </dependencies>
-  </tarball>
-
-  <tarball id="telepathy-glib" version="0.7.31">
-    <source href="http://telepathy.freedesktop.org/releases/telepathy-glib/telepathy-glib-0.7.31.tar.gz"
-            hash="sha256:8b344d944c36ed9022c1516e0972a8de697eba275e34ff3e59af310d2167ebd9"
-            md5sum="42ceb70aacbe918e64c8f3196afc5c81" size="2574808"/>
+  <tarball id="telepathy-glib" version="0.7.35">
+    <source href="http://telepathy.freedesktop.org/releases/telepathy-glib/telepathy-glib-0.7.35.tar.gz"
+            hash="sha256:0d13fc89cd0ce6e5fd1763616c6e4a5ac030daede7fc6bb2af57d2fc62363a68"
+            md5sum="651251a6707698d3c8e0a2c39880cf19" size="2771863"/>
     <dependencies>
       <dep package="glib"/>
       <dep package="dbus"/>
@@ -506,12 +485,13 @@
     </dependencies>
   </tarball>
 
-  <tarball id="telepathy-mission-control" version="4.67">
-    <source href="http://prdownloads.sourceforge.net/sourceforge/mission-control/telepathy-mission-control-4.67.tar.gz"
-            hash="sha256:326b82519a49a238a476c028097bde5820c4b58af500dbb5b715cdfd6fe0bfcd"
-            md5sum="0a547e7af4a33355bac3638dd2e40859" size="659444"/>
+  <tarball id="telepathy-mission-control" version="5.20">
+    <source href="http://telepathy.freedesktop.org/releases/telepathy-mission-control/telepathy-mission-control-5.2.0.tar.gz"
+            hash="sha256:db7d0094df3083ea5d3e945f017d9582febdd396fa1cc03d6f205447f7f540da"
+            md5sum="dc7ce2105d1f569a1a6f7db06be4bc68" size="1029481"/>
     <dependencies>
-      <dep package="libtelepathy"/>
+      <dep package="dbus"/>
+      <dep package="dbus-glib"/>
       <dep package="telepathy-glib"/>
       <dep package="gnome-keyring"/>
       <dep package="gconf"/>
@@ -555,9 +535,11 @@
              autogenargs="--with-x --with-system-jpeg --with-system-zlib --with-system-bz2
 	     --enable-application=xulrunner --enable-default-toolkit=cairo-gtk2
 	     --enable-startup-notification --disable-mailnews --disable-ldap
-	     --disable-gnomevfs --disable-gnomeui 
+	     --disable-gnomevfs --disable-gnomeui
 	     --with-default-mozilla-five-home=${libdir}/mozilla
 	     --enable-system-cairo
+	     --with-system-nspr --with-system-nss
+	     --disable-mochitest
 	     --disable-debug --enable-optimize=-O2 --disable-tests
 	     --disable-javaxpcom
 	     --enable-extensions=xml-rpc,venkman,inspector,cview,tasks,reporter,python/xpcom
@@ -565,14 +547,19 @@
 	     "
              makeinstallargs="install SKIP_GRE_REGISTRATION=1">
     <branch repo="mozilla.org"
-            module="xulrunner/releases/1.9.0.7/source/xulrunner-1.9.0.7-source.tar.bz2"
-            version="1.9.0.7"
-            hash="sha256:300749986499629fdab5b271c35eb53f42753a3586ef474500d52bd3386cad9b"
-            md5sum="9875c9237b532009df8e91c3785539a3" size="37066129"
+            module="xulrunner/releases/1.9.0.13/source/xulrunner-1.9.0.13-source.tar.bz2"
+            version="1.9.0.13"
+            hash="sha256:07afeb577038812b97169cdf6bb41938072d3b12f2e9194041c7c31382047be3"
+            md5sum="040d01a1e22a1ec1b28188479df06007" size="37318606"
             checkoutdir="mozilla" />
     <dependencies>
       <dep package="gtk+"/>
       <dep package="sqlite3"/>
+      <dep package="nss"/>
+      <dep package="nspr"/>
+      <dep package="dbus"/>
+      <dep package="gconf"/>
+      <dep package="cairo"/>
     </dependencies>
   </autotools>
 
@@ -620,7 +607,7 @@
   </tarball>
 
   <tarball id="expat" version="1.95.8">
-    <source href="http://download.sourceforge.net/sourceforge/expat/expat-1.95.8.tar.gz"
+    <source href="http://downloads.sourceforge.net/project/expat/expat/1.95.8/expat-1.95.8.tar.gz"
             hash="sha256:c6aaa0b427e775a0fd5a956a75ae41e5110f22760723d9bda316100010e891ca"
             md5sum="aff487543845a82fe262e6e2922b4c8e" size="318349"/>
   </tarball>
@@ -715,6 +702,45 @@
     </dependencies>
   </tarball>
 
+  <tarball id="polkit" version="0.94">
+    <source href="http://hal.freedesktop.org/releases/polkit-0.94.tar.gz"
+            hash="sha256:8fd1dc321a700d78b43a62b1987f321b428bd2d8065468982069cb86bc8ef44f"
+            md5sum="5abc9f858e7b614ef41161db36d53915" size="1009990"/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="eggdbus"/>
+      <dep package="expat"/>
+      <dep package="intltool"/>
+    </dependencies>
+    <suggests>
+      <dep package="gobject-introspection"/>
+    </suggests>
+  </tarball>
+
+  <tarball id="polkit-gnome" version="0.94">
+    <source href="http://hal.freedesktop.org/releases/polkit-gnome-0.94.tar.bz2"
+            hash="sha256:60441f4fad12dab3ff196db9d43d6499ab5d5462bd729f45a4c3f050f7b91525"
+            md5sum="eebab8363a7b7c0516aca4f7b7cd7f7a" size="365379"/>
+    <dependencies>
+      <dep package="polkit"/>
+      <dep package="gtk+"/>
+      <dep package="intltool"/>
+    </dependencies>
+  </tarball>
+
+
+  <tarball id="eggdbus" version="0.5">
+    <source href="http://hal.freedesktop.org/releases/eggdbus-0.5.tar.gz"
+            hash="sha256:3261d543ab7cfcf9388ca1c4e1e5258c40af7e1c947e4876b5d04befbe4d3a3c"
+            md5sum="44f1f6387c49e8198d7aa755aeee46c6" size="790432"/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="dbus"/>
+      <dep package="dbus-glib"/>
+      <dep package="libxslt"/>
+    </dependencies>
+  </tarball>
+
   <autotools id="libcanberra" autogen-sh="configure">
     <branch repo="0pointer.de" module="libcanberra/libcanberra-0.12.tar.gz" version="0.12"
             hash="sha256:04a70135de89ec7971a7ffa6516cf7699329cc01056595d524a6250a9d049709"
@@ -782,10 +808,10 @@
     </after>
   </autotools>
 
-  <tarball id="libunique" version="1.0.8">
-    <source href="http://download.gnome.org/sources/libunique/1.0/libunique-1.0.8.tar.gz"
-            hash="sha256:76ff10a2ec44d83c17b719dcf905104c6873c34195acd2fd9f5c6e3aca772600"
-            md5sum="8ea35a7d8da7ef2952cd79f9e1324053" size="457465"/>
+  <tarball id="libunique" version="1.1.2">
+    <source href="http://download.gnome.org/sources/libunique/1.1/libunique-1.1.2.tar.bz2"
+            hash="sha256:73fb130295fc42b237aa3d808905f65ead9f979acbe49434eca830c6085f0c6e"
+            md5sum="f33749109768d43ef69ca7e8ffa7cfb7" size="335774"/>
     <dependencies>
       <dep package="gtk+"/>
       <dep package="dbus-glib"/>
@@ -927,12 +953,12 @@
     </dependencies>
   </tarball>
 
-  <autotools id="WebKit" autogenargs="--enable-video=yes --enable-gnomekeyring=yes"
+  <autotools id="WebKit" autogenargs="--enable-gnomekeyring=yes"
       makefile="GNUmakefile">
     <branch repo="webkitgtk.org"
-            module="webkit-1.1.11.tar.gz" version="1.1.11"
-	    hash="sha256:25777df7888a80f4d2b77ab61a1c25ccb0dede27c8fce2798b9393a2e1d616a6"
-	    md5sum="022a72ba5b7fa9e29553c03bf027215f" size="5412492"/>
+            module="webkit-1.1.14.tar.gz" version="1.1.14"
+            hash="sha256:46a02c7a706e7245440f4ad3ce8edec4eb83725f43d77c5b38039cc0b2d227b1"
+            md5sum="bff87d1ddc562223cb99201950d7e138" size="5925013"/>
     <dependencies>
       <dep package="cairo"/>
       <dep package="fontconfig"/>
@@ -950,20 +976,20 @@
     </suggests>
   </autotools>
 
-  <tarball id="libchamplain" version="0.3.3">
-    <source href="http://download.gnome.org/sources/libchamplain/0.3/libchamplain-0.3.3.tar.bz2"
-            hash="sha256:44488bed5235d1960023b8bf9e371e1a443f50e6bd98da27406cb5b564ee6b02"
-            md5sum="af2cf557bfe5fb5cc6ce6f16e6cf7358" size="442219"/>
+  <tarball id="libchamplain" version="0.3.91">
+    <source href="http://download.gnome.org/sources/libchamplain/0.3/libchamplain-0.3.91.tar.bz2"
+            hash="sha256:8d2fac0e27993aabe000026af39555363b35176402503f92a7690856488eeb15"
+            md5sum="6d0108dfea8acc473a1efe10c4bde694" size="519863"/>
     <dependencies>
       <dep package="glib"/>
-      <dep package="clutter"/>
-      <dep package="clutter-cairo"/>
       <dep package="cairo"/>
+      <dep package="clutter"/>
+      <dep package="gtk+"/>
       <dep package="sqlite3"/>
     </dependencies>
     <suggests>
       <dep package="libsoup"/>
-      <dep package="gtk+"/>
+      <dep package="clutter-gtk"/>
     </suggests>
   </tarball>
 
@@ -997,6 +1023,25 @@
     <after>
       <dep package="gtk-sharp"/>
     </after>
+  </tarball>
+
+  <tarball id="gnome-js-common" version="0.1.1">
+    <source href="http://download.gnome.org/sources/gnome-js-common/0.1/gnome-js-common-0.1.1.tar.bz2"
+            hash="sha256:6cad015cda5abfd2bccd6b95714ca39c83ca69ca7e6f7326dc75763a758dc8db"
+            md5sum="4f1c409a0be66d0df9dcdf15e9cf70ff" size="274010"/>
+    <suggests>
+      <dep package="seed"/>
+      <dep package="gjs"/>
+    </suggests>
+  </tarball>
+
+  <tarball id="gobject-introspection" version="0.6.5">
+    <source href="http://download.gnome.org/sources/gobject-introspection/0.6/gobject-introspection-0.6.5.tar.bz2"
+            hash="sha256:fe1702200d45958cdfe3707952d64c3a541628b1203a9b2644db0ee2c6d5df79"
+            md5sum="c946cddf10f02a3aea483967ab6de605" size="608305"/>
+    <dependencies>
+      <dep package="glib"/>
+    </dependencies>
   </tarball>
 
 </moduleset>
