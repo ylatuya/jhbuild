@@ -111,10 +111,13 @@
       password=""/>
   <repository type="git" name="git.xfce.org"
       href="git://git.xfce.org"/>
+  <repository type="git" name="git.dronelabs.com"
+      href="git://git.dronelabs.com"/>
+  <repository type="git" name="git.moblin.org"
+      href="git://git.moblin.org"/>
 
-
-  <include href="freedesktop-2.28.modules"/>
-  <include href="gnome-suites-2.28.modules"/>
+  <include href="freedesktop-2.30.modules"/>
+  <include href="gnome-suites-2.30.modules"/>
   <include href="hildon.modules"/>
 
   <autotools id="cairo-gtk-engine">
@@ -744,7 +747,7 @@
   </autotools>
 
   <autotools id="epiphany-extensions">
-    <branch revision="gnome-2-28"/>
+    <branch/>
     <dependencies>
       <dep package="epiphany"/>
     </dependencies>
@@ -1131,7 +1134,7 @@
   </autotools>
 
   <autotools id="gnome-games-extra-data">
-    <branch revision="gnome-2-28"/>
+    <branch/>
   </autotools>
 
   <autotools id="libnl" skip-autogen="never" autogen-sh="configure">
@@ -1617,7 +1620,7 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
   </autotools>
 
   <autotools id="gnome-packagekit">
-    <branch revision="gnome-2-28"/>
+    <branch/>
     <dependencies>
       <dep package="PackageKit"/>
       <dep package="gtk+"/>
@@ -2504,5 +2507,33 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     </dependencies>
   </autotools>
 
+  <autotools id="ethos">
+    <branch repo="git.dronelabs.com" />
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="gtk+"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="librest">
+    <branch repo="git.moblin.org" />
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="libsoup"/>
+      <dep package="libxml2"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="emerillon">
+    <branch />
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="gtk+"/>
+      <dep package="gconf"/>
+      <dep package="libchamplain"/>
+      <dep package="ethos"/>
+      <dep package="librest"/>
+    </dependencies>
+  </autotools>
 
 </moduleset>
