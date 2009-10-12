@@ -13,8 +13,6 @@
   <repository type="cvs" name="icon-theme.freedesktop.org"
       cvsroot=":pserver:anoncvs@anoncvs.freedesktop.org:/cvs/icon-theme"
       password=""/>
-  <repository type="cvs" name="shared-mime-info.freedesktop.org" password=""
-      cvsroot=":pserver:anoncvs@anoncvs.freedesktop.org:/cvs/mime/"/>
   <repository type="cvs" name="startup-notification.freedesktop.org"
       cvsroot=":pserver:anoncvs@anoncvs.freedesktop.org:/cvs/startup-notification"
       password=""/>
@@ -54,19 +52,8 @@
   <!-- Libs that you can expect to be there on Unixes, but we need to build on Windows -->
   <include href="external-windows.modules"/>
 
-  <!-- freedesktop.org cvs is flaky, use a tarball. -->
-  <!-- <autotools id="shared-mime-info" supports-non-srcdir-builds="no" version="0.60">
-    <branch repo="www.freedesktop.org"
-            module="~hadess/shared-mime-info-0.60.tar.bz2"/>
-    <dependencies>
-      <dep package="intltool"/>
-      <dep package="libxml2"/>
-      <dep package="glib"/>
-    </dependencies>
-  </autotools>   -->
-  
   <autotools id="shared-mime-info" supports-non-srcdir-builds="no">
-    <branch repo="shared-mime-info.freedesktop.org" module="shared-mime-info"/>
+    <branch repo="git.freedesktop.org" module="xdg/shared-mime-info"/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="libxml2"/>
