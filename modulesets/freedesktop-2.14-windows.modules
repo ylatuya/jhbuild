@@ -69,7 +69,7 @@
   </autotools>
 
   <autotools id="cairo">
-    <branch repo="git.freedesktop.org" module="cairo" tag="1.8.6"/>
+    <branch repo="git.freedesktop.org" module="cairo" />
     <dependencies>
       <dep package="pixman"/>
       <dep package="libpng"/>
