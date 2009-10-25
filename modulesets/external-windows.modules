@@ -9,7 +9,7 @@
       href="http://www.zlib.net"/>
 
   <repository type="git" name="libpng.git.sourceforge.net"
-      href="git://libpng.git.sourceforge.net/gitroot/"/>
+      href="git://libpng.git.sourceforge.net/gitroot/libpng/"/>
 
   <repository type="bzr" name="launchpad.net"
       href="http://bazaar.launchpad.net/"/>
