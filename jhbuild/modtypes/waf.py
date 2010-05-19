@@ -45,7 +45,7 @@ class WafModule(Package, DownloadableModule):
     PHASE_INSTALL        = 'install'
 
     def __init__(self, name, branch, dependencies=[], after=[], suggests=[],
-                 waf_cmd='waf'):
+                 waf_cmd='./waf'):
         Package.__init__(self, name, dependencies, after, suggests)
         self.branch = branch
         self.waf_cmd = waf_cmd
@@ -77,8 +77,6 @@ class WafModule(Package, DownloadableModule):
     def do_configure(self, buildscript):
         builddir = self.get_builddir(buildscript)
         buildscript.set_action(_('Configuring'), self)
-        if not inpath(self.waf_cmd, os.environ['PATH'].split(os.pathsep)):
-            raise CommandError(_('Missing waf, try jhbuild -m bootstrap buildone waf'))
         if buildscript.config.buildroot and not os.path.exists(builddir):
             os.makedirs(builddir)
         cmd = [self.waf_cmd, 'configure', '--prefix', buildscript.config.prefix]
@@ -103,7 +101,9 @@ class WafModule(Package, DownloadableModule):
     do_build.error_phases = [PHASE_FORCE_CHECKOUT, PHASE_CONFIGURE]
 
     def skip_check(self, buildscript, last_phase):
-        if not buildscript.config.module_makecheck.get(self.name, buildscript.config.makecheck):
+        if self.name in buildscript.config.module_makecheck:
+            return not buildscript.config.module_makecheck[self.name]
+        if 'check' not in buildscript.config.build_targets:
             return True
         return False
 
@@ -149,7 +149,7 @@ class WafModule(Package, DownloadableModule):
 
 def parse_waf(node, config, uri, repositories, default_repo):
     module_id = node.getAttribute('id')
-    waf_cmd = 'waf'
+    waf_cmd = './waf'
     if node.hasAttribute('waf-command'):
         waf_cmd = node.getAttribute('waf-command')
 

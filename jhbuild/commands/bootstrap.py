@@ -42,7 +42,7 @@ class cmd_bootstrap(cmd_build):
                         action='store_true', dest='ignore_system', default=False,
                         help=_('do not use system installed modules')))
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         if sys.platform.startswith('win'):
             config.moduleset = 'bootstrap-msys'
         else:

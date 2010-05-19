@@ -31,6 +31,7 @@ from optparse import make_option
 import socket
 import __builtin__
 import csv
+import logging
 
 try:
     import elementtree.ElementTree as ET
@@ -98,7 +99,7 @@ class cmd_bot(Command):
                         help=_('exec a buildbot step (internal use only)')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         if options.setup:
             return self.setup(config)
 
@@ -167,13 +168,14 @@ class cmd_bot(Command):
                     config.build_targets = ['install']
                 elif args[0] == 'check':
                     config.makecheck = True
+                    config.build_targets = ['check']
                     phases = ['check']
                 elif args[0] == 'clean':
                     phases = ['clean']
                 rc = buildscript.build(phases=phases)
             else:
                 command = args[0]
-                rc = jhbuild.commands.run(command, config, args[1:])
+                rc = jhbuild.commands.run(command, config, args[1:], help=None)
             sys.exit(rc)
 
         if options.start_server:
@@ -279,23 +281,33 @@ class cmd_bot(Command):
             version = None
 
             max_builds = 2
+            scheduler = None
 
             run_checks = True
             run_coverage_report = False
             run_clean_afterwards = False
 
             def load_extra_configuration(self, slaves_dir):
+                from twisted.python import log
                 slave_xml_file = os.path.join(slaves_dir, self.slavename + '.xml')
                 if not os.path.exists(slave_xml_file):
+                    log.msg(_('No description for slave %s.') % self.slavename)
                     return
                 try:
                     cfg = ET.parse(slave_xml_file)
                 except: # parse error
+                    log.msg(_('Failed to parse slave config for %s.') % self.slavename)
                     return
 
                 for attribute in ('config/max_builds', 'config/missing_timeout',
                             'config/run_checks', 'config/run_coverage_report',
                             'config/run_clean_afterwards',
+                            'config/scheduler',
+                            'nightly_scheduler/minute',
+                            'nightly_scheduler/hour',
+                            'nightly_scheduler/dayOfMonth',
+                            'nightly_scheduler/month',
+                            'nightly_scheduler/dayOfWeek',
                             'info/contact_name', 'info/contact_email',
                             'info/url', 'info/distribution', 'info/architecture',
                             'info/version'):
@@ -314,7 +326,19 @@ class cmd_bot(Command):
                     if attr_name in ('run_checks', 'run_coverage_report', 'run_clean_afterwards'):
                         value = (value == 'yes')
 
+                    if attr_name in ('minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek'):
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            value = '*'
+
                     setattr(self, attr_name, value)
+
+                if self.scheduler == 'nightly':
+                    self.nightly_kwargs = {}
+                    for attr_name in ('minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek'):
+                        if hasattr(self, attr_name):
+                            self.nightly_kwargs[attr_name] = getattr(self, attr_name)
 
         class JhBuildMaster(BuildMaster):
             jhbuild_config = config
@@ -389,14 +413,21 @@ class cmd_bot(Command):
                     config['change_source'] = PBChangeSource()
 
                 # Schedulers
-                from jhbuild.buildbot.scheduler import SerialScheduler, OnCommitScheduler
+                from jhbuild.buildbot.scheduler import SerialScheduler, NightlySerialScheduler, OnCommitScheduler
                 config['schedulers'] = []
                 for slave in config['slaves']:
                     s = None
                     for project in config['projects']:
                         buildername = str('%s-%s' % (project, slave.slavename))
-                        s = SerialScheduler(buildername, project, upstream=s,
-                                            builderNames=[buildername])
+                        scheduler_kwargs = {}
+                        if slave.scheduler == 'nightly':
+                            scheduler_class = NightlySerialScheduler
+                            scheduler_kwargs = slave.nightly_kwargs
+                        else:
+                            scheduler_class = SerialScheduler
+                        s = scheduler_class(buildername, project, upstream=s,
+                                            builderNames=[buildername],
+                                            **scheduler_kwargs)
                         config['schedulers'].append(s)
                         if self.jhbuild_config.jhbuildbot_svn_commits_box:
                             # schedulers that will launch job when receiving

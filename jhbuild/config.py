@@ -48,15 +48,14 @@ _known_keys = [ 'moduleset', 'modules', 'skip', 'tags', 'prefix',
                 'makedistcheck', 'nonotify', 'notrayicon', 'cvs_program',
                 'checkout_mode', 'copy_dir', 'module_checkout_mode',
                 'build_policy', 'trycheckout', 'min_time',
-                'nopoison', 'forcecheck', 'makecheck_advisory',
-                'quiet_mode', 'progress_bar', 'module_extra_env',
-                'jhbuildbot_master', 'jhbuildbot_slavename', 'jhbuildbot_password',
-                'jhbuildbot_svn_commits_box', 'jhbuildbot_slaves_dir',
-                'jhbuildbot_dir', 'jhbuildbot_mastercfg',
-                'use_local_modulesets', 'ignore_suggests', 'modulesets_dir',
-                'mirror_policy', 'module_mirror_policy', 'dvcs_mirror_dir',
-                'build_targets',
-                ]
+                'nopoison', 'module_nopoison', 'forcecheck',
+                'makecheck_advisory', 'quiet_mode', 'progress_bar',
+                'module_extra_env', 'jhbuildbot_master', 'jhbuildbot_slavename',
+                'jhbuildbot_password', 'jhbuildbot_svn_commits_box',
+                'jhbuildbot_slaves_dir', 'jhbuildbot_dir',
+                'jhbuildbot_mastercfg', 'use_local_modulesets',
+                'ignore_suggests', 'modulesets_dir', 'mirror_policy',
+                'module_mirror_policy', 'dvcs_mirror_dir', 'build_targets' ]
 
 env_prepends = {}
 def prependpath(envvar, path):
@@ -159,7 +158,7 @@ class Config:
 
         if not self._orig_environ:
             self.__dict__['_orig_environ'] = os.environ.copy()
-            os.environ['UNMANGLED_PATH'] = os.environ.get('PATH', '')
+        os.environ['UNMANGLED_PATH'] = os.environ.get('PATH', '')
 
         try:
             SRCDIR
@@ -336,6 +335,7 @@ class Config:
 
         # MANPATH
         manpathdir = os.path.join(self.prefix, 'share', 'man')
+        addpath('MANPATH', '')
         addpath('MANPATH', manpathdir)
 
         # PKG_CONFIG_PATH
@@ -373,6 +373,11 @@ class Config:
                 os.makedirs(aclocaldir)
             except:
                 raise FatalError(_("Can't create %s directory") % aclocaldir)
+
+        if os.path.exists('/usr/share/aclocal'):
+            addpath('ACLOCAL_FLAGS', '/usr/share/aclocal')
+        if os.path.exists('/usr/local/share/aclocal'):
+            addpath('ACLOCAL_FLAGS', '/usr/local/share/aclocal')
         addpath('ACLOCAL', aclocaldir)
 
         # PERL5LIB
@@ -499,6 +504,9 @@ class Config:
         if hasattr(options, 'clean') and (
                 options.clean and not 'clean' in self.build_targets):
             self.build_targets.insert(0, 'clean')
+        if hasattr(options, 'check') and (
+                options.check and not 'check' in self.build_targets):
+            self.build_targets.insert(0, 'check')
         if hasattr(options, 'dist') and (
                 options.dist and not 'dist' in self.build_targets):
             self.build_targets.append('dist')

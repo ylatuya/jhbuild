@@ -156,8 +156,9 @@ class AutogenModule(Package, DownloadableModule):
             extra_env['ACLOCAL'] = ' '.join((
                 extra_env.get('ACLOCAL', os.environ.get('ACLOCAL', 'aclocal')),
                 extra_env.get('ACLOCAL_FLAGS', os.environ.get('ACLOCAL_FLAGS', ''))))
-            buildscript.execute(['autoreconf', '-i'], cwd=builddir,
+            buildscript.execute(['autoreconf', '-i'], cwd=srcdir,
                     extra_env=extra_env)
+            os.chmod(os.path.join(srcdir, 'configure'), 0755)
             cmd = cmd.replace('autoreconf', 'configure')
             cmd = cmd.replace('--enable-maintainer-mode', '')
 
@@ -192,10 +193,10 @@ class AutogenModule(Package, DownloadableModule):
             PHASE_CLEAN, PHASE_DISTCLEAN]
 
     def skip_clean(self, buildscript, last_phase):
-        srcdir = self.get_srcdir(buildscript)
-        if not os.path.exists(srcdir):
+        builddir = self.get_builddir(buildscript)
+        if not os.path.exists(builddir):
             return True
-        if not os.path.exists(os.path.join(srcdir, self.makefile)):
+        if not os.path.exists(os.path.join(builddir, self.makefile)):
             return True
         return False
 
@@ -223,7 +224,9 @@ class AutogenModule(Package, DownloadableModule):
     def skip_check(self, buildscript, last_phase):
         if not self.check_target:
             return True
-        if not buildscript.config.module_makecheck.get(self.name, buildscript.config.makecheck):
+        if self.name in buildscript.config.module_makecheck:
+            return not buildscript.config.module_makecheck[self.name]
+        if 'check' not in buildscript.config.build_targets:
             return True
         return False
 

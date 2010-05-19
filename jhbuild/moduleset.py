@@ -35,6 +35,7 @@ from jhbuild import modtypes
 from jhbuild.versioncontrol import get_repo_type
 from jhbuild.utils import httpcache
 from jhbuild.utils.cmds import get_output
+from jhbuild.modtypes.testmodule import TestModule
 
 __all__ = ['load', 'load_tests']
 
@@ -49,14 +50,15 @@ class ModuleSet:
     def get_module(self, module_name, ignore_case = False):
         if self.modules.has_key(module_name) or not ignore_case:
             return self.modules[module_name]
-        module_name = module_name.lower()
+        module_name_lower = module_name.lower()
         for module in self.modules.keys():
-            if module.lower() == module_name:
+            if module.lower() == module_name_lower:
                 if self.config is None or not self.config.quiet_mode:
                     logging.info(_('fixed case of module \'%(orig)s\' to \'%(new)s\'') % {
                             'orig': module_name, 'new': module})
                 return self.modules[module]
-        raise KeyError(module_name)
+        print "Couldn't find the specified module: %s" % module_name
+        sys.exit(2)
 
     def get_module_list(self, seed, skip=[], tags=[], ignore_cycles=False,
                 ignore_suggests=False, include_optional_modules=False,
@@ -286,7 +288,7 @@ def load(config, uri=None):
             if config.modulesets_dir and config.nonetwork or config.use_local_modulesets:
                 uri = os.path.join(config.modulesets_dir, uri + '.modules')
             else:
-                uri = 'http://git.gnome.org/cgit/jhbuild/plain/modulesets/%s.modules' % uri
+                uri = 'http://git.gnome.org/browse/jhbuild/plain/modulesets/%s.modules' % uri
         try:
             ms.modules.update(_parse_module_set(config, uri).modules)
         except xml.parsers.expat.ExpatError, e:
@@ -297,7 +299,7 @@ def load_tests (config, uri=None):
     ms = load (config, uri)
     ms_tests = ModuleSet(config = config)
     for app, module in ms.modules.iteritems():
-        if module.__class__ == testmodule.TestModule:
+        if module.__class__ == TestModule:
             ms_tests.modules[app] = module
     return ms_tests
 

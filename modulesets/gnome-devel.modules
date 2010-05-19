@@ -81,7 +81,7 @@
   </autotools>
 
   <distutils id="postr" autogen-sh="autoreconf">
-    <branch repo="bzr.burtonini.com" module="postr/postr.dev" checkoutdir="postr.dev"/>
+   <branch/>
    <dependencies>
      <dep package="pygtk"/>
      <dep package="nautilus-python"/>
@@ -157,7 +157,7 @@
     <branch/>
     <dependencies>
       <dep package="intltool"/>
-      <dep package="gmime-2-2"/>
+      <dep package="gmime"/>
       <dep package="dbus-glib"/>
       <dep package="libgnomeui"/>
       <dep package="gnome-desktop"/>
@@ -167,6 +167,7 @@
       <dep package="gstreamer"/>
       <dep package="sqlite3"/>
       <dep package="vala"/>
+      <dep package="libgee"/>
     </dependencies>
     <suggests>
       <dep package="exempi"/>

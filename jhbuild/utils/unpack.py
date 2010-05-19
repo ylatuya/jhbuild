@@ -121,6 +121,9 @@ def unpack_archive(buildscript, localfile, target_directory, enforce_standard=Tr
                 tar_file='/'+tar_file[0]+tar_file[2:]
             buildscript.execute('sh -c "lzma -d -f -k \"%s\" && tar xf \"%s\"' % 
                     (localfile, tar_file), cwd=target_directory)
+    elif ext == '.xz' and has_command('xzcat') and has_command('tar'):
+        buildscript.execute('xzcat -d "%s" | tar xf -' % localfile,
+                cwd = target_directory)
     elif ext == '.bz2' and has_command('bunzip2') and has_command('tar'):
         buildscript.execute('bunzip2 -dc "%s" | tar xf -' % localfile,
                 cwd = target_directory)

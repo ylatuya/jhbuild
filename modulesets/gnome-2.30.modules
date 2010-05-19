@@ -21,8 +21,6 @@
       password=""/>
   <repository type="svn" name="inkscape.sf.net"
       href="https://inkscape.svn.sourceforge.net/svnroot/inkscape/"/>
-  <repository type="svn" name="svn.galago-project.org"
-      href="http://svn.galago-project.org/"/>
   <repository type="svn" name="osiris.chipx86.com"
       href="http://osiris.chipx86.com/svn/osiris-misc/"/>
   <repository type="svn" name="svn.debian.org"
@@ -103,7 +101,7 @@
   <repository type="git" name="git.collabora"
       href="git://git.collabora.co.uk/git/"/>
   <repository type="tarball" name="people.suug.ch/~tgr/libnl/"
-      href="http://people.suug.ch/~tgr/libnl/"/>
+      href="http://www.gnome.org/~fpeters/libnl/"/>
   <repository type="svn" name="liferea.svn.sourceforge.net"
       href="http://liferea.svn.sourceforge.net/svnroot/"/>
   <repository type="cvs" name="cvs.claws-mail"
@@ -115,6 +113,10 @@
       href="git://git.dronelabs.com"/>
   <repository type="git" name="git.moblin.org"
       href="git://git.moblin.org"/>
+  <repository type="svn" name="svn.ardour.org"
+      href="http://subversion.ardour.org/svn/"/>
+  <repository type="tarball" name="launchpad.net/tarball"
+      href="https://launchpad.net/"/>
 
   <include href="freedesktop-2.30.modules"/>
   <include href="gnome-suites-2.30.modules"/>
@@ -144,8 +146,6 @@
       <dep package="libbtctl"/>
       <dep package="gnome-bluetooth"/>
       <dep package="libglade"/>
-      <dep package="libgnomeui"/>
-      <dep package="libgnome"/>
       <dep package="gconf"/>
       <dep package="gnokii"/>
       <dep package="gtkspell"/>
@@ -194,23 +194,6 @@
     </dependencies>
   </autotools>      
 
-  <autotools id="nautilus-sendto">
-    <branch/>
-    <dependencies>
-      <dep package="glib"/>
-      <dep package="gtk+"/>
-      <dep package="libglade"/>
-      <dep package="gconf"/>
-      <dep package="nautilus"/>
-    </dependencies>
-    <suggests>
-      <dep package="evolution-data-server"/>
-      <dep package="dbus-glib"/>
-      <dep package="gupnp-av"/>
-      <dep package="empathy"/>
-    </suggests>
-  </autotools>      
-
   <autotools id="nautilus-vcs">
     <branch/>
     <dependencies>
@@ -226,11 +209,26 @@
     </dependencies>
   </autotools>
 
-  <autotools id="memprof">
+  <autotools id="giggle">
     <branch/>
     <dependencies>
-      <dep package="libgnomeui"/>
+      <dep package="gtksourceview"/>
     </dependencies>
+    <suggests>
+      <dep package="evolution-data-server"/>
+      <dep package="vte"/>
+    </suggests>
+  </autotools>
+
+  <autotools id="gitg">
+    <branch/>
+    <dependencies>
+      <dep package="gtksourceview"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="memprof">
+    <branch/>
   </autotools>
 
   <autotools id="goffice">
@@ -240,10 +238,6 @@
       <dep package="libgsf"/>
       <dep package="libxml2"/>
       <dep package="pango"/>
-      <dep package="libglade"/>
-      <dep package="libgnomeprint"/>
-      <dep package="libgnomeprintui"/>
-      <dep package="libart_lgpl"/>
     </dependencies>
   </autotools>
 
@@ -253,7 +247,6 @@
       <dep package="goffice"/>
       <dep package="libgsf"/>
       <dep package="pygtk"/>
-      <dep package="libgnomeprintui"/>
     </dependencies>
   </autotools>
 
@@ -262,7 +255,6 @@
     <dependencies>
       <dep package="gtk+"/>
       <dep package="intltool"/>
-      <dep package="libart_lgpl"/>
       <dep package="gegl"/>
     </dependencies>
     <suggests>
@@ -271,7 +263,6 @@
       <dep package="librsvg"/>
       <dep package="poppler"/>
       <dep package="gnome-keyring"/>
-      <dep package="libgnomeui"/>
       <dep package="dbus-glib"/>
       <dep package="hal"/>
       <dep package="pygtk"/>
@@ -311,7 +302,6 @@
     <branch/>
     <dependencies>
       <dep package="dbus-glib"/>
-      <dep package="libglade"/>
       <dep package="gst-plugins-base"/>
       <dep package="gnome-media"/>
       <dep package="totem-pl-parser"/>
@@ -384,7 +374,6 @@
       <dep package="glib"/>
       <dep package="libxml2"/>
       <dep package="libgnomeui"/>
-      <dep package="libgnomeprintui"/>
       <dep package="libgsf"/>
     </dependencies>
   </autotools>
@@ -396,7 +385,6 @@
       <dep package="gtk+"/>
       <dep package="gmime"/>
       <dep package="libgnome"/>
-      <dep package="libgnomeui"/>
       <dep package="gnome-keyring"/>
       <dep package="gconf"/>
     </dependencies>
@@ -610,11 +598,7 @@
   <autotools id="gthumb">
     <branch/>
     <dependencies>
-      <dep package="libgnomeui"/>
-      <dep package="gnome-vfs"/>
-      <dep package="libglade"/>
-      <dep package="libbonoboui"/>
-      <dep package="libgnomeprintui"/>
+      <dep package="gtk+"/>
     </dependencies>
   </autotools>
 
@@ -642,11 +626,15 @@
   </autotools>
 
   <autotools id="notification-daemon">
-    <branch repo="svn.galago-project.org" module="trunk/notification-daemon"/>
+    <branch/>
     <dependencies>
-      <dep package="gtk+"/>
       <dep package="dbus"/>
-      <dep package="libsexy"/>
+      <dep package="dbus-glib"/>
+      <dep package="gconf"/>
+      <dep package="glib"/>
+      <dep package="gtk+"/>
+      <dep package="libcanberra"/>
+      <dep package="libwnck"/>
     </dependencies>
   </autotools>
 
@@ -822,8 +810,16 @@
   <autotools id="gtranslator">
     <branch/>
     <dependencies>
-      <dep package="libgnomeui"/>
+      <dep package="gdl"/>
+      <dep package="libunique"/>
+      <dep package="gtksourceview"/>
     </dependencies>
+    <suggests>
+      <dep package="gnome-utils"/>
+      <dep package="gtkspell"/>
+      <dep package="libsoup"/>
+      <dep package="gucharmap"/>
+    </suggests>
   </autotools>
 
   <autotools id="gnome-spell">
@@ -856,8 +852,7 @@
     <branch/>
     <dependencies>
       <dep package="glib"/>
-      <dep package="libgnome"/>
-      <dep package="libgnomeui"/>
+      <dep package="gtk+"/>
     </dependencies>
   </autotools>
 
@@ -957,11 +952,8 @@
     <branch/>
     <dependencies>
       <dep package="gtk+"/>
-      <dep package="libgnome"/>
-      <dep package="libgnomeui"/>
       <dep package="libxml2"/>
       <dep package="libgnomecanvas"/>
-      <dep package="libbonoboui"/>
     </dependencies>
   </autotools>
 
@@ -1018,59 +1010,10 @@
     <dependencies>
       <dep package="gtk+" />
       <dep package="gconf" />
-      <dep package="libgnomeui" />
       <dep package="libglade" />
-      <dep package="gnome-vfs" />
       <dep package="libsexy" />
       <dep package="gnome-doc-utils"/>
     </dependencies>
-  </autotools>
-
-  <autotools id="gmime-2-2">
-    <branch module="gmime"
-            revision="gmime-2-2" />
-    <dependencies>
-      <dep package="gtk-doc"/>
-      <dep package="glib"/>
-    </dependencies>
-    <after>
-      <dep package="gtk-sharp"/>
-    </after>
-  </autotools>
-
-  <tarball id="raptor" version="1.4.18">
-    <source href="http://download.librdf.org/source/raptor-1.4.18.tar.gz"
-            hash="sha256:edfdb0734fb7120bf1cbb60e45a07864db2daaadf5c3591ccf7357f244d82a40"
-            md5sum="284e768eeda0e2898b0d5bf7e26a016e" size="1657246"/>
-    <dependencies>
-      <dep package="libxml2"/>
-      <dep package="libxslt"/>
-    </dependencies>
-  </tarball>
-
-  <autotools id="tracker">
-    <branch revision="tracker-0.6"/>
-    <dependencies>
-      <dep package="intltool"/>
-      <dep package="gmime-2-2"/>
-      <dep package="dbus-glib"/>
-      <dep package="libgnomeui"/>
-      <dep package="gnome-desktop"/>
-      <dep package="libglade"/>
-      <dep package="gnome-vfs"/>
-      <dep package="poppler"/>
-      <dep package="libgsf"/>
-      <dep package="gstreamer"/>
-      <dep package="sqlite3"/>
-      <dep package="vala"/>
-    </dependencies>
-    <suggests>
-      <dep package="exempi"/>
-      <dep package="raptor"/>
-    </suggests>
-    <after>
-      <dep package="deskbar-applet"/>
-    </after>
   </autotools>
 
  <autotools id="nemiver">
@@ -1102,7 +1045,6 @@
       <dep package="gconf"/>
       <dep package="gegl"/>
       <dep package="gimp"/>
-      <dep package="libglade"/>
     </dependencies>
   </autotools>
 
@@ -1150,7 +1092,6 @@
       <dep package="libnl"/>
       <dep package="glib"/>
       <dep package="dbus-glib"/>
-      <dep package="hal"/>
       <dep package="libgcrypt"/>
       <dep package="gtk-doc"/>
     </dependencies>
@@ -1242,7 +1183,6 @@
     <branch/>
     <dependencies>
       <dep package="gtk+"/>
-      <dep package="libgnomeui"/>
       <dep package="libgnomeprintui"/>
     </dependencies>
   </autotools>
@@ -1253,19 +1193,8 @@
       <dep package="gtk+"/>
       <dep package="libxml2"/>
       <dep package="libxslt"/>
-      <dep package="libart_lgpl"/>
     </dependencies>
   </autotools>
-
-  <tarball id="vala" version="0.7.6" autogenargs="--enable-vapigen">
-    <source
-href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
-            hash="sha256:2c33ca0aa2646ba9f73b114c2a83fbea6a97e9b77cec94ecff3a5d68c340f083"
-            md5sum="1453b2ce04bc83685505f33a025ba5a4" size="1880130"/>
-    <dependencies>
-      <dep package="glib"/>
-    </dependencies>
-  </tarball>
 
   <!-- External deps that you MUST have installed in order -->
   <!-- to compile vala from trunk                          -->
@@ -1312,7 +1241,7 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
   <autotools id="rygel">
     <branch/>
     <dependencies>
-      <dep package="vala-trunk"/>
+      <dep package="vala"/>
       <dep package="gupnp-vala"/>
       <dep package="gupnp"/>
       <dep package="gupnp-av"/>
@@ -1385,7 +1314,6 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     <dependencies>
       <dep package="glib"/>
       <dep package="libsoup"/>
-      <dep package="libglade"/>
     </dependencies>
   </autotools>
 
@@ -1413,7 +1341,6 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     <dependencies>
       <dep package="gupnp"/>
       <dep package="gtk+"/>
-      <dep package="libglade"/>
       <dep package="gnome-icon-theme"/>
     </dependencies>
   </autotools>
@@ -1439,32 +1366,11 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
   <autotools id="gupnp-vala">
     <branch repo="git.gupnp.org" module="bindings/gupnp-vala"/>
     <dependencies>
-      <dep package="vala-trunk"/>
+      <dep package="vala"/>
       <dep package="gssdp"/>
       <dep package="gupnp"/>
       <dep package="gupnp-av"/>
       <dep package="gupnp-ui"/>
-    </dependencies>
-  </autotools>
-
-  <autotools id="libowl-av">
-    <branch repo="svn.o-hand.com" module="misc/trunk/libowl-av"/>
-    <dependencies>
-      <dep package="gtk+"/>
-      <dep package="gstreamer"/>
-      <dep package="gst-plugins-base"/>
-    </dependencies>
-    <suggests>
-      <dep package="vala-trunk"/>
-    </suggests>
-  </autotools>
-
-  <autotools id="gupnp-media-renderer">
-    <branch repo="git.gupnp.org" module="gupnp-media-renderer"/>
-    <dependencies>
-      <dep package="gupnp-vala"/>
-      <dep package="gupnp-av"/>
-      <dep package="libowl-av"/>
     </dependencies>
   </autotools>
 
@@ -1477,7 +1383,6 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
       <dep package="gupnp-ui"/>
       <dep package="rhythmbox-gupnp"/>
       <dep package="gupnp-vala"/>
-      <dep package="gupnp-media-renderer"/>
     </dependencies>
   </metamodule>
 
@@ -1561,48 +1466,10 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     </dependencies>
   </autotools>
 
-  <autotools id="devhelp-webkit">
-    <branch module="devhelp" checkoutdir="devhelp-webkit" />
-    <dependencies>
-      <dep package="intltool"/>
-      <dep package="gtk+"/>
-      <dep package="libglade"/>
-      <dep package="gconf"/>
-      <dep package="libwnck"/>
-      <dep package="WebKit"/>
-    </dependencies>
-  </autotools>
-
-  <autotools id="epiphany-webkit">
-    <branch module="epiphany" checkoutdir="epiphany-webkit" />
-    <dependencies>
-      <dep package="intltool"/>
-      <dep package="WebKit"/>
-      <dep package="iso-codes"/>
-      <dep package="pygtk"/>
-      <dep package="gnome-python"/>
-      <dep package="gnome-doc-utils"/>
-      <dep package="gnome-desktop"/>
-    </dependencies>
-    <suggests>
-      <dep package="avahi"/>
-      <dep package="libnotify"/>
-    </suggests>
-  </autotools>
-
-  <autotools id="epiphany-extensions-webkit">
-    <branch module="epiphany-extensions" checkoutdir="epiphany-extensions-webkit" />
-    <dependencies>
-      <dep package="epiphany-webkit"/>
-    </dependencies>
-  </autotools>
-
   <autotools id="yelp-webkit">
     <branch module="yelp" revision="webkit" checkoutdir="yelp-webkit"/>
     <dependencies>
       <dep package="rarian"/>
-      <dep package="libgnomeui"/>
-      <dep package="gnome-vfs"/>
       <dep package="gnome-doc-utils"/>
       <dep package="startup-notification"/>
       <dep package="WebKit"/>
@@ -1616,17 +1483,6 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
       <dep package="gnome-keyring"/>
       <dep package="gconf"/>
       <dep package="gnome-doc-utils"/>
-    </dependencies>
-  </autotools>
-
-  <autotools id="gnome-packagekit">
-    <branch/>
-    <dependencies>
-      <dep package="PackageKit"/>
-      <dep package="gtk+"/>
-      <dep package="gconf"/>
-      <dep package="libglade"/>
-      <dep package="libnotify"/>
     </dependencies>
   </autotools>
 
@@ -1897,10 +1753,10 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     </suggests>
   </tarball>
 
-  <tarball id="gtkspell" version="2.0.11">
-    <source href="http://gtkspell.sourceforge.net/download/gtkspell-2.0.11.tar.gz"
-            hash="sha256:521d6be1e1236706cd491305b10f01d989bf47787ca97242c56c0d2b038e6a12"
-            md5sum="494869f67146a12a3f17a958f51aeb05" size="347172"/>
+  <tarball id="gtkspell" version="2.0.16">
+    <source href="http://sourceforge.net/projects/gtkspell/files/2.0.16/gtkspell-2.0.16.tar.gz"
+            hash="sha256:8fc7dc560167b2cb7193e76aca625a152dc19b0ebf49816b78539cbb90d80d02"
+            md5sum="f75dcc9338f182c571b321d37c606a94" size="351277"/>
     <dependencies>
       <dep package="gtk+"/>
       <dep package="pango"/>
@@ -1968,7 +1824,7 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
   </autotools>
 
   <distutils id="postr" autogen-sh="autoreconf">
-    <branch repo="bzr.burtonini.com" module="postr/postr.stable" checkoutdir="postr"/>
+   <branch/>
    <dependencies>
      <dep package="pygtk"/>
      <dep package="nautilus-python"/>
@@ -2162,25 +2018,6 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
 
   <!-- ########## End of Ubuntu Netbook Remix Modules ########## -->
 
-  <autotools id="empathy-webkit">
-    <branch repo="git.collabora"
-            module="user/xclaesse/empathy.git"
-            revision="adium"
-            checkoutdir="empathy-webkit"/>
-    <dependencies>
-      <dep package="intltool"/>
-      <dep package="glib"/>
-      <dep package="gtk+"/>
-      <dep package="libglade"/>
-      <dep package="gconf"/>
-      <dep package="telepathy-glib"/>
-      <dep package="telepathy-mission-control"/>
-      <dep package="evolution-data-server"/>
-      <dep package="gnome-panel"/>
-      <dep package="WebKit"/>
-    </dependencies>
-  </autotools>
-
   <autotools id="mutter" autogenargs="--with-clutter">
     <branch />
     <dependencies>
@@ -2364,7 +2201,6 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
       <dep package="gconf"/>
       <dep package="libxml2"/>
       <dep package="sqlite3"/>
-      <dep package="libglade"/>
       <dep package="libsoup"/>
       <dep package="libunique"/>
       <dep package="WebKit"/>
@@ -2475,9 +2311,7 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     <branch/>
     <dependencies>
       <dep package="libxml2"/>
-      <dep package="libgnomeui"/>
       <dep package="libgnome"/>
-      <dep package="libglade"/>
       <dep package="ORBit2"/>
       <dep package="libbonobo"/>
       <dep package="gnome-panel"/>
@@ -2485,7 +2319,6 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     </dependencies>
     <suggests>
       <dep package="hal"/>
-      <dep package="gnome-vfs"/>
     </suggests>
   </autotools>
 
@@ -2536,4 +2369,147 @@ href="http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2"
     </dependencies>
   </autotools>
 
+  <autotools id="glabels">
+    <branch revision="glabels_2_2"/>
+    <dependencies>
+      <dep package="intltool"/>
+      <dep package="libgnomeui"/>
+      <dep package="gnome-desktop"/>
+      <dep package="libglade"/>
+      <dep package="gnome-vfs"/>
+      <dep package="gnome-doc-utils"/>
+    </dependencies>
+    <suggests>
+      <dep package="evolution-data-server"/>
+    </suggests>
+  </autotools>
+
+  <autotools id="pygi">
+    <branch/>
+    <dependencies>
+      <dep package="gobject-introspection"/>
+      <dep package="pygobject"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gnome-color-manager">
+    <branch/>
+    <dependencies>
+      <dep package="libunique"/>
+      <dep package="vte"/>
+    </dependencies>
+  </autotools>
+
+  <waf id="ardour" waf-command="./waf">
+    <branch repo="svn.ardour.org" module="ardour2/branches/3.0" checkoutdir="ardour-3.0"/>
+    <dependencies>
+      <dep package="glibmm"/>
+      <dep package="gtkmm"/>
+      <dep package="libgnomecanvasmm"/>
+      <dep package="libxml2"/>
+    </dependencies>
+  </waf>
+
+  <distutils id="duplicity">
+    <branch repo="launchpad.net/tarball"
+            module="duplicity/0.6-series/0.6.07/+download/duplicity-0.6.07.tar.gz"
+            version="0.6.07"
+            hash="sha256:5a66ec622c273aef12f0c8ae1635b44f2de920c50395854715c5e4c70ec93c87"
+            md5sum="08efd239362f601b946f4dc2450fc840" size="280311">
+      <dep package="pygobject"/>
+    </branch>
+  </distutils>
+
+  <autotools id="deja-dup">
+    <branch repo="launchpad.net"
+            module="~deja-dup-team/deja-dup/trunk"
+            checkoutdir="deja-dup/"/>
+    <dependencies>
+      <dep package="dbus-glib"/>
+      <dep package="gconf"/>
+      <dep package="glib"/>
+      <dep package="gnome-keyring"/>
+      <dep package="gtk+"/>
+      <dep package="libnotify"/>
+      <dep package="libunique"/>
+      <dep package="nautilus"/>
+      <dep package="vala-trunk"/>
+      <dep package="duplicity"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="hyena">
+    <branch/>
+    <dependencies>
+      <dep package="gtk-sharp"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="pdfmod">
+    <branch/>
+    <dependencies>
+      <dep package="intltool"/>
+      <dep package="gtk-sharp"/>
+      <dep package="gnome-sharp"/>
+      <dep package="poppler"/>
+      <dep package="hyena"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gnome-icon-theme-extras">
+    <branch/>
+  </autotools>
+
+  <autotools id="gnome-icon-theme-symbolic">
+    <branch/>
+  </autotools>
+
+  <autotools id="json-glib">
+    <branch/>
+    <dependencies>
+      <dep package="glib"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="couchdb-glib">
+    <branch/>
+    <dependencies>
+      <dep package="libsoup"/>
+      <dep package="dbus-glib"/>
+      <dep package="json-glib"/>
+      <dep package="gnome-keyring"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="grilo">
+    <branch/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="vala"/>
+      <dep package="gtk-doc"/>
+      <dep package="gobject-introspection"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="grilo-plugins">
+    <branch/>
+    <dependencies>
+      <dep package="grilo"/>
+      <dep package="libxml2"/>
+      <dep package="gupnp"/>
+      <dep package="gupnp-av"/>
+      <dep package="sqlite3"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="rygel-grilo">
+    <branch/>
+    <dependencies>
+      <dep package="grilo"/>
+      <dep package="glib"/>
+      <dep package="dbus-glib"/>
+    </dependencies>
+  </autotools>
+
 </moduleset>
+
