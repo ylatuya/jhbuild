@@ -13,6 +13,7 @@
       href="svn://anonsvn.mono-project.com/source/"/>
   <repository type="git" name="github.com" href="git://github.com/"/>
   <repository type="git" name="o-hand.com" href="git://git.o-hand.com/"/>
+  <repository type="git" name="moblin.org" href="git://git.moblin.org/"/>
   <repository type="bzr" name="launchpad.net" href=""/>
 
 <!-- This is a special module: it's needed to build from svn, but not
@@ -826,7 +827,7 @@
       <dep package="glib"/>
       <dep package="dbus-glib"/>
       <dep package="libwnck"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-3"/>
       <dep package="gnome-panel"/>
       <dep package="libgnome-keyring"/>
       <dep package="gconf"/>
@@ -969,6 +970,7 @@
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtk-engines"/>
+      <dep package="gtk-engines-3"/>
       <dep package="icon-naming-utils"/>
     </dependencies>
   </autotools>
@@ -1006,19 +1008,6 @@
     </dependencies>
   </autotools>
 
-  <autotools id="gok">
-    <branch/>
-    <dependencies>
-      <dep package="intltool"/>
-      <dep package="at-spi"/>
-      <dep package="gtk+"/>
-      <dep package="libwnck"/>
-      <dep package="libcanberra"/>
-      <dep package="rarian"/>
-      <dep package="gnome-speech"/>
-    </dependencies>
-  </autotools>
-
   <autotools id="gstreamer" autogenargs="-- --disable-tests" supports-non-srcdir-builds="no">
     <branch repo="gstreamer.freedesktop.org" module="gstreamer"/>
     <dependencies>
@@ -1048,10 +1037,18 @@
   </autotools>
 
   <autotools id="gtk-engines">
-    <branch/>
+    <branch revision="gtk-engines-2-22"/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtk+"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gtk-engines-3">
+    <branch checkoutdir="gtk-engines-3" module="gtk-engines"/>
+    <dependencies>
+      <dep package="intltool"/>
+      <dep package="gtk+-3"/>
     </dependencies>
   </autotools>
 
@@ -1274,6 +1271,19 @@
        <dep package="pygtk"/>
        <dep package="gtksourceview"/>
      </dependencies>
+  </autotools>
+
+  <autotools id="rygel">
+    <branch/>
+    <dependencies>
+      <dep package="vala"/>
+      <dep package="gupnp-vala"/>
+      <dep package="gupnp"/>
+      <dep package="gupnp-av"/>
+      <dep package="dbus-glib"/>
+      <dep package="gstreamer"/>
+      <dep package="libgee"/>
+    </dependencies>
   </autotools>
 
   <autotools id="seahorse">
@@ -1598,7 +1608,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="pygobject">
+  <autotools id="pygobject" autogenargs="--enable-pygi">
     <branch/>
     <dependencies>
       <dep package="glib"/>
@@ -1786,7 +1796,7 @@
 <!-- Mobile -->
 
   <autotools id="gconf-dbus">
-    <branch repo="github.com" module="rhult/gconf-dbus.git" checkoutdir="gconf-dbus"/>
+    <branch repo="moblin.org" module="gconf-dbus" checkoutdir="gconf-dbus"/>
     <dependencies>
       <dep package="dbus-glib"/>
     </dependencies>
@@ -1819,6 +1829,7 @@
     <dependencies>
       <dep package="mutter"/>
       <dep package="gjs"/>
+      <dep package="librsvg"/>
     </dependencies>
   </autotools>
 
@@ -1926,6 +1937,7 @@
       <dep package="alacarte"/>
       <dep package="brasero"/>
       <dep package="bug-buddy"/>
+      <dep package="caribou"/>
       <dep package="cheese"/>
       <dep package="gnome-control-center"/>
       <dep package="dasher"/>
@@ -1948,12 +1960,14 @@
       <dep package="gnome-applets"/>
       <dep package="gnome-backgrounds"/>
       <dep package="gnome-bluetooth"/>
+      <dep package="gnome-color-manager"/>
       <dep package="gnome-desktop"/>
       <dep package="gnome-desktop-sharp"/>
       <dep package="gnome-disk-utility"/>
       <dep package="gnome-doc-utils"/>
       <dep package="gnome-games"/>
       <dep package="gnome-icon-theme"/>
+      <dep package="gnome-icon-theme-symbolic"/>
       <dep package="gnome-keyring"/>
       <dep package="gnome-netstatus"/>
       <dep package="gnome-nettool"/>
@@ -1967,6 +1981,8 @@
       <dep package="gnome-screensaver"/>
       <dep package="gnome-session"/>
       <dep package="gnome-settings-daemon"/>
+      <dep package="gnome-shell"/>
+      <!--FIXME: should be removed, but might be needed by orca right now -->
       <dep package="gnome-speech"/>
       <dep package="gnome-system-monitor"/>
       <dep package="gnome-system-tools"/>
@@ -1975,11 +1991,12 @@
       <dep package="gnome-user-docs"/>
       <dep package="gnome-user-share"/>
       <dep package="gnome-utils"/>
-      <dep package="gok"/>
+      <dep package="gobject-introspection"/>
       <dep package="gstreamer"/>
       <dep package="gst-plugins-base"/>
       <dep package="gst-plugins-good"/>
       <dep package="gtk-engines"/>
+      <dep package="gtk-engines-3"/>
       <dep package="gtkhtml"/>
       <dep package="gtksourceview"/>
       <dep package="gucharmap"/>
@@ -1994,11 +2011,13 @@
       <dep package="libwnck"/>
       <dep package="metacity"/>
       <dep package="mousetweaks"/>
+      <dep package="mutter"/>
       <dep package="nautilus"/>
       <dep package="nautilus-sendto"/>
       <dep package="orca"/>
       <dep package="hamster-applet"/>
       <dep package="pygtksourceview"/>
+      <dep package="rygel"/>
       <dep package="seahorse"/>
       <dep package="seahorse-plugins"/>
       <dep package="sound-juicer"/>
@@ -2047,6 +2066,7 @@
 
   <metamodule id="meta-gnome-bindings-js">
     <dependencies>
+      <dep package="gjs"/>
       <dep package="seed"/>
     </dependencies>
   </metamodule>
@@ -2103,21 +2123,6 @@
 
   <metamodule id="meta-gnome-proposed">
     <dependencies>
-      <dep package="gnome-shell"/>
-      <dep package="mutter"/>
-      <dep package="gjs"/>
-      <dep package="gobject-introspection"/>
-      <dep package="mousetrap"/>
-      <dep package="gnome-color-manager"/>
-      <dep package="zeitgeist"/>
-      <dep package="gnome-icon-theme-symbolic"/>
-      <dep package="caribou"/>
-      <!-- also proposed, not yet enabled:
-      <dep package="rygel"/>
-      <dep package="pdfmod"/>
-      <dep package="deja-dup"/>
-      <dep package="simple-scan"/>
-      -->
     </dependencies>
   </metamodule>
 
