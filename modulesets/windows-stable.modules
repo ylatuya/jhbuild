@@ -1,0 +1,257 @@
+<?xml version="1.0"?><!--*- mode: nxml -*-->
+<?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
+<moduleset>
+  <!-- jhbuild on windows modulesets are now divided into windows-stable, which uses precompiled
+       binaries wherever possible, and build-devel which will make as much as possible from git. -->
+
+  <repository type="tarball" name="ftp.gnome.org"
+              href="http://ftp.gnome.org/pub/gnome/sources/"/>
+
+  <!--
+       GLib 2.25   (built from source to apply a tiny patch, and using unstable purely so
+                    GSettings can be used instead of having to build GConf for win32 ...)
+    -->
+
+
+  <!-- FIXME: put into jhbuild-windows -->
+  <autotools id="glib" version="2.25.8" configure="autogen.sh">
+    <branch repo="ftp.gnome.org" module="glib/2.25/glib-2.25.8.tar.bz2" version="2.25.8">
+      <!-- For http://bugzilla.gnome.org/show_bug.cgi?id=516916 -->
+      <patch file="glib-win32-cmpnum-message.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+
+  <!--
+  <binary id="glib-bin" version="2.18.2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.18/glib_2.18.2-1_win32.zip"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@/']"/> 
+    </install>
+  </binary>
+  <binary id="glib-dev" version="2.18.2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.18/glib-dev_2.18.2-1_win32.zip"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@/']"/>
+    </install>
+  </binary>
+  <metamodule id="glib">
+    <dependencies><dep package="glib-bin"/><dep package="glib-dev"/></dependencies>
+  </metamodule>
+  -->
+
+
+  <!-- 
+       Gtk+ 2.20 ... together we can make it stable on win32!! 
+    -->
+
+  <!-- FIXME: still needed? not listed as deps of win32 gtk any more on the gtk site ..
+    -->
+  <!--<binary id="libjpeg-bin" version="6b">
+    <source href="http://downloads.sourceforge.net/gnuwin32/jpeg-6b-4-bin.zip"/>
+    <install><cmd execute="['cp', '- -recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="libjpeg-dev" version="6b">
+    <source href="http://downloads.sourceforge.net/gnuwin32/jpeg-6b-4-lib.zip"/>
+    <install><cmd execute="['cp', '- -recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="libjpeg">
+    <dependencies>
+      <dep package="libjpeg-bin"/><dep package="libjpeg-dev"/>
+    </dependencies>
+  </metamodule>
+
+  <binary id="libtiff-bin" version="3.8.2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libtiff-3.8.2.zip"/>
+    <install><cmd execute="['cp', '- -recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="libtiff-dev" version="3.8.2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libtiff-dev-3.8.2.zip"/>
+    <install><cmd execute="['cp', '- -recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="libtiff">
+    <dependencies>
+      <dep package="libtiff-bin"/><dep package="libtiff-dev"/>
+    </dependencies>
+  </metamodule>-->
+
+  <!-- FIXME: pretty ridiculous that we need freetype2. When we build gtk+ by hand we can do away
+       with this. -->
+  <binary id="libpng-bin" version="1.4.0-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.0-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="libpng-dev" version="1.4.0-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng-dev_1.4.0-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="libpng">
+    <dependencies>
+      <dep package="zlib"/>
+      <dep package="libpng-bin"/><dep package="libpng-dev"/>
+    </dependencies>
+  </metamodule>
+
+  <binary id="freetype-bin" version="2.3.12-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/freetype_2.3.12-1_win32.zip" />
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="freetype-dev" version="2.3.12-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/freetype-dev_2.3.12-1_win32.zip" />
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="freetype">
+    <dependencies>
+      <dep package="freetype-bin" /><dep package="freetype-dev" />
+    </dependencies>
+  </metamodule>
+
+  <binary id="fontconfig-bin" version="2.8.0-2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/fontconfig_2.8.0-2_win32.zip" />
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="fontconfig-dev" version="2.8.0-2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/fontconfig-dev_2.8.0-2_win32.zip" />
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="fontconfig">
+    <dependencies>
+      <dep package="fontconfig-bin" /><dep package="fontconfig-dev" />
+    </dependencies>
+  </metamodule>
+
+  <binary id="cairo-bin" version="1.8.10-3">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo_1.8.10-3_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="cairo-dev" version="1.8.10-3">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo-dev_1.8.10-3_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="cairo">
+    <dependencies>
+      <dep package="libpng"/>
+      <dep package="cairo-bin"/><dep package="cairo-dev"/>
+    </dependencies>
+  </metamodule>
+
+  <binary id="atk-bin" version="1.30.0-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.30/atk_1.30.0-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="atk-dev" version="1.30.0-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.30/atk-dev_1.30.0-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="atk">
+    <dependencies>
+     <dep package="glib"/>
+     <dep package="atk-bin"/><dep package="atk-dev"/>
+    </dependencies>
+  </metamodule>
+
+  <binary id="pango-bin" version="1.28.0-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.28/pango_1.28.0-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="pango-dev" version="1.28.0-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.28/pango-dev_1.28.0-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="pango">
+    <dependencies>
+     <dep package="fontconfig" />
+     <dep package="freetype" />
+     <dep package="pango-bin"/>
+     <dep package="pango-dev"/>
+    </dependencies>
+  </metamodule>
+
+  <binary id="gtk+-bin" version="2.20.1-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.20/gtk+_2.20.1-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="gtk+-dev" version="2.20.1-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.20/gtk+-dev_2.20.1-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+
+  <metamodule id="gtk+">
+    <dependencies>
+     <dep package="glib"/>
+     <dep package="cairo"/>
+     <dep package="atk"/>
+     <dep package="pango"/>
+     <dep package="gtk+-bin"/>
+     <dep package="gtk+-dev"/>
+     
+     <!-- don't think these are needed any more
+     <dep package="libjpeg"/>
+     <dep package="libtiff"/>
+      -->
+    </dependencies>
+  </metamodule>
+
+  
+  <!--
+       libsoup 2.30  (built from source to avoid requiring gnutls, unlike Tor's win32 binary)
+    -->
+
+  <binary id="expat" version="2.0.1-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/expat_2.0.1-1_win32.zip"/>
+    <install>
+      <cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>
+
+  <binary id="libxml-bin" version="2.7.7-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libxml2_2.7.7-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="libxml-dev" version="2.7.7-1">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libxml2-dev_2.7.7-1_win32.zip"/>
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="libxml">
+    <dependencies>
+     <dep package="expat"/>
+     <dep package="libxml-bin"/><dep package="libxml-dev"/>
+    </dependencies>
+  </metamodule>
+
+  <!-- Note that lipsoup 2.26 won't build because of '-Wmissing-include-dirs' that presumably
+       gcc 3.x doesn't support. It's a simple configure.ac patch to fix I imagine. -->
+  <autotools id="libsoup" version="2.30.1" autogenargs="--disable-ssl">
+    <branch repo="ftp.gnome.org" module="libsoup/2.30/libsoup-2.30.1.tar.bz2" version="2.30.1" />
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="libxml"/>
+    </dependencies>
+  </autotools>
+
+
+  <!--
+       SQLite 3.6.23.1
+    -->
+  <!-- Note: never use sqlite 3.6.3 to 3.6.9 (inclusive). It has a really nasty bug that breaks
+       Calliope in all sorts of ways. -->
+  <binary id="sqlite-header" version="3.6.23.1">
+    <source href="http://sqlite.org/sqlite-amalgamation-3_6_23_1.zip"/>
+    <install>
+      <cmd execute="['cp', '@@SRCDIR@@/sqlite3.h', '@@PREFIX@@/include/']"/>
+    </install>
+  </binary>
+  <binary id="sqlite-dll" version="3.6.23.1">
+    <source href="http://sqlite.org/sqlitedll-3_6_23_1.zip"/>
+    <install>
+      <cmd execute="['cp', '@@SRCDIR@@/*', '@@PREFIX@@/bin/']"/>
+      <cmd execute="['cp', '@@SRCDIR@@/*', '@@PREFIX@@/lib/']"/>
+    </install>
+  </binary>
+  <metamodule id="sqlite">
+    <dependencies>
+      <dep package="sqlite-header"/>
+      <dep package="sqlite-dll"/>
+    </dependencies>
+  </metamodule>
+</moduleset>

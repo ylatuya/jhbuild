@@ -1,0 +1,20 @@
+--- glib-2.19.0-orig/glib/gtestutils.c	2008-10-16 23:23:51 +0100
++++ glib-2.19.0/glib/gtestutils.c	2008-11-22 21:09:25 +0000
+@@ -1327,9 +1327,15 @@ g_assertion_message_cmpnum (const char  
+   char *s = NULL;
+   switch (numtype)
+     {
+-    case 'i':   s = g_strdup_printf ("assertion failed (%s): (%.0Lf %s %.0Lf)", expr, arg1, cmp, arg2); break;
+     case 'x':   s = g_strdup_printf ("assertion failed (%s): (0x%08" G_GINT64_MODIFIER "x %s 0x%08" G_GINT64_MODIFIER "x)", expr, (guint64) arg1, cmp, (guint64) arg2); break;
+-    case 'f':   s = g_strdup_printf ("assertion failed (%s): (%.9Lg %s %.9Lg)", expr, arg1, cmp, arg2); break;
++	#ifdef G_OS_WIN32
++	  /* %Lf is not in msvcrt6's printf function and never will be. */
++      case 'i':   s = g_strdup_printf ("assertion failed (%s): (%" G_GINT64_MODIFIER "i %s %" G_GINT64_MODIFIER "i)", expr, (guint64)arg1, cmp, (guint64)arg2); break;
++      case 'f':   s = g_strdup_printf ("assertion failed (%s): (%.9g %s %.9g)", expr, (double)arg1, cmp, (double)arg2); break;
++	#else
++      case 'i':   s = g_strdup_printf ("assertion failed (%s): (%.0Lf %s %.0Lf)", expr, arg1, cmp, arg2); break;
++      case 'f':   s = g_strdup_printf ("assertion failed (%s): (%.9Lg %s %.9Lg)", expr, arg1, cmp, arg2); break;
++	#endif
+       /* ideally use: floats=%.7g double=%.17g */
+     }
+   g_assertion_message (domain, file, line, func, s);
