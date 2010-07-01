@@ -284,7 +284,15 @@
     <dependencies>
       <dep package="glib-default"/>
     </dependencies>
-  </binary>-
+  </binary>
+
+  <binary id="pkg-config-dev" version="0.23-3">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/pkg-config-dev_0.23-3_win32.zip"/>
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>
+
 
   <!-- FIXME: need to run this moduleset with - - ignore-system or the broken pkg-config will
        cause this one to not be installed -->
@@ -299,6 +307,7 @@
     <dependencies>
       <dep package="iconv"/>
       <dep package="pkg-config-broken"/>
+      <dep package="pkg-config-dev"/>
     </dependencies>
   <!--</autotools>   -->
   </metamodule>
