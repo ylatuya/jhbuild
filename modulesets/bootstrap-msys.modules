@@ -14,6 +14,8 @@
               href="http://ftp.gnome.org/pub/gnome/sources/"/>
   <repository type="tarball" name="ftp.gnu.org" 
               href="ftp://ftp.gnu.org/gnu/"/>
+  <repository type="tarball" name="launchpad.net" 
+              href="http://launchpad.net/"/>
   <repository type="tarball" name="pkgconfig"
               href="http://pkgconfig.freedesktop.org/releases/"/>
 
@@ -238,13 +240,13 @@
 
 
   <!-- No point getting binary versions of a perl script - and Tor's binary package hardcodes
-   Perl to some random location making it all the more pointless -->
+       Perl to some random location making it all the more pointless -->
   <!-- FIXME: would be nice if we could substitute $INTLTOOL_PERL for this hardcoded path. 
        Or if intltool paid attention to INTLTOOL_PERL. -->
-  <!-- FIXME: this is also build from bzr in external-windows.modules. Do we need it in the bootstrap
-       modules? -->
-  <autotools id="intltool" version="0.40.6">
-    <branch repo="ftp.gnome.org" module="intltool/0.40/intltool-0.40.6.tar.bz2" version="0.40.6"/>
+  <!-- Need 0.41.1 or greater due to bug 406810:
+       https://bugs.launchpad.net/intltool/+bug/406810 -->
+  <autotools id="intltool" version="0.41.1">
+    <branch repo="launchpad.net" module="intltool/trunk/0.41.1/+download/intltool-0.41.1.tar.gz" version="0.41.1"/>
   </autotools>
 
 
