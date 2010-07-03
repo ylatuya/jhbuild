@@ -113,7 +113,6 @@
        GTK+
     -->
 
-  
   <autotools id="glib">
     <branch />
     <dependencies>

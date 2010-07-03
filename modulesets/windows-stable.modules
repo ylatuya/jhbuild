@@ -75,8 +75,6 @@
     </dependencies>
   </metamodule>-->
 
-  <!-- FIXME: pretty ridiculous that we need freetype2. When we build gtk+ by hand we can do away
-       with this. -->
   <binary id="libpng-bin" version="1.4.0-1">
     <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.0-1_win32.zip"/>
     <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
@@ -92,6 +90,8 @@
     </dependencies>
   </metamodule>
 
+  <!-- FIXME: pretty ridiculous that we need freetype2. When we build gtk+ by hand we can do away
+       with this. -->
   <binary id="freetype-bin" version="2.3.12-1">
     <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/freetype_2.3.12-1_win32.zip" />
     <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
@@ -219,8 +219,6 @@
     </dependencies>
   </metamodule>
 
-  <!-- Note that lipsoup 2.26 won't build because of '-Wmissing-include-dirs' that presumably
-       gcc 3.x doesn't support. It's a simple configure.ac patch to fix I imagine. -->
   <autotools id="libsoup" version="2.30.1" autogenargs="--disable-ssl">
     <branch repo="ftp.gnome.org" module="libsoup/2.30/libsoup-2.30.1.tar.bz2" version="2.30.1" />
     <dependencies>
@@ -233,8 +231,7 @@
   <!--
        SQLite 3.6.23.1
     -->
-  <!-- Note: never use sqlite 3.6.3 to 3.6.9 (inclusive). It has a really nasty bug that breaks
-       Calliope in all sorts of ways. -->
+  <!-- Note: never use sqlite 3.6.3 to 3.6.9 (inclusive), it has a nasty bug -->
   <binary id="sqlite-header" version="3.6.23.1">
     <source href="http://sqlite.org/sqlite-amalgamation-3_6_23_1.zip"/>
     <install>
