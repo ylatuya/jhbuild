@@ -8,21 +8,6 @@
               href="http://ftp.gnome.org/pub/gnome/sources/"/>
 
   <!--
-       GLib 2.25   (built from source to apply a tiny patch, and using unstable purely so
-                    GSettings can be used instead of having to build GConf for win32 ...)
-    -->
-
-
-  <!-- FIXME: put into jhbuild-windows -->
-  <autotools id="glib" version="2.25.8" configure="autogen.sh">
-    <branch repo="ftp.gnome.org" module="glib/2.25/glib-2.25.8.tar.bz2" version="2.25.8">
-      <!-- For http://bugzilla.gnome.org/show_bug.cgi?id=516916 -->
-      <patch file="glib-win32-cmpnum-message.patch" strip="1"/>
-    </branch>
-  </autotools>
-
-
-  <!--
   <binary id="glib-bin" version="2.18.2">
     <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.18/glib_2.18.2-1_win32.zip"/>
     <install>
@@ -103,6 +88,27 @@
       <dep package="libpng-bin"/><dep package="libpng-dev"/>
     </dependencies>
   </metamodule>
+
+
+
+  <!--
+       GLib 2.25   (built from source to apply a tiny patch, and using unstable purely so
+                    GSettings can be used instead of having to build GConf for win32 ...)
+    -->
+
+  <!-- FIXME: put into jhbuild-windows -->
+  <autotools id="glib" version="2.25.8" configure="autogen.sh">
+    <branch repo="ftp.gnome.org" module="glib/2.25/glib-2.25.8.tar.bz2" version="2.25.8">
+      <!-- For http://bugzilla.gnome.org/show_bug.cgi?id=516916 -->
+      <patch file="glib-win32-cmpnum-message.patch" strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="zlib" />
+    </dependencies>
+  </autotools>
+
+
+
 
   <!-- FIXME: pretty ridiculous that we need freetype2. When we build gtk+ by hand we can do away
        with this. -->
