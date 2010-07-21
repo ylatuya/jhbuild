@@ -148,14 +148,33 @@
       <dep package="cairo"/>
     </dependencies>
   </autotools>
-  
-  <autotools id="gtk+">
+
+  <autotools id="gdk-pixbuf">
     <branch />
     <dependencies>
-      <dep package="pango"/>
-      <dep package="cairo"/>
-      <dep package="atk"/>
-      <dep package="shared-mime-info"/>
+      <dep package="glib" />
+    </dependencies>
+  </autotools>
+
+  <autotools id="gtk+">
+    <branch revision="gtk-2-22" />
+    <dependencies>
+      <dep package="pango" />
+      <dep package="cairo" />
+      <dep package="atk" />
+      <dep package="gdk-pixbuf" />
+      <dep package="shared-mime-info" />
+    </dependencies>
+  </autotools>
+
+  <autotools id="gtk+-3">
+    <branch checkoutdir="gtk+-3" module="gtk+" />
+    <dependencies>
+      <dep package="pango" />
+      <dep package="cairo" />
+      <dep package="atk" />
+      <dep package="gdk-pixbuf" />
+      <dep package="shared-mime-info" />
     </dependencies>
   </autotools>
 

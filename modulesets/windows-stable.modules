@@ -75,6 +75,20 @@
     </dependencies>
   </metamodule>-->
 
+  <binary id="zlib-bin" version="1.2.4-2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/zlib_1.2.4-2_win32.zip" />
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <binary id="zlib-dev" version="1.2.4-2">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/zlib-dev_1.2.4-2_win32.zip" />
+    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
+  </binary>
+  <metamodule id="zlib">
+    <dependencies>
+      <dep package="zlib-bin"/><dep package="zlib-dev"/>
+    </dependencies>
+  </metamodule>
+
   <binary id="libpng-bin" version="1.4.0-1">
     <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.0-1_win32.zip"/>
     <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '@@PREFIX@@']"/></install>
