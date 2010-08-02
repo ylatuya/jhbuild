@@ -131,16 +131,15 @@
     </dependencies>
   </autotools>
 
-  <!-- In ATK and Pango we need to edit the call to glib-mkenums, so MSYS doesn't mangle its command
-       line. FIXME: a longer term solution would be to make the package use a template file or some
-       such instead. -->
   <autotools id="atk">
     <branch/>
     <dependencies>
       <dep package="glib"/>
     </dependencies>
   </autotools>
-  <autotools id="pango">
+
+  <!-- pango won't work without with-included-modules=yes on win32 -->
+  <autotools id="pango" autogenargs="--with-included-modules=yes">
     <branch />
     <dependencies>
       <dep package="gnome-common"/>
