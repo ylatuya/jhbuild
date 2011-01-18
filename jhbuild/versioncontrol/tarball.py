@@ -229,7 +229,7 @@ class TarballBranch(Branch):
             os.makedirs(unpack_dir)
 
         try:
-            unpack_archive(buildscript, localfile, unpack_dir)
+            unpack_archive(buildscript, localfile, unpack_dir, self.checkoutdir)
         except CommandError:
             raise FatalError(_('failed to unpack %s') % localfile)
 

@@ -22,6 +22,7 @@ import time
 import subprocess
 import locale
 import codecs
+import sys
 
 from jhbuild.main import _encoding
 from jhbuild.utils import cmds
@@ -252,7 +253,7 @@ class TinderboxBuildScript(buildscript.BuildScript):
         assert self.outputdir
 
         # close stdin
-        os.close(0)
+        sys.stdin.close()
 
         info = []
         import socket

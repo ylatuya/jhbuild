@@ -55,6 +55,7 @@ class JHBuildSource(steps.source.Source):
         #kwargs = properties.render(self.remote_kwargs)
         kwargs['command'] = properties.render(command)
         kwargs['env'] = {}
+        kwargs['timeout'] = 60*60
         cmd = buildstep.RemoteShellCommand(**kwargs)
         self.startCommand(cmd)
 
@@ -221,7 +222,7 @@ class JHBuildModulePathCommand(steps.shell.ShellCommand):
 
     # things to track: number of files compiled, number of directories
     # traversed (assuming 'make' is being used)
-    def __init__(self, module=None, moduleset=None, action='', **kwargs):
+    def __init__(self, module=None, moduleset=None, action='', actionName='', **kwargs):
         assert module is not None
         kwargs['workdir'] = "./"
         #workdir = "./"
@@ -231,9 +232,9 @@ class JHBuildModulePathCommand(steps.shell.ShellCommand):
         actionParts = action.split(" ")
         command += ['run', '--in-builddir', module, '--']
         command += actionParts
-        self.name=module + " " + kwargs['actionName']
-        self.description = [kwargs['actionName'] + ' (running)']
-        self.descriptionDone = [kwargs['actionName']]
+        self.name = module + " " + actionName
+        self.description = actionName + ' (running)'
+        self.descriptionDone = [actionName]
         steps.shell.ShellCommand.__init__(self, description=self.description,
                                    descriptionDone=self.descriptionDone, command=command, **kwargs)
 

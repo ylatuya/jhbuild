@@ -49,36 +49,21 @@ def get_glade_filename():
 class Configuration:
     def __init__(self, config, args):
         self.config = config
-        self.args = args
 
-        localedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../mo'))
-        gtk.glade.bindtextdomain('messages', localedir)
-        
-        glade_filename = get_glade_filename()
+        gtk.Window.__init__(self)
+        self.set_resizable(False)
+        theme = gtk.icon_theme_get_default()
+        if theme.has_icon('applications-development'):
+            gtk.window_set_default_icon_list(
+                    theme.load_icon('applications-development', 16, ()),
+                    theme.load_icon('applications-development', 24, ()),
+                    theme.load_icon('applications-development', 32, ()),
+                    theme.load_icon('applications-development', 48, ()),
+                    theme.load_icon('applications-development', 64, ()),
+                    theme.load_icon('applications-development', 128, ())
+                    )
+        self.set_title('JHBuild')
 
-        # Fetch widgets out of the Glade
-        self.glade = gtk.glade.XML(glade_filename)        
-        self.window               = self.glade.get_widget("ConfigWindow")
-        self.meta_modules_list    = self.glade.get_widget("ConfigMetaModules")
-        self.start_module_menu    = self.glade.get_widget("ConfigStartModule")
-        self.run_autogen_checkbox = self.glade.get_widget("ConfigRunAutogen")
-        self.cvs_update_checkbox  = self.glade.get_widget("ConfigCVSUpdate")
-        self.no_build_checkbox    = self.glade.get_widget("ConfigNoBuild")
-        self.start_build_button   = self.glade.get_widget("ConfigBuildButton")
-        self.cancel_button        = self.glade.get_widget("ConfigCancelButton")
-
-        # Get settings for the checkboxes, etc
-        self._get_default_settings()
-
-        # Hook up the buttons / checkboxes
-        self.start_build_button.connect('clicked', lambda button: gtk.main_quit())
-        self.cancel_button.connect('clicked', lambda button: sys.exit(-1))
-        self.run_autogen_checkbox.connect('toggled', self._autogen_checkbox_toggled)
-        self.cvs_update_checkbox.connect('toggled', self._cvs_update_checkbox_toggled)
-        self.no_build_checkbox.connect('toggled', self._no_build_checkbox_toggled)
-        #self.start_module_menu.connect('clicked', self._start_module_menu_clicked)
-        
-        # Get the list of meta modules
         self.module_set = jhbuild.moduleset.load(config)
         full_module_list = self.module_set.get_full_module_list()
         self.meta_modules = []

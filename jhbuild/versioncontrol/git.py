@@ -56,6 +56,14 @@ def get_git_extra_env():
     return { 'LD_LIBRARY_PATH': os.environ.get('UNMANGLED_LD_LIBRARY_PATH'),
              'PATH': os.environ.get('UNMANGLED_PATH')}
 
+def get_git_mirror_directory(mirror_root, checkoutdir, module):
+    """Calculate the mirror directory from the arguments and return it."""
+    mirror_dir = os.path.join(mirror_root, checkoutdir or
+            os.path.basename(module))
+    if mirror_dir.endswith('.git'):
+        return mirror_dir
+    else:
+        return mirror_dir + '.git'
 
 class GitUnknownBranchNameError(Exception):
     pass
@@ -84,17 +92,26 @@ class GitRepository(Repository):
 
         mirror_module = None
         if self.config.dvcs_mirror_dir:
-            mirror_module = os.path.join(self.config.dvcs_mirror_dir, module)
+            mirror_module = get_git_mirror_directory(
+                    self.config.dvcs_mirror_dir, checkoutdir, module)
 
-        # allow remapping of branch for module
+        # allow remapping of branch for module, it supports two modes of
+        # operation
         if name in self.config.branches:
-            try:
-                new_module, revision = self.config.branches.get(name)
-            except (ValueError, TypeError):
-                logging.warning(_('ignored bad branch redefinition for module:') + ' ' + name)
+            branch_mapping = self.config.branches.get(name)
+            if type(branch_mapping) is str:
+                # passing a single string will override the branch name
+                revision = branch_mapping
             else:
-                if new_module:
-                    module = new_module
+                # otherwise it is assumed it is a pair, redefining both
+                # git URI and the branch to use
+                try:
+                    new_module, revision = self.config.branches.get(name)
+                except (ValueError, TypeError):
+                    logging.warning(_('ignored bad branch redefinition for module:') + ' ' + name)
+                else:
+                    if new_module:
+                        module = new_module
         if not (urlparse.urlparse(module)[0] or module[0] == '/'):
             if self.href.endswith('/'):
                 base_href = self.href
@@ -114,6 +131,8 @@ class GitRepository(Repository):
 
 class GitBranch(Branch):
     """A class representing a GIT branch."""
+
+    dirty_branch_suffix = '-dirty'
 
     def __init__(self, repository, module, subdir, checkoutdir=None,
                  branch=None, tag=None, unmirrored_module=None):
@@ -280,7 +299,7 @@ class GitBranch(Branch):
                 buildscript.execute(['git', 'stash', 'apply', 'jhbuild-stash'],
                         **git_extra_args)
 
-    def rewind_to_sticky_date(self, buildscript):
+    def move_to_sticky_date(self, buildscript):
         if self.config.quiet_mode:
             quiet = ['-q']
         else:
@@ -290,6 +309,12 @@ class GitBranch(Branch):
         branch_cmd = ['git', 'checkout'] + quiet + [branch]
         git_extra_args = {'cwd': self.get_checkoutdir(),
                 'extra_env': get_git_extra_env()}
+        if self.config.sticky_date == 'none':
+            current_branch = self.get_current_branch()
+            if current_branch and current_branch == branch:
+                buildscript.execute(['git', 'checkout'] + quiet + ['master'],
+                        **git_extra_args)
+            return
         try:
             buildscript.execute(branch_cmd, **git_extra_args)
         except CommandError:
@@ -314,8 +339,8 @@ class GitBranch(Branch):
         return True
 
     def _get_commit_from_date(self):
-        cmd = ['git', 'log', '--max-count=1',
-               '--until=%s' % self.config.sticky_date]
+        cmd = ['git', 'log', '--max-count=1', '--first-parent',
+                '--until=%s' % self.config.sticky_date, 'master']
         cmd_desc = ' '.join(cmd)
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                 cwd=self.get_checkoutdir(),
@@ -349,17 +374,17 @@ class GitBranch(Branch):
         if self.config.nonetwork:
             return
 
-        mirror_dir = os.path.join(self.config.dvcs_mirror_dir,
-                self.get_module_basename() + '.git')
+        # Calculate anew in case a configuration reload changed the mirror root.
+        mirror_dir = get_git_mirror_directory(self.config.dvcs_mirror_dir,
+                self.checkoutdir, self.unmirrored_module)
 
         if os.path.exists(mirror_dir):
             buildscript.execute(['git', 'fetch'], cwd=mirror_dir,
                     extra_env=get_git_extra_env())
         else:
             buildscript.execute(
-                    ['git', 'clone', '--mirror', self.unmirrored_module],
-                    cwd=self.config.dvcs_mirror_dir,
-                    extra_env=get_git_extra_env())
+                    ['git', 'clone', '--mirror', self.unmirrored_module,
+                    mirror_dir], extra_env=get_git_extra_env())
 
     def _checkout(self, buildscript, copydir=None):
 
@@ -395,12 +420,12 @@ class GitBranch(Branch):
         if update_mirror:
             self.update_dvcs_mirror(buildscript)
 
+        if self.config.sticky_date:
+            self.move_to_sticky_date(buildscript)
+
         self.switch_branch_if_necessary(buildscript)
 
         self.pull_current_branch(buildscript)
-
-        if self.config.sticky_date:
-            self.rewind_to_sticky_date(buildscript)
 
         self._update_submodules(buildscript)
 
@@ -427,12 +452,19 @@ class GitBranch(Branch):
             return None
         except GitUnknownBranchNameError:
             return None
-        return output.strip()
+        id_suffix = ''
+        if self.is_dirty():
+            id_suffix = self.dirty_branch_suffix
+        return output.strip() + id_suffix
 
     def to_sxml(self):
         attrs = {}
         if self.branch:
-            attrs['branch'] = self.branch
+            attrs['revision'] = self.branch
+        if self.checkoutdir:
+            attrs['checkoutdir'] = self.checkoutdir
+        if self.subdir:
+            attrs['subdir'] = self.subdir
         return [sxml.branch(repo=self.repository.name,
                             module=self.module,
                             tag=self.tree_id(),

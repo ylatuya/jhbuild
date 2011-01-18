@@ -19,8 +19,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os
+import re
 import sys
 import traceback
+import time
 import types
 import logging
 import __builtin__
@@ -47,7 +49,7 @@ _known_keys = [ 'moduleset', 'modules', 'skip', 'tags', 'prefix',
                 'tarballdir', 'pretty_print', 'svn_program', 'makedist',
                 'makedistcheck', 'nonotify', 'notrayicon', 'cvs_program',
                 'checkout_mode', 'copy_dir', 'module_checkout_mode',
-                'build_policy', 'trycheckout', 'min_time',
+                'build_policy', 'trycheckout', 'min_age',
                 'nopoison', 'module_nopoison', 'forcecheck',
                 'makecheck_advisory', 'quiet_mode', 'progress_bar',
                 'module_extra_env', 'jhbuildbot_master', 'jhbuildbot_slavename',
@@ -55,7 +57,8 @@ _known_keys = [ 'moduleset', 'modules', 'skip', 'tags', 'prefix',
                 'jhbuildbot_slaves_dir', 'jhbuildbot_dir',
                 'jhbuildbot_mastercfg', 'use_local_modulesets',
                 'ignore_suggests', 'modulesets_dir', 'mirror_policy',
-                'module_mirror_policy', 'dvcs_mirror_dir', 'build_targets' ]
+                'module_mirror_policy', 'dvcs_mirror_dir', 'build_targets',
+                'cmakeargs', 'module_cmakeargs' ]
 
 env_prepends = {}
 def prependpath(envvar, path):
@@ -142,7 +145,7 @@ def parse_relative_time(s):
         coeffs = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w':7*86400}
         return float(m.group(1)) * coeffs[m.group(2)]
     else:
-        raise ValueError(_('unable to parse \'%s\' as relative time.') % s)
+        raise ValueError
 
 
 class Config:
@@ -355,6 +358,17 @@ class Config:
         addpath('PKG_CONFIG_PATH', pkgconfigdatadir)
         addpath('PKG_CONFIG_PATH', pkgconfigdir)
 
+        # GI_TYPELIB_PATH
+        if not 'GI_TYPELIB_PATH' in os.environ:
+            if self.use_lib64:
+                full_name = '/usr/lib64/girepository-1.0'
+            else:
+                full_name = '/usr/lib/girepository-1.0'
+            if os.path.exists(full_name):
+                addpath('GI_TYPELIB_PATH', full_name)
+        typelibpath = os.path.join(self.libdir, 'girepository-1.0')
+        addpath('GI_TYPELIB_PATH', typelibpath)
+
         # XDG_DATA_DIRS
         xdgdatadir = os.path.join(self.prefix, 'share')
         addpath('XDG_DATA_DIRS', xdgdatadir)
@@ -385,6 +399,11 @@ class Config:
         perl5lib = os.path.join(self.prefix, 'lib', 'perl5')
         addpath('PERL5LIB', perl5lib)
 
+        # These two variables are so that people who use "jhbuild shell"
+        # can tweak their shell prompts and such to show "I'm under jhbuild".
+        # The first variable is the obvious one to look for; the second
+        # one is for historical reasons.
+        os.environ['UNDER_JHBUILD'] = 'true'
         os.environ['CERTIFIED_GNOMIE'] = 'yes'
 
         # PYTHONPATH
@@ -538,10 +557,10 @@ class Config:
             self.build_policy = 'all'
         if hasattr(options, 'min_age') and options.min_age:
             try:
-                self.min_time = time.time() - parse_relative_time(options.min_age)
+                self.min_age = time.time() - parse_relative_time(options.min_age)
             except ValueError:
-                raise FatalError(_('Failed to parse relative time'))
-
+                raise FatalError(_('Failed to parse \'min_age\' relative '
+                                   'time'))
 
     def __setattr__(self, k, v):
         '''Override __setattr__ for additional checks on some options.'''
