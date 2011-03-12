@@ -338,7 +338,7 @@ def _child_elements_matching(parent, names):
         if node.nodeType == node.ELEMENT_NODE and node.nodeName in names:
             yield node
 
-def _parse_module_set(config, uri):
+def _parse_module_set(config, uri, repos=None):
     try:
         filename = httpcache.load(uri, nonetwork=config.nonetwork, age=0)
     except Exception, e:
@@ -358,7 +358,7 @@ def _parse_module_set(config, uri):
             moduleset_name = moduleset_name[:-len('.modules')]
 
     # load up list of repositories
-    repositories = {}
+    repositories = repos or {}
     default_repo = None
     for node in _child_elements_matching(
             document.documentElement, ['repository', 'cvsroot', 'svnroot',
@@ -413,7 +413,7 @@ def _parse_module_set(config, uri):
             href = node.getAttribute('href')
             inc_uri = urlparse.urljoin(uri, href)
             try:
-                inc_moduleset = _parse_module_set(config, inc_uri)
+                inc_moduleset = _parse_module_set(config, inc_uri, repositories)
             except UndefinedRepositoryError:
                 raise
             except FatalError, e:
@@ -422,7 +422,7 @@ def _parse_module_set(config, uri):
                 # look up in local modulesets
                 inc_uri = os.path.join(os.path.dirname(__file__), '..', 'modulesets',
                                    href)
-                inc_moduleset = _parse_module_set(config, inc_uri)
+                inc_moduleset = _parse_module_set(config, inc_uri, repositories)
 
             moduleset.modules.update(inc_moduleset.modules)
         elif node.nodeName in ['repository', 'cvsroot', 'svnroot',
