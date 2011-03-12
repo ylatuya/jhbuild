@@ -299,17 +299,23 @@ class AppWindow(gtk.Window, buildscript.BuildScript):
         old_selected_iter = self.active_iter
         last_iter = self.modules_list_model[-1].iter
         self.active_iter = self.module_combo.get_active_iter()
-        if self.modules_list_model.get_path(
+        if self.active_iter is None or self.modules_list_model.get_path(
                 self.active_iter) != self.modules_list_model.get_path(last_iter):
             return
         # "Others..." got clicked, modal dialog to let the user select a
         # specific module
-        current_module = self.modules_list_model.get(old_selected_iter, 0)[0]
+        if old_selected_iter:
+            current_module = self.modules_list_model.get(old_selected_iter, 0)[0]
+        else:
+            current_module = None
         dlg = SelectModulesDialog(self, current_module)
         response = dlg.run()
         if response != gtk.RESPONSE_OK:
             dlg.destroy()
-            self.module_combo.set_active_iter(old_selected_iter)
+            if old_selected_iter is not None:
+                self.module_combo.set_active_iter(old_selected_iter)
+            else:
+                self.module_combo.set_active(-1)
             return
         selected_module = dlg.selected_module
         startat = dlg.startat
