@@ -84,6 +84,9 @@ def cmdline2list(cmd_string):
 
 list2cmdline = real_subprocess.list2cmdline
 
+def route_through_shell(command):
+    return ['sh.exe', '-c', '"%s' % ' '.join([command[0]] + command[1:])]
+
 class Popen(real_subprocess.Popen):
     __emulate_close_fds = False
 
@@ -95,16 +98,17 @@ class Popen(real_subprocess.Popen):
 
         # ./ confuses windows, and these are normally shell scripts so use
         # sh.exe
-        if command[0].startswith('./'):
-            command = ['sh', '-c', ' '.join([command[0]] + command[1:])]
-        elif not command[0].endswith('.exe'):
-            # check if program has no extension or has .sh extension - it
-            # probably needs executing by sh rather than by Windows directly
-            for path in os.environ['PATH'].split(os.pathsep):
-                prog = os.path.abspath(os.path.join(path, command[0]))
-                if os.path.exists(prog) or os.path.exists(prog+".sh"):
-                    command = ['sh', '-c', ' '.join([command[0]] + command[1:])]
-                    break
+        if command[0] != 'sh':
+            if command[0].startswith('./'):
+                command = route_through_shell(command)
+            elif not command[0].endswith('.exe'):
+                # check if program has no extension or has .sh extension - it
+                # probably needs executing by sh rather than by Windows directly
+                for path in os.environ['PATH'].split(os.pathsep):
+                    prog = os.path.abspath(os.path.join(path, command[0]))
+                    if os.path.exists(prog) or os.path.exists(prog+".sh"):
+                        command = route_through_shell(command)
+                        break
 
         # fix all backslashes to forward slashes - MSYS is smart about doing
         # this but we're not always running things via sh.exe.
@@ -129,16 +133,18 @@ class Popen(real_subprocess.Popen):
             command_base = command[0]
             command[0] = command_base + '.bat'
             try:
-                real_subprocess.Popen.__init__(self, command, **kws)
+                p = real_subprocess.Popen.__init__(self, command, **kws)
                 # Wait and see if this works
                 # FIXME: currently cmd.exe prints an error message when it doesn't.
                 # We need to not pass shell=True and run cmd /q /c
-                p.wait()
-                return
+                if p:
+                    p.wait()
+                    return p
             except WindowsError:
-                command[0] = command_base
+                pass
+            command[0] = command_base
 
-        real_subprocess.Popen.__init__(self, command, **kws)
+        return real_subprocess.Popen.__init__(self, command, **kws)
 
     def __del__(self):
         if self.__emulate_close_fds:

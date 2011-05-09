@@ -105,7 +105,8 @@ class TarballBranch(Branch):
     """A class representing a Tarball."""
 
     def __init__(self, repository, module, version, checkoutdir,
-                 source_size, source_hash, branch_id, source_subdir=None):
+                 source_size, source_hash, branch_id, source_subdir=None,
+                 expect_standard_tarball=True):
         Branch.__init__(self, repository, module, checkoutdir)
         self.version = version
         self.source_size = source_size
@@ -114,6 +115,7 @@ class TarballBranch(Branch):
         self.quilt = None
         self.branch_id = branch_id
         self.source_subdir = source_subdir
+        self.expect_standard_tarball = expect_standard_tarball
 
     def _local_tarball(self):
         basename = os.path.basename(self.module)
@@ -221,13 +223,18 @@ class TarballBranch(Branch):
 
             self._check_tarball()
 
+        # now to unpack it.
+        unpack_dir = self.checkoutroot;
+        if not os.path.exists(unpack_dir):
+            os.makedirs(unpack_dir)
+
         # now to unpack it
         try:
-            unpack_archive(buildscript, localfile, self.checkoutroot, self.checkoutdir)
+            unpack_archive(buildscript, localfile, unpack_dir, self.checkoutdir)
         except CommandError:
             raise FatalError(_('failed to unpack %s') % localfile)
 
-        if not os.path.exists(self.srcdir):
+        if self.expect_standard_tarball and not os.path.exists(self.srcdir):
             raise BuildStateError(_('could not unpack tarball (expected %s dir)'
                         ) % os.path.basename(self.srcdir))
 
