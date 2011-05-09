@@ -19,219 +19,6 @@
   <repository type="tarball" name="pkgconfig"
               href="http://pkgconfig.freedesktop.org/releases/"/>
 
-  <!-- MSYS UPDATE SECTION:
-       Everything here is installed to / rather than @@PREFIX@@, which is a cheap way of
-       ensuring all of the new msys packages go in the msys directory rather than /build.
-
-       FIXME: once mingw-get is complete presumably most of this stuff can move to using that  -->
-
-  <!-- libtool needs file > 4.16 or so, 5.04 is provided by MSYS nowadays -->
-
-  <binary id="libcrypt" version="1.1_1-3-msys-1.0.13-dll-0">
-    <source href="http://downloads.sourceforge.net/mingw/libcrypt-1.1_1-3-msys-1.0.13-dll-0.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-  <binary id="perl" version="5.6.1_2-2-msys-1.0.13">
-    <source href="http://downloads.sourceforge.net/mingw/perl-5.6.1_2-2-msys-1.0.13-bin.tar.lzma" />
-    <install>
-      <!-- Need to delete these symlinks; msys's cp fails to create them if they exist -->
-      <cmd execute="['rm', '-f', '@@PREFIX@@/bin/perl5.6.1.exe']"/>
-      <cmd execute="['rm', '-f', '@@PREFIX@@/bin/pstruct']"/>
-      <cmd execute="['cp', '-rf', '@@SRCDIR@@/*', '/']"/>
-    </install>
-    <dependencies>
-      <!-- FIXME: This is ignored by jhbuild for some reason -->
-      <dep package="libcrypt" />
-    </dependencies>
-  </binary>
-
-
-  <!-- M4 1.4.7 is included in newest msysCORE, but let's go even newer -->
-  <binary id="m4" version="1.4.14-1-msys-1.0.13">
-    <source href="http://downloads.sourceforge.net/mingw/m4-1.4.14-1-msys-1.0.13-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-  <!-- MSYS now uses the gentoo autoconf wrapper. The 'automake' module is a script which executes
-       the correct version of autoconf-2.x -->
-  <binary id="autoconf2.5" version="2.64-1-mingw32">
-    <source href="http://downloads.sourceforge.net/mingw/autoconf2.5-2.64-1-mingw32-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-  <binary id="autoconf" version="7-1-mingw32">
-    <source href="http://downloads.sourceforge.net/mingw/autoconf-7-1-mingw32-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-    <dependencies>
-      <dep package="autoconf2.5" />
-    </dependencies>
-  </binary>
-
-  <!-- MSYS now uses the gentoo automake wrapper. The 'automake' module is a script which executes
-       the correct version of automake-1.x -->
-  <binary id="automake1.8" version="1.8.5-1-mingw32">
-    <!-- automake1.8 is required by at least libmad. FIXME: since we have to patch it anyway maybe
-         we could just upgrade it to new automake ... -->
-    <source href="http://downloads.sourceforge.net/mingw/automake1.8-1.8.5-1-mingw32-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-  <binary id="automake1.11" version="1.11-1-mingw32">
-    <source href="http://downloads.sourceforge.net/mingw/automake1.11-1.11-1-mingw32-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-  <binary id="automake" version="4-1-mingw32">
-    <source href="http://downloads.sourceforge.net/mingw/automake-4-1-mingw32-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-    <dependencies>
-      <dep package="automake1.8" />
-      <dep package="automake1.11" />
-    </dependencies>
-  </binary>
-
-  <binary id="libtool" version="2.2.7a-1-mingw">
-    <source href="http://downloads.sourceforge.net/mingw/libtool-2.2.7a-1-mingw32-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-
-  <!-- I know there is a lightweight iconv available for win32 - but some packages
-       (at least, gtk-engines) depend on the bin/iconv tool which is only available
-       through GNU iconv. glib contains this lightweight iconv as part of the 
-       download anyway.   -->
-
-  <binary id="libiconv-bin" version="1.13.1-1-mingw32-dll-2">
-    <source href="http://downloads.sourceforge.net/mingw/libiconv-1.13.1-1-mingw32-dll-2.tar.lzma"/>
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-  <binary id="libiconv-dev" version="1.13.1-1-mingw32">
-    <source href="http://downloads.sourceforge.net/mingw/libiconv-1.13.1-1-mingw32-dev.tar.lzma"/>
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-  <binary id="iconv-bin" version="1.13.1-1-mingw32">
-    <source href="http://downloads.sourceforge.net/mingw/libiconv-1.13.1-1-mingw32-bin.tar.lzma"/>
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-  <metamodule id="iconv">
-    <dependencies>
-      <dep package="libiconv-bin" />
-      <dep package="libiconv-dev" />
-      <dep package="iconv-bin" />
-    </dependencies>
-  </metamodule>
-
-  <!-- libintl-0.17-1-msys is listed as a prerequisite in http://afuera.me.uk/jhbuild-windows/,
-       but mingw gettext needs the mingw version .. :( -->
-
-  <binary id="libintl" version="0.17-1-mingw32-dll-8">
-    <source href="http://downloads.sourceforge.net/mingw/libintl-0.17-1-mingw32-dll-8.tar.lzma"/>
-    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '/']"/></install>    
-  </binary>
-  <binary id="libgettextpo" version="0.17-1-mingw32-dll-0">
-    <source href="http://downloads.sourceforge.net/mingw/libgettextpo-0.17-1-mingw32-dll-0.tar.lzma"/>
-    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '/']"/></install>    
-  </binary>
-  <binary id="gettext-bin" version="0.17-1">
-    <source href="http://downloads.sourceforge.net/mingw/gettext-0.17-1-mingw32-bin.tar.lzma"/>
-    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '/']"/></install>    
-  </binary>
-  <binary id="gettext-dev" version="0.17-1">
-    <source href="http://downloads.sourceforge.net/mingw/gettext-0.17-1-mingw32-dev.tar.lzma"/>
-    <install><cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '/']"/></install>    
-  </binary>
-  <metamodule id="gettext">
-    <dependencies>
-      <dep package="libintl" />
-      <dep package="libgettextpo" />
-      <dep package="gettext-bin" />
-      <dep package="gettext-dev" />
-    </dependencies>
-  </metamodule>
-
-
-
-  <!-- listed in the prequisites at http://afuera.me.uk/jhbuild-windows -->
-  <!-- <binary id="regex" version="0.12-MSYS-1.0.11-1">
-    <source href="http://downloads.sourceforge.net/mingw/regex-0.12-MSYS-1.0.11-1.tar.bz2" />
-    <install>
-  <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary> -->
-
-
-  <binary id="flex" version="2.5.35-2-msys-1.0.13">
-    <source href="http://downloads.sourceforge.net/mingw/flex-2.5.35-2-msys-1.0.13-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-  <binary id="bison" version="2.4.2-1-msys-1.0.13-1">
-    <source href="http://downloads.sourceforge.net/mingw/bison-2.4.2-1-msys-1.0.13-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-
-  <!-- Who the hell uses cvs anymore !!! -->
-  <!-- We build libflac from cvs b/c they suck .. -->
-  <!-- FIXME: Still needed for GNU autopoint in gettext-tools? -->
-  <binary id="cvs" version="1.12.13-2">
-    <source href="http://downloads.sourceforge.net/mingw/cvs-1.12.13-2-msys-1.0.13-bin.tar.lzma" />
-    <install>
-      <cmd execute="['cp', '--recursive', '@@SRCDIR@@/*', '/']"/>
-    </install>
-  </binary>
-
-  <metamodule id="msys-bootstrap">
-    <dependencies>
-      <!-- you *also* need ActiveState perl (or to install the XML::Parser module) for
-           intltool, but you need msys perl for at least autoconf -->
-      <dep package="perl" />
-
-      <!-- <dep package="autotools" /> -->
-      <dep package="m4" />
-      <dep package="autoconf" />
-      <dep package="automake" />
-      <dep package="libtool" />
-
-
-      <dep package="iconv"/>
-      <dep package="gettext" />
-
-      <!-- flex and bison are needed to build gstreamer, and various other packages. -->
-      <dep package="flex" />
-      <dep package="bison" />
-
-      <dep package="cvs" />
-    </dependencies>
-  </metamodule>
-
-
 
   <!-- BOOTSTRAP THINGS
 
@@ -273,7 +60,6 @@
   </binary>
   <metamodule id="glib-default">
     <dependencies>
-      <dep package="gettext"/>
       <dep package="glib-default-binary"/><dep package="glib-default-dev"/>
     </dependencies>
   </metamodule>
@@ -301,29 +87,28 @@
   <!-- <autotools id="pkg-config" autogen-sh="configure"> -->
   <metamodule id="pkg-config">
     <!-- <branch repo="pkgconfig"
-            module="pkg-config-0.25.tar.gz" version="0.25" />
+            module="pkg-config-0.25.tar.gz" version="0.25" /> -->
     <patches>
       - Patch to fix http://bugs.freedesktop.org/show_bug.cgi?id=17053
       <patch file="pkg-config-win32.patch" strip="1"/> -
-    </patches>-->
+    </patches>
     <dependencies>
-      <dep package="iconv"/>
       <dep package="pkg-config-broken"/>
-      <dep package="pkg-config-dev"/>
+      <dep package="pkg-config-dev"/> 
     </dependencies>
+   </metamodule>
   <!--</autotools>   -->
-  </metamodule>
 
   
-  <binary id="gtk-doc-fake" version="1.15">
-    <source href="http://ftp.gnome.org/pub/gnome/sources/gtk-doc/1.15/gtk-doc-1.15.tar.bz2"/>
+  <binary id="gtk-doc-fake" version="1.17">
+    <source href="http://ftp.gnome.org/pub/gnome/sources/gtk-doc/1.17/gtk-doc-1.17.tar.bz2"/>
     <install>
-      <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.15/gtk-doc.m4', '@@PREFIX@@/share/aclocal/']"/>
+      <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.17/gtk-doc.m4', '@@PREFIX@@/share/aclocal/']"/>
 
       <!-- We are one step away from brain meltdown :(. Note you *can't* put &quot; in these for
            some reason - well, try it, but it seems to subtly break sed. -->
       <cmd execute="['sed',  
-          '-es,@VERSION@,1.15,',
+          '-es,@VERSION@,1.17,',
           '-es,@PACKAGE@,gtk-doc,',
           '-es,@prefix@,@@PREFIX@@,',
           '-es,@datarootdir@,@@PREFIX@@share,',
@@ -332,7 +117,7 @@
           output-file='@@PREFIX@@/bin/gtkdocize'/>
       <cmd execute="['sed',  
           '-es,@PERL@,/bin/perl,',
-          '-es,@VERSION@,1.15,',
+          '-es,@VERSION@,1.17,',
           '-es,@PACKAGE@,gtk-doc,',
           '-es,@prefix@,@@PREFIX@@,',
           '-es,@datarootdir@,@@PREFIX@@share,',
@@ -340,7 +125,7 @@
           '@@SRCDIR@@/gtk-doc-1.15/gtkdoc-rebase.in']"
           output-file='@@PREFIX@@/bin/gtkdoc-rebase'/>
       <cmd execute="['mkdir', '-p', '@@PREFIX@@/share/gtk-doc/data/']"/>
-      <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.15/gtk-doc.make', '@@PREFIX@@/share/gtk-doc/data/']"/>
+      <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.17/gtk-doc.make', '@@PREFIX@@/share/gtk-doc/data/']"/>
     </install>
   </binary>
 
