@@ -382,19 +382,11 @@ class Config:
                 os.makedirs(aclocaldir)
             except:
                 raise FatalError(_("Can't create %s directory") % aclocaldir)
-<<<<<<< HEAD
-
-=======
->>>>>>> de6fb02f0d37c52ea090731bad9f5200f66d9529
         if os.path.exists('/usr/share/aclocal'):
             addpath('ACLOCAL_FLAGS', '/usr/share/aclocal')
         if os.path.exists('/usr/local/share/aclocal'):
             addpath('ACLOCAL_FLAGS', '/usr/local/share/aclocal')
-<<<<<<< HEAD
         addpath('ACLOCAL', aclocaldir)
-=======
-        addpath('ACLOCAL_FLAGS', aclocaldir)
->>>>>>> de6fb02f0d37c52ea090731bad9f5200f66d9529
 
         # PERL5LIB
         perl5lib = os.path.join(self.prefix, 'lib', 'perl5')
