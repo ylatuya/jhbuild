@@ -127,12 +127,15 @@ class Popen(real_subprocess.Popen):
         # (to make wrappers like git.bat work).
         if '.' not in command[0]:
             command_base = command[0]
+            command[0] = command_base + '.bat'
             try:
-                command[0] = command_base + '.bat'
                 real_subprocess.Popen.__init__(self, command, **kws)
+                # Wait and see if this works
+                # FIXME: currently cmd.exe prints an error message when it doesn't.
+                # We need to not pass shell=True and run cmd /q /c
+                p.wait()
                 return
             except WindowsError:
-                # file not found
                 command[0] = command_base
 
         real_subprocess.Popen.__init__(self, command, **kws)
