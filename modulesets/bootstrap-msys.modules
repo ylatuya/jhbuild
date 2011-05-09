@@ -113,7 +113,7 @@
           '-es,@prefix@,@@PREFIX@@,',
           '-es,@datarootdir@,@@PREFIX@@share,',
           '-es,@datadir@,@@PREFIX@@share,',
-          '@@SRCDIR@@/gtk-doc-1.15/gtkdocize.in']"
+          '@@SRCDIR@@/gtk-doc-1.17/gtkdocize.in']"
           output-file='@@PREFIX@@/bin/gtkdocize'/>
       <cmd execute="['sed',  
           '-es,@PERL@,/bin/perl,',
@@ -122,7 +122,7 @@
           '-es,@prefix@,@@PREFIX@@,',
           '-es,@datarootdir@,@@PREFIX@@share,',
           '-es,@datadir@,@@PREFIX@@share,',
-          '@@SRCDIR@@/gtk-doc-1.15/gtkdoc-rebase.in']"
+          '@@SRCDIR@@/gtk-doc-1.17/gtkdoc-rebase.in']"
           output-file='@@PREFIX@@/bin/gtkdoc-rebase'/>
       <cmd execute="['mkdir', '-p', '@@PREFIX@@/share/gtk-doc/data/']"/>
       <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.17/gtk-doc.make', '@@PREFIX@@/share/gtk-doc/data/']"/>
