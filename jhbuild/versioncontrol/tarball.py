@@ -105,8 +105,7 @@ class TarballBranch(Branch):
     """A class representing a Tarball."""
 
     def __init__(self, repository, module, version, checkoutdir,
-                 source_size, source_hash, branch_id, source_subdir=None,
-                 expect_standard_tarball=True):
+                 source_size, source_hash, branch_id, source_subdir=None):
         Branch.__init__(self, repository, module, checkoutdir)
         self.version = version
         self.source_size = source_size
@@ -115,7 +114,6 @@ class TarballBranch(Branch):
         self.quilt = None
         self.branch_id = branch_id
         self.source_subdir = source_subdir
-        self.expect_standard_tarball = expect_standard_tarball
 
     def _local_tarball(self):
         basename = os.path.basename(self.module)
@@ -223,17 +221,13 @@ class TarballBranch(Branch):
 
             self._check_tarball()
 
-        # now to unpack it.
-        unpack_dir = self.checkoutroot;
-        if not os.path.exists(unpack_dir):
-            os.makedirs(unpack_dir)
-
+        # now to unpack it
         try:
-            unpack_archive(buildscript, localfile, unpack_dir, self.checkoutdir)
+            unpack_archive(buildscript, localfile, self.checkoutroot, self.checkoutdir)
         except CommandError:
             raise FatalError(_('failed to unpack %s') % localfile)
 
-        if self.expect_standard_tarball and not os.path.exists(self.srcdir):
+        if not os.path.exists(self.srcdir):
             raise BuildStateError(_('could not unpack tarball (expected %s dir)'
                         ) % os.path.basename(self.srcdir))
 
@@ -285,10 +279,10 @@ class TarballBranch(Branch):
                 else:
                     raise CommandError(_('Failed to find patch: %s') % patch)
 
-            patchfile = os.path.abspath (patchfile)
             buildscript.set_action(_('Applying patch'), self, action_target=patch)
-            buildscript.execute('patch -p%d -i "%s"'
-                                % (patchstrip, patchfile),
+            # patchfile can be a relative file
+            buildscript.execute('patch -p%d < "%s"'
+                                % (patchstrip, os.path.abspath(patchfile)),
                                 cwd=self.raw_srcdir)
 
     def _quilt_checkout(self, buildscript):

@@ -24,10 +24,12 @@ import sys
 import urlparse
 import logging
 
-from jhbuild.errors import UsageError, FatalError, DependencyCycleError, CommandError
+from jhbuild.errors import UsageError, FatalError, DependencyCycleError, \
+             CommandError, UndefinedRepositoryError
 
 try:
     import xml.dom.minidom
+    import xml.parsers.expat
 except ImportError:
     raise FatalError(_('Python xml packages are required but could not be found'))
 
@@ -350,8 +352,10 @@ def _parse_module_set(config, uri):
     assert document.documentElement.nodeName == 'moduleset'
     moduleset = ModuleSet(config = config)
     moduleset_name = document.documentElement.getAttribute('name')
-    if not moduleset_name and uri.endswith('.modules'):
-        moduleset_name = os.path.basename(uri)[:-len('.modules')]    
+    if not moduleset_name:
+        moduleset_name = os.path.basename(uri)
+        if moduleset_name.endswith('.modules'):
+            moduleset_name = moduleset_name[:-len('.modules')]
 
     # load up list of repositories
     repositories = {}
@@ -410,6 +414,8 @@ def _parse_module_set(config, uri):
             inc_uri = urlparse.urljoin(uri, href)
             try:
                 inc_moduleset = _parse_module_set(config, inc_uri)
+            except UndefinedRepositoryError:
+                raise
             except FatalError, e:
                 if inc_uri[0] == '/':
                     raise e

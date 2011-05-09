@@ -1518,6 +1518,514 @@ libgnomecanvas is missing branch definition for gnome-2-20
       <title>Configuration Variables</title>
 
       <variablelist>
+<<<<<<< HEAD
+	<?dbhtml list-presentation="table"?>
+	<varlistentry>
+	  <term id="cfg-alwaysautogen"><varname>alwaysautogen</varname></term>
+	  <listitem>
+	    <simpara>If set to <constant>True</constant>, then always
+	    run <command>autogen.sh</command> before
+	    <command>make</command>, even if a makefile exists.  This
+	    is equivalent to passing <option>--always-autogen</option>
+	    option to JHBuild.  Defaults to
+	    <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-autogenargs"><varname>autogenargs</varname></term>
+	  <listitem>
+	    <simpara>A string containing arguments passed to the
+	    <command>autogen.sh</command> script of all modules.  Can
+	    be overriden for particular modules using the
+	    <varname>module_autogenargs</varname>
+	    dictionary.</simpara>
+	</listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-branches"><varname>branches</varname></term>
+	  <listitem>
+	    <simpara>A dictionary that can be used to override the
+	    branch used for a particular module.  This is useful if
+	    you are making some changes on a branch of a module and
+	    want JHBuild to build that branch instead of the one
+	    listed in the module set.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-builddir-pattern"><varname>builddir_pattern</varname></term>
+	  <listitem>
+	    <simpara>A <function>printf</function> style formatting
+	    pattern used to generate build directory names.  This is
+	    only used when using separate source and build trees.  The
+	    <literal>%s</literal> in the format string will be
+	    replaced with the source directory name.  Defaults to
+	    <literal>'%s'</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-buildroot"><varname>buildroot</varname></term>
+	  <listitem>
+	    <simpara>A string giving the parent directory to place
+	    build trees.  Defaults to <constant>None</constant>, which
+	    causes builds to be performed within the source
+	    trees.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-buildscript"><varname>buildscript</varname></term>
+	  <listitem>
+	    <simpara>A string specifying which buildscript to use.
+	    This should probably be left as the default,
+	    <literal>terminal</literal>.  In particular, do not
+	    set to <literal>gtk</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cf-build-policy"><varname>build_policy</varname></term>
+	  <listitem>
+	    <simpara>A string specifying which modules to build.
+	    The three possible options are <literal>all</literal>, to
+	    build all modules requested, <literal>updated</literal> to
+	    build only modules which have changed, or
+	    <literal>updated-deps</literal> to build modules which have
+	    changed or which have dependencies which have changed.
+	    Defaults to <literal>all</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-checkoutroot"><varname>checkoutroot</varname></term>
+	  <listitem>
+	    <simpara>A string giving the directory to unpack source
+	    trees to.  Unless <varname>buildroot</varname> is set,
+	    builds will occur in this directory too.  Defaults to
+	    <filename>~/cvs/gnome2</filename>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-checkout-mode"><varname>checkout_mode</varname></term>
+	  <listitem>
+	    <simpara>A string specifying how the checkout is done for
+	    directories in version control.  Defaults to
+	    <literal>update</literal>.  This can be set per module
+	    using <varname>module_checkout_mode</varname>.  Possible
+	    values are <literal>update</literal> (update checkout
+	    directory), <literal>clobber</literal> (wipe out directory
+	    before checking out the sources), <literal>export</literal>
+	    (wipe out directory then create an unversioned copy of the
+	    sources) and <literal>copy</literal> (checkout in a directory
+	    different from the one it will build).
+	    </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-copy-dir"><varname>copy_dir</varname></term>
+	  <listitem>
+	    <simpara>A string specifying the directory to copy to, if
+	    the copy checkout mode is in use.  Defaults to the
+	    checkout directory.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-cvsroots"><varname>cvsroots</varname></term>
+	  <listitem>
+	    <simpara>A dictionary that can be used to change the CVS
+	    roots used to check out source code.  If you have a CVS
+	    account for a particular project, you can set the
+	    associated key to use that account rather than the
+	    anonymous account.  For example, you might want to set
+	    <literal>'gnome.org'</literal> to
+	    <literal>':ext:<replaceable>username</replaceable>@cvs.gnome.org:/cvs/gnome'</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-cvs-program"><varname>cvs_program</varname></term>
+	  <listitem>
+	    <simpara>A string specifying which program to use for
+	    CVS support.  Defaults to <literal>cvs</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-installprog"><varname>installprog</varname></term>
+	  <listitem>
+	    <simpara>A string specifying which program to use as
+	    replacement for <literal>/usr/bin/install</literal>; if available
+	    it defaults to the <literal>install-check</literal> wrapper provided
+	    by JHBuild, which handles installation of headers differently,
+	    in order to reduce the time taken for rebuilds.
+	    </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-ignore-suggests"><varname>ignore_suggests</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to ignore
+	    soft dependencies when calculating the dependency tree.
+	    Defaults to <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-interact"><varname>interact</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to interact
+	    with the user.  Setting this value to
+	    <constant>False</constant> is equivalent to passing the
+	    <option>--no-interact</option> option.  Defaults to
+	    <constant>True</constant></simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-makeargs"><varname>makeargs</varname></term>
+	  <listitem>
+	    <simpara>A string listing additional arguments to be
+	    passed to <command>make</command>.  Defaults to
+	    <literal>''</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-makecheck"><varname>makecheck</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to run
+	    <command>make check</command> after
+	    <command>make</command>.
+	    Defaults to <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-makecheck-advistory"><varname>makecheck_advisory</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether failures when running
+	    <command>make check</command> should be advisory only and not cause
+            a build failure.  Defaults to <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-makeclean"><varname>makeclean</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to run
+	    <command>make clean</command> before
+	    <command>make</command>.  Defaults to
+	    <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-makedist"><varname>makedist</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to run
+	    <command>make dist</command> after <command>make</command>.
+	    Defaults to <constant>False</constant>.  This setting is
+	    equivalent to passing the <option>--dist</option>
+	    option.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-makedistcheck"><varname>makedistcheck</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to run
+	    <command>make distcheck</command> after
+	    <command>make</command>.  Defaults to
+	    <constant>False</constant>.  This setting is equivalent to
+	    passing the <option>--distcheck</option> option.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-module-autogenargs"><varname>module_autogenargs</varname></term>
+	  <listitem>
+	    <simpara>A dictionary mapping module names to strings
+	    giving arguments to be passed to
+	    <command>autogen.sh</command>.  The setting in
+	    <varname>module_autogenargs</varname> is used instead of
+	    the global <varname>autogenargs</varname> setting.
+	    If a particular module isn't listed in the dictionary, the
+	    global <varname>autogenargs</varname> will be used
+	    instead.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-module-checkout-mode"><varname>module_checkout_mode</varname></term>
+	  <listitem>
+	    <simpara>A dictionary specifying which checkout mode to
+	    use for modules.  This overrides the global
+	    <varname>checkout_mode</varname> setting.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-module-makeargs"><varname>module_makeargs</varname></term>
+	  <listitem>
+	    <simpara>A dictionary mapping module names to strings
+	    giving arguments to be passed to <command>make</command>.
+	    The setting in <varname>module_makeargs</varname> replaces
+	    the value of <varname>makeargs</varname>.
+	    If a particular module isn't listed in the dictionary, the
+	    global <varname>makeargs</varname> will be used
+	    instead.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-module-extra-env"><varname>module_extra_env</varname></term>
+	  <listitem>
+	    <simpara>A dictionary mapping module names to dictionaries
+	    with extra environment variables to pass when executing commands
+	    for the module.
+	    </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-modules"><varname>modules</varname></term>
+	  <listitem>
+	    <simpara>A list of module names to build.  This list will
+	    be expanded using the dependency information found in the
+	    module set.  Defaults to <literal>[ 'meta-gnome-desktop'
+	    ]</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-moduleset"><varname>moduleset</varname></term>
+	  <listitem>
+	    <simpara>A string giving the name of the module set to
+	    use.  This can either be the filename of a moduleset
+	    included with JHBuild (excluding the path and extension),
+	    or a full HTTP URL to refer to an externally managed
+	    module set.  It is usually updated as GNOME development
+	    progresses to match the current GNOME development release.
+	    </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-modulesets-dir"><varname>modulesets_dir</varname></term>
+	  <listitem>
+	    <simpara>A string giving the directory containing the
+	    modulesets to use.  Defaults to the
+	    <filename>modulesets/</filename> directory in JHBuild sources.
+	    </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-nobuild"><varname>nobuild</varname></term>
+	  <listitem>
+	    <simpara>A boolean value which, if set to
+	    <constant>True</constant> causes JHBuild to not actually
+	    modules, but just download and unpack the sources.  The
+	    default vale is <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-nonetwork"><varname>nonetwork</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to access the
+	    network or not.  This affects checking out or updating CVS
+	    modules, downloading tarballs and updating module sets.
+	    Setting this to <constant>True</constant> is equivalent to
+	    passing the <option>--no-network</option> option to
+	    JHBuild.  Defaults to
+	    <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-nonotify"><varname>nonotify</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to emit
+	    notifications using the notification daemon.  If set to
+	    <constant>True</constant>, notifications are not emitted.
+	    Defaults to <constant>False</constant>, except on Win32
+		where it defaults to <constant>True</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-nopoison"><varname>nopoison</varname></term>
+	  <listitem>
+	    <simpara>A boolean value which, if set to
+	    <constant>True</constant> causes JHBuild to try to build
+	    modules even if one or more of the module's dependencies
+	    failed to build.  This option is equivalent to the
+	    <option>--no-poison</option> argument.  The default value is
+	    <constant>False</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-notrayicon"><varname>notrayicon</varname></term>
+	  <listitem>
+	    <simpara>A boolean value specifying whether to show an icon
+	    in the system tray using Zenity. If set to
+	    <constant>True</constant>, notifications are not emitted.
+	    Defaults to <constant>False</constant> except from on Win32,
+		where it defaults to <constant>True</constant>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-noxvfb"><varname>noxvfb</varname></term>
+	  <listitem>
+	    <simpara>A boolean value which, if set to
+	    <constant>True</constant> causes JHBuild to run any
+	    graphical tests on the real X server, rather than using
+	    <command>Xvfb</command>.  This option is equivalent to
+	    passing <option>--no-xvfb</option>.  The default value is
+	    <constant>False</constant></simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-prefix"><varname>prefix</varname></term>
+	  <listitem>
+	    <simpara>A string giving the prefix to install modules to.
+	    Defaults to <literal>'/opt/gnome2'</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term id="cfg-pretty-print"><varname>pretty_print</varname></term>
+	  <listitem>
+	    <simpara>A boolean value that can be used to disable
+	    pretty formatting of subprocess output.  Currently there is
+	    only support for pretty printing CVS output.  You probably
+	    only want to disable this if the pretty printing causes
+	    problems.  Defaults to <literal>True</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+        <varlistentry>
+          <term id="cfg-progress-bar"><varname>progress_bar</varname></term>
+          <listitem>
+            <simpara>A boolean value that can be used to display a progress bar
+            when running in quiet mode (see below).  Defaults to
+            <literal>True</literal>.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term id="cfg-quiet-mode"><varname>quiet_mode</varname></term>
+          <listitem>
+            <simpara>A boolean value that can be used to disable
+            output of running commands.  Defaults to
+            <literal>False</literal>.</simpara>
+          </listitem>
+        </varlistentry>
+	<varlistentry>
+	  <term id="cfg-repos"><varname>repos</varname></term>
+	  <listitem>
+	    <simpara>By default, JHBuild will check out code from
+	    repositories using an anonymous repository location.  This
+	    dictionary is used to tell JHBuild to use an alternative
+	    repository location for a particular repository (a developer
+	    would probably want to do this).  This variable is a
+	    dictionary where the keys are short repository names (for
+	    example,
+	    <systemitem class="systemname">svn.gnome.org</systemitem>
+	    is used for the GNOME SVN repository), and the values are the             alternative repository location strings.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-skip">
+	  <term><varname>skip</varname></term>
+	  <listitem>
+	    <simpara>A list of modules to skip when expanding the list
+	    of modules to build.  This is similar to the
+	    <option>--skip</option> option (in fact, the
+	    <option>--skip</option> option extends this list).  This
+	    list is empty by default.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-sticky-date">
+	  <term><varname>sticky_date</varname></term>
+	  <listitem>
+	    <simpara>If set, JHBuild will attempt to check out modules
+	    as they existed at the given date.  The date should be
+	    given in the form
+	    <literal>'<replaceable>yyyy</replaceable>-<replaceable>mm</replaceable>-<replaceable>dd</replaceable>'</literal>.
+	    Defaults to <constant>None</constant>.</simpara>
+	</listitem>
+	</varlistentry>
+	<varlistentry id="cfg-svnroots">
+	  <term><varname>svnroots</varname></term>
+	  <listitem>
+	    <simpara>Similar to <varname>cvsroots</varname> but for
+	    Subversion repositories; a dictionary that can be used to
+	    change the Subversion roots used to check out source code.
+	    If you have a Subversion account for a particular project,
+	    you can set the associated key to use that account rather
+	    than the anonymous account.  For example, you might want to
+	    set <literal>'svn.gnome.org'</literal> to
+	    <literal>'svn+ssh://<replaceable>username</replaceable>@svn.gnome.org:/svn'</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-svn-program">
+	  <term><varname>svn_program</varname></term>
+	  <listitem>
+	    <simpara>A string specifying which program to use for
+	    subversion support.  This can be <literal>svn</literal>
+	    or <literal>bzr</literal>.  Defaults to
+	    <literal>svn</literal>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-tarballdir">
+	  <term><varname>tarballdir</varname></term>
+	  <listitem>
+	    <simpara>If set, tarballs will be downloaded to this
+	    directory instead of <varname>checkoutroot</varname>.
+	    This is useful if you have multiple JHBuild environments
+	    or regularly clear out your
+	    <varname>checkoutroot</varname> and want to reduce
+	    bandwidth usage.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-tinderbox-outputdir">
+	  <term><varname>tinderbox_outputdir</varname></term>
+	  <listitem>
+	    <simpara>A string giving the directory to store
+	    <command>jhbuild tinderbox</command> output.  This string
+	    can be overridden by the <option>--output</option> option.
+	    Defaults to <constant>None</constant>, so either the
+	    command line option must be used or this variable must be
+	    set in the configuration file.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-trycheckout">
+	  <term><varname>trycheckout</varname></term>
+	  <listitem>
+	    <simpara>A boolean option which if set to
+	    <constant>True</constant>, causes JHBuild to automatically
+	    try to solve failures by 1) running <command>autogen.sh</command>
+	    again, and 2) checking out a newer version of a module from version
+	    control (then running <command>autogen.sh</command>.
+	    This option is equivalent to passing
+	    <option>--try-checkout</option>.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-use-lib64">
+	  <term><varname>use_lib64</varname></term>
+	  <listitem>
+	    <simpara>A boolean value that specifies whether to install
+	    libraries to <filename>lib64</filename> directories.  If
+	    this is set,
+	    <literal>--libdir=\${exec_prefix}/lib64</literal> will be
+	    passed to configure.  Defaults to
+	    <constant>True</constant> if running on
+	    <literal>x86_64</literal>, <literal>ppc64</literal> or
+	    <literal>s390x</literal> Linux, and
+	    <constant>False</constant> on other systems.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-use-local-modulesets">
+	  <term><varname>use_local_modulesets</varname></term>
+	  <listitem>
+	    <simpara>A boolean value that specifies to use modulesets
+	    that were checked out along the JHBuild source code; instead
+	    of downloading them on-the-fly from GNOME Subversion repository.
+	    Defaults to <constant>False</constant>.
+	    </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-xvfbargs">
+	  <term><varname>xvfbargs</varname></term>
+	  <listitem>
+	    <simpara>A string listing arguments to pass to
+	    <command>Xvfb</command> if running graphical tests using
+	    it.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry id="cfg-use-autoreconf">
+	  <term><varname>use_autoreconf</varname></term>
+	  <listitem>
+	    <simpara>A boolean value: when <constant>True</constant>, <command>autogen.sh</command>
+	    scripts are ignored and <command>autoreconf</command> is run instead. The
+	    <sgmltag class="attribute">autogen-sh</sgmltag> attribute is still honored if set.
+	  </listitem>
+	</varlistentry>
+=======
 <?dbhtml list-presentation="table"?>
         <varlistentry>
           <term id="cfg-alwaysautogen">
@@ -2140,6 +2648,7 @@ libgnomecanvas is missing branch definition for gnome-2-20
               <command>Xvfb</command> if running graphical tests.</simpara>
           </listitem>
         </varlistentry>
+>>>>>>> 23d3488dc28b863057d6e736f38623a95151ebbd
       </variablelist>
     </section>
 
@@ -2150,6 +2659,53 @@ libgnomecanvas is missing branch definition for gnome-2-20
         can be set in the configuration file:</para>
 
       <variablelist>
+<<<<<<< HEAD
+	<varlistentry>
+	  <term><varname>os.environ</varname></term>
+	  <listitem>
+	    <para>This is dictionary represents the environment of the
+	    process (which also gets passed on to processes that
+	    JHBuild spawns).</para>
+	    <para>Some environment variables you may want to set
+	    include <envar>CFLAGS</envar>, <envar>INSTALL</envar> (to
+	    use the more efficient <command>install-check</command>
+	    program included with JHBuild) and
+	    <envar>LDFLAGS</envar>.</para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><function>addpath</function>(<parameter>envvar</parameter>,
+	  <parameter>pathname</parameter>)</term>
+	  <listitem>
+	    <para>This will add a directory to a
+	    <envar>PATH</envar>-style environment variable.  It will
+	    correctly handle the case when the environment variable is
+	    initially empty (having a stray colon at the beginning or
+	    end of an environment variable can have unexpected
+	    consequences).</para>
+	    <para>This function has special handling for the
+	    <envar>ACLOCAL</envar> and <envvar>ACLOCAL_FLAGS</envvar> environment variables, which
+	    expect paths to be listed in the form <literal>-I
+	    <replaceable>pathname</replaceable></literal> (and in the case of 
+	    <envvar>ACLOCAL</envvar>, prefixed by <literal>aclocal</literal>).</para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><function>prependpath</function>(<parameter>envvar</parameter>,
+	  <parameter>pathname</parameter>)</term>
+	  <listitem>
+	    <para>After processing the configuration file, JHBuild
+	    will alter some paths based on variables such as
+	    <varname>prefix</varname> (eg. adding
+	    <literal>$prefix/bin</literal> to the start of
+	    <envar>PATH</envar>).</para>
+	    <para>The <function>prependpath</function> function works
+	    like <function>addpath</function>, except that the
+	    environment variable is modified after JHBuild has made
+	    its changes to the environment.</para>
+	  </listitem>
+	</varlistentry>
+=======
         <varlistentry id="cfg-os-environ">
           <term>
             <varname>os.environ</varname>
@@ -2201,6 +2757,7 @@ libgnomecanvas is missing branch definition for gnome-2-20
             </para>
           </listitem>
         </varlistentry>
+>>>>>>> 23d3488dc28b863057d6e736f38623a95151ebbd
       </variablelist>
     </section>
   </section>
@@ -2676,6 +3233,34 @@ libgnomecanvas is missing branch definition for gnome-2-20
 &lt;/autotools&gt;
 </programlisting>
 
+<<<<<<< HEAD
+	<para>The <sgmltag class="attribute">autogenargs</sgmltag> and
+	<sgmltag class="attribute">makeargs</sgmltag> and
+	<sgmltag class="attribute">makeinstallargs</sgmltag>
+	attributes are used to specify additional arguments to pass to
+	<command>autogen.sh</command>, <command>make</command> and
+	<command>make install</command> respectively.</para>
+	
+	<para>The <sgmltag class="attribute">autogen-sh</sgmltag>
+	attribute specifies the name of the autogen.sh script to run.
+	The value <literal>autoreconf</literal> can be used if your
+	module has no <command>autogen.sh</command> script
+	equivalent. In that case, JHBuild will run <command>autoreconf
+	-i</command>, followed by the proper
+	<command>configure</command>. Note that if the
+
+	<sgmltag class="attribute">skip-autogen</sgmltag> chooses whether
+	or not to run autogen.sh, it is a boolean with an extra
+	<literal>never</literal> value to tell JHBuild to never skip running
+	<command>autogen.sh</command>.
+	<sgmltag class="attribute">makefile</sgmltag> specifies the
+	filename of the makefile to use.</para>
+
+        <para>The <sgmltag
+        class="attribute">supports-non-srcdir-builds</sgmltag>
+        attribute is used to mark modules that can't be cleanly built
+        using a separate source directory.</para>
+=======
         <para>The <sgmltag class="attribute">autogenargs</sgmltag> and
           <sgmltag class="attribute">makeargs</sgmltag> and
           <sgmltag class="attribute">makeinstallargs</sgmltag> attributes are
@@ -2700,6 +3285,7 @@ libgnomecanvas is missing branch definition for gnome-2-20
           <sgmltag class="attribute">supports-non-srcdir-builds</sgmltag>
           attribute is used to mark modules that can't be cleanly built using a
           separate source directory.</para>
+>>>>>>> 23d3488dc28b863057d6e736f38623a95151ebbd
 
         <para>The <sgmltag class="attribute">autogen-template</sgmltag>
           attribute can be used if you need finer control over the autogen

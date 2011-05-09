@@ -94,8 +94,6 @@
       href="git://git.fishsoup.net/"/>
   <repository type="git" name="diracvideo.org"
     href="git://diracvideo.org/git/"/>
-  <repository type="git" name="git.collabora"
-      href="git://git.collabora.co.uk/git/"/>
   <repository type="svn" name="liferea.svn.sourceforge.net"
       href="http://liferea.svn.sourceforge.net/svnroot/"/>
   <repository type="cvs" name="cvs.claws-mail"
@@ -109,18 +107,39 @@
       href="git://git.moblin.org"/>
   <repository type="svn" name="svn.ardour.org"
       href="http://subversion.ardour.org/svn/"/>
-  <repository type="tarball" name="launchpad.net/tarball"
-      href="https://launchpad.net/"/>
   <repository type="git" name="gitorious.org"
       href="git://gitorious.org/"/>
+  <repository type="tarball" name="samba.org"
+      href="http://samba.org/samba/ftp/"/>
+  <repository type="tarball" name="sourceforge.net"
+      href="http://prdownloads.sourceforge.net/sourceforge/"/>
+  <repository type="svn" name="xchat.sf.net"
+      href="https://xchat.svn.sourceforge.net/svnroot/"
+      trunk-template="%(module)s"
+      branches-template="%(branch)s"
+      tags-template="%(tag)s"/>
 
   <include href="gnome-apps-3.0.modules"/>
   <include href="gnome-suites-core-3.0.modules"/>
 
+  <autotools id="gnome-desktop-2" autogenargs="--with-gnome-distributor=JHBuild">
+    <branch revision="gnome-2-32" checkoutdir="gnome-desktop-2" module="gnome-desktop"/>
+    <dependencies>
+      <dep package="intltool"/>
+      <dep package="glib"/>
+      <dep package="gtk+-2"/>
+      <dep package="gconf"/>
+      <dep package="startup-notification"/>
+      <dep package="rarian"/>
+      <dep package="gnome-doc-utils"/>
+      <dep package="gvfs"/> <!-- gvfs-copy used in autogen.sh -->
+    </dependencies>
+  </autotools>
+
   <autotools id="cairo-gtk-engine">
     <branch repo="cairo.freedesktop.org"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="cairo"/>
     </dependencies>
   </autotools>
@@ -128,7 +147,7 @@
   <autotools id="libbtctl">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="glib"/>
     </dependencies>
   </autotools>
@@ -136,7 +155,7 @@
   <autotools id="phonemgr">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="glib"/>
       <dep package="libbtctl"/>
       <dep package="gnome-bluetooth"/>
@@ -151,7 +170,7 @@
   <autotools id="gtkhtml2">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libxml2"/>
     </dependencies>
   </autotools>
@@ -159,8 +178,6 @@
   <autotools id="gnome-vfs-monikers">
     <branch/>
     <dependencies>
-      <dep package="libbonobo"/>
-      <dep package="gnome-vfs"/>
     </dependencies>
   </autotools>
 
@@ -168,7 +185,6 @@
     <branch/>
     <dependencies>
       <dep package="pygtk"/>
-      <dep package="gnome-python"/>
       <dep package="gtkhtml2"/>
       <dep package="gdl"/>
       <dep package="libgda"/>
@@ -204,39 +220,50 @@
     </dependencies>
   </autotools>
 
+  <tarball id="libinfinity" version="0.5.0" autogenargs="--with-gtk3">
+    <source href="http://releases.0x539.de/libinfinity/libinfinity-0.5.0.tar.gz"
+            hash="sha256:171cb4933090ee0d2be9648c387ca607148d4df4bb35535e7e1766ce2da42692"
+            md5sum="2b25de033c3a4c9975340300b09b84b0" size="1399866"/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="libxml2"/>
+      <dep package="gnutls"/>
+    </dependencies>
+  </tarball>
+
+  <autotools id="gedit-collaboration">
+    <branch/>
+    <dependencies>
+      <dep package="gedit"/>
+      <dep package="libinfinity"/>
+    </dependencies>
+  </autotools>
+
   <autotools id="giggle">
     <branch/>
     <dependencies>
-      <dep package="gtk+-3"/>
+      <dep package="gtk+"/>
       <dep package="glib"/>
-      <dep package="gtksourceview-3"/>
+      <dep package="gtksourceview"/>
       <dep package="gnome-doc-utils"/>
     </dependencies>
     <suggests>
       <dep package="evolution-data-server"/>
-      <dep package="vte-3"/>
+      <dep package="vte"/>
     </suggests>
   </autotools>
 
   <autotools id="gitg">
-    <branch/>
+    <branch revision="gtk3"/>
     <dependencies>
+      <dep package="gtk+"/>
+      <dep package="glib"/>
       <dep package="gtksourceview"/>
     </dependencies>
   </autotools>
 
   <autotools id="memprof">
     <branch/>
-  </autotools>
-
-  <autotools id="goffice">
-    <branch/>
-    <dependencies>
-      <dep package="glib"/>
-      <dep package="libgsf"/>
-      <dep package="libxml2"/>
-      <dep package="pango"/>
-    </dependencies>
   </autotools>
 
   <autotools id="sawfish">
@@ -250,7 +277,7 @@
     <branch/>
     <dependencies>
       <dep package="librep"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -308,20 +335,11 @@
     </dependencies>
   </autotools>
 
-  <autotools id="gst-python" autogenargs="--" supports-non-srcdir-builds="no">
-    <branch repo="gstreamer.freedesktop.org" module="gst-python"/>
-    <dependencies>
-      <dep package="gstreamer"/>
-      <dep package="gst-plugins-base"/>
-    </dependencies>
-  </autotools>
-
   <autotools id="planner">
     <branch/>
     <dependencies>
       <dep package="glib"/>
       <dep package="libxml2"/>
-      <dep package="libgnomeui"/>
       <dep package="libgsf"/>
     </dependencies>
   </autotools>
@@ -330,10 +348,9 @@
     <branch/>
     <dependencies>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gmime"/>
-      <dep package="libgnome"/>
-      <dep package="gnome-keyring"/>
+      <dep package="gnome-keyring-2"/>
       <dep package="gconf"/>
     </dependencies>
   </autotools>
@@ -342,7 +359,7 @@
     <branch/>
     <dependencies>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libxml2"/>
       <dep package="gtkspell"/>
     </dependencies>
@@ -351,7 +368,6 @@
   <distutils id="pyspi">
     <branch/>
     <dependencies>
-      <dep package="at-spi"/>
     </dependencies>
   </distutils>
 
@@ -361,7 +377,6 @@
       <dep package="pyspi"/>
     </dependencies>
     <after>
-      <dep package="gnome-python-desktop"/>
     </after>
   </distutils>
 
@@ -387,10 +402,7 @@
     <branch/>
     <dependencies>
       <dep package="gtkmm"/>
-      <dep package="gconfmm"/>
-      <dep package="libgnomemm"/>
       <dep package="gnome-panel"/>
-      <dep package="libgnomeui"/>
     </dependencies>
   </autotools>
 
@@ -419,7 +431,7 @@
  <autotools id="gtksourceviewmm">
     <branch/>
     <dependencies>
-      <dep package="gtksourceview-3"/>
+      <dep package="gtksourceview"/>
       <dep package="gtkmm"/>
     </dependencies>
   </autotools>
@@ -501,8 +513,6 @@
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtkmm"/>
-      <dep package="gconfmm"/>
-      <dep package="libglademm"/>
     </dependencies>
   </autotools>
 
@@ -524,7 +534,6 @@
   <autotools id="gnomeicu">
     <branch/>
     <dependencies>
-      <dep package="libgnomeui"/>
     </dependencies>
   </autotools>
 
@@ -532,26 +541,23 @@
     <branch/>
     <dependencies>
       <dep package="libglade"/>
-      <dep package="gtk+"/>
-      <dep package="libgnomeui"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
   <autotools id="gthumb">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
   <autotools id="gnome-mount" autogenargs="--enable-nautilus-extension">
     <branch/>
     <dependencies>
-      <dep package="gnome-keyring"/>
-      <dep package="libgnomeui"/>
+      <dep package="gnome-keyring-2"/>
       <dep package="dbus"/>
-      <dep package="hal"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="intltool"/>
       <dep package="libglade"/>
       <dep package="nautilus"/>
@@ -561,7 +567,7 @@
   <autotools id="libsexy">
     <branch repo="osiris.chipx86.com" module="trunk/libsexy"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libxml2"/>
       <dep package="iso-codes"/>
     </dependencies>
@@ -570,9 +576,8 @@
   <autotools id="sodipodi">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libgnomeprintui"/>
-      <dep package="libart_lgpl"/>
       <dep package="libxml2"/>
     </dependencies>
   </autotools>
@@ -613,25 +618,21 @@
     <branch/>
     <dependencies>
       <dep package="mozilla"/>
-      <dep package="libgnomeui"/>
     </dependencies>
   </autotools>
 
-  <tarball id="xchat" version="2.8.2">
-    <source href="http://xchat.org/files/source/2.8/xchat-2.8.2.tar.bz2"
-            hash="sha256:9f6c22e7116afea4c00d90346b0522069f1c2197e8d0ad2f1545da01329750fe"
-            md5sum="d87a93bcd39d96ff3a3d0f8199efcf12" size="1331148"/>
+  <autotools id="xchat">
+    <branch repo="xchat.sf.net" module="xchat" />
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libxml2"/>
     </dependencies>
-  </tarball>
+  </autotools>
 
   <autotools id="camorama">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
-      <dep package="libgnomeui"/>
+      <dep package="gtk+-2"/>
       <dep package="gconf"/>
       <dep package="libglade"/>
     </dependencies>
@@ -640,7 +641,7 @@
   <autotools id="gtk-engines-cleanice">
     <branch repo="elysium-project.sf.net"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -650,7 +651,7 @@
       <dep package="intltool"/>
       <dep package="libpeas"/>
       <dep package="gdl"/>
-      <dep package="gtksourceview-3"/>
+      <dep package="gtksourceview"/>
       <dep package="gsettings-desktop-schemas"/>
     </dependencies>
     <suggests>
@@ -664,7 +665,6 @@
   <autotools id="gnome-spell">
     <branch/>
     <dependencies>
-      <dep package="libgnomeui"/>
     </dependencies>
   </autotools>
 
@@ -672,7 +672,6 @@
     <branch/>
     <dependencies>
       <dep package="libgnomecups"/>
-      <dep package="libgnomeui"/>
       <dep package="libglade"/>
     </dependencies>
   </autotools>
@@ -682,8 +681,6 @@
     <dependencies>
       <dep package="libxml++"/>
       <dep package="gtkmm"/>
-      <dep package="libglademm"/>
-      <dep package="gconfmm"/>
     </dependencies>
   </autotools>
 
@@ -707,7 +704,6 @@
     <branch/>
     <dependencies>
       <dep package="loudmouth"/>
-      <dep package="libgnomeui"/>
     </dependencies>
   </autotools>
 
@@ -716,7 +712,6 @@
     <dependencies>
       <dep package="libxslt"/>
       <dep package="gconf"/>
-      <dep package="libgnomeui"/>
     </dependencies>
   </autotools>
 
@@ -730,18 +725,9 @@
   <autotools id="gtetrinet">
     <branch/>
     <dependencies>
-      <dep package="libgnomeui"/>
     </dependencies>
   </autotools>
 
-  <autotools id="libxml++">
-    <branch/>
-    <dependencies>
-      <dep package="libxml2"/>
-      <dep package="glibmm"/>
-    </dependencies>
-  </autotools>
-  
   <autotools id="pygda">
     <branch/>
     <dependencies>
@@ -777,24 +763,21 @@
     <dependencies>
       <dep package="nautilus"/>
       <dep package="pygtk"/>
-      <dep package="gnome-python"/>
     </dependencies>
   </autotools>
 
   <autotools id="atomix">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libxml2"/>
-      <dep package="libgnomecanvas"/>
     </dependencies>
   </autotools>
 
   <autotools id="istanbul">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
-      <dep package="gnome-python"/>
+      <dep package="gtk+-2"/>
       <dep package="gnome-python-extras"/>
       <dep package="pygtk"/>
       <dep package="gstreamer"/>
@@ -805,7 +788,7 @@
   <autotools id="muine">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gstreamer"/>
     </dependencies>
   </autotools>
@@ -822,7 +805,7 @@
     <branch/>
     <dependencies>
       <dep package="pygtk"/>
-      <dep package="gnome-python"/>
+      <dep package="pycairo"/>
       <dep package="gstreamer"/>
       <dep package="gst-python"/>
       <dep package="gnonlin"/>
@@ -841,7 +824,7 @@
   <autotools id="xchat-gnome">
     <branch/>
     <dependencies>
-      <dep package="gtk+" />
+      <dep package="gtk+-2" />
       <dep package="gconf" />
       <dep package="libglade" />
       <dep package="libsexy" />
@@ -853,12 +836,9 @@
     <branch/>
     <dependencies>
       <dep package="gtkmm"/>
-      <dep package="libglademm"/>
       <dep package="gtksourceviewmm"/>
       <dep package="libgtop"/>
-      <dep package="vte"/>
       <dep package="gconf"/>
-      <dep package="gnome-vfs" />
       <dep package="gnome-doc-utils"/>
       <dep package="ghex"/>
     </dependencies>
@@ -874,7 +854,7 @@
   <autotools id="gnome-scan">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gconf"/>
       <dep package="gegl"/>
       <dep package="gimp"/>
@@ -885,7 +865,6 @@
     <branch/>
     <dependencies>
       <dep package="dbus-glib"/>
-      <dep package="hal"/>
       <dep package="libgtop"/>
       <dep package="libxml2"/>
     </dependencies>
@@ -904,12 +883,11 @@
     <dependencies>
       <dep package="gnome-panel"/>
       <dep package="pygtk"/>
-      <dep package="gnome-python"/>
     </dependencies>
   </autotools>
 
   <autotools id="gnome-games-extra-data">
-    <branch/>
+    <branch revision="gnome-3-0"/>
   </autotools>
 
   <autotools id="mobile-broadband-provider-info">
@@ -919,15 +897,14 @@
   <autotools id="xdg-user-dirs-gtk">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
-      <dep package="xdg-user-dirs"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
   <autotools id="ghex">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libgnomeprintui"/>
     </dependencies>
   </autotools>
@@ -935,7 +912,7 @@
   <autotools id="dia">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="libxml2"/>
       <dep package="libxslt"/>
     </dependencies>
@@ -952,7 +929,7 @@
     <dependencies>
       <dep package="vala"/>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -1007,7 +984,7 @@
   <autotools id="gupnp-ui">
     <branch repo="gitorious.org" module="gupnp/gupnp-ui"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gupnp"/>
     </dependencies>
   </autotools>
@@ -1017,8 +994,7 @@
     <dependencies>
       <dep package="rhythmbox"/>
       <dep package="gupnp-av"/>
-      <dep package="gtk+"/>
-      <dep package="gnome-vfs"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -1045,7 +1021,7 @@
   <autotools id="pigment">
     <branch repo="pigment.code.fluendo.com" module="trunk" />
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="pygtk"/>
     </dependencies>
   </autotools>
@@ -1054,7 +1030,6 @@
     <branch />
     <dependencies>
       <dep package="gnome-doc-utils"/>
-      <dep package="lirc"/>
       <dep package="polkit"/>
       <dep package="polkit-gnome"/>
       <dep package="pygtk"/>
@@ -1066,11 +1041,10 @@
     <dependencies>
       <dep package="glib"/>
       <dep package="dbus-glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gconf"/>
       <dep package="libnotify"/>
       <dep package="dbus"/>
-      <dep package="hal"/>
     </dependencies>
   </autotools>
 
@@ -1079,40 +1053,15 @@
     <dependencies>
       <dep package="libxml2"/>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="evolution-data-server"/>
-    </dependencies>
-  </autotools>
-
-  <autotools id="babl">
-    <branch/>
-  </autotools>
-
-  <!-- Other useful deps that you can install are:  -->
-  <!--   libjpeg                                    -->
-  <!--   libpng                                     -->
-  <!--   OpenEXR (see http://www.openexr.com/)      -->
-  <!--   libsdl                                     -->
-  <!--   enscript                                   -->
-  <!--   libavcodec                                 -->
-  <!-- Those are not managed by jhbuild             -->
-  <autotools id="gegl">
-    <branch/>
-    <dependencies>
-      <dep package="babl"/>
-      <dep package="glib"/>
-      <dep package="cairo"/>
-      <dep package="pango"/>
-      <dep package="gtk+"/>
-      <dep package="librsvg"/>
     </dependencies>
   </autotools>
 
   <autotools id="gnome-keyring-manager" autogenargs="--disable-more-warnings">
     <branch/>
     <dependencies>
-      <dep package="libgnomeui"/>
-      <dep package="gnome-keyring"/>
+      <dep package="gnome-keyring-2"/>
       <dep package="gconf"/>
       <dep package="gnome-doc-utils"/>
     </dependencies>
@@ -1136,7 +1085,6 @@
     <branch/>
     <dependencies>
       <dep package="gtkmm"/>
-      <dep package="libglademm"/>
       <dep package="gtkmm-utils"/>
       <dep package="goocanvas"/>
       <dep package="dbus-glib"/>
@@ -1149,7 +1097,6 @@
     <dependencies>
       <dep package="mono"/>
       <dep package="gtk-sharp"/>
-      <dep package="gnome-sharp"/>
       <!-- <dep package="gecko-sharp"/> -->
     </dependencies>
   </autotools>
@@ -1157,9 +1104,7 @@
   <autotools id="gtksourceview-sharp">
     <branch repo="github.com" module="mono/gtksourceview2-sharp.git" checkoutdir="gtksourceview2-sharp"/>
     <dependencies>
-      <dep package="gtksourceview"/>
       <dep package="mono"/>
-      <dep package="gnome-sharp"/>
     </dependencies>
   </autotools>
 
@@ -1169,7 +1114,6 @@
       <dep package="desktop-file-utils"/>
       <dep package="mono"/>
       <dep package="gtk-sharp"/>
-      <dep package="gnome-sharp"/>
       <dep package="gtksourceview-sharp"/>
       <!-- <dep package="gecko-sharp"/> -->
     </dependencies>
@@ -1191,24 +1135,10 @@
     </dependencies>
   </autotools>
 
-  <repository type="tarball" name="taglib-sharp"
-      href="http://www.taglib-sharp.com/Download/"/>
-
-  <autotools id="taglib-sharp" autogenargs="--disable-docs">
-    <branch module="taglib-sharp-2.0.3.0.tar.gz" version="2.0.3.0"
-        repo="taglib-sharp"
-        md5sum="aa2c344760c8f4d878957fd4600155a5" size="352463"/>
-    <dependencies>
-      <dep package="mono"/>
-      <dep package="gnome-sharp"/>
-    </dependencies>
-  </autotools>
-
  <autotools id="netspeed">
    <branch/>
    <dependencies>
-     <dep package="gtk+"/>
-     <dep package="libgnomeui"/>
+     <dep package="gtk+-2"/>
      <dep package="gnome-panel"/>
    </dependencies>
  </autotools>
@@ -1235,7 +1165,6 @@
    <branch/>
    <dependencies>
      <dep package="eog"/>
-     <dep package="gnome-python"/>
    </dependencies>    
    <suggests>
      <dep package="libchamplain"/>
@@ -1254,7 +1183,6 @@
      <dep package="dbus"/>
      <dep package="ndesk-dbus"/>
      <dep package="mono"/>
-     <dep package="gnome-sharp"/>
    </dependencies>
  </autotools>
 
@@ -1272,7 +1200,6 @@
            checkoutdir="hotwire"/>
    <dependencies>
      <dep package="pygtk"/>
-     <dep package="gnome-python-desktop"/>
      <dep package="desktop-file-utils"/>
    </dependencies>
  </distutils>
@@ -1283,20 +1210,15 @@
            checkoutdir="labyrinth"/>
    <dependencies>
      <dep package="pygtk"/>
-     <dep package="gnome-python-desktop"/>
-     <dep package="gnome-python"/>
      <dep package="pycairo"/>
    </dependencies>
  </autotools>
 
  <distutils id="d-feet">
-   <branch repo="git.fedoraproject.org"
-           module="d-feet.git"
-           checkoutdir="d-feet"/>
+   <branch/>
    <dependencies>
      <dep package="pygtk"/>
      <dep package="dbus-python"/>
-     <dep package="gnome-python-desktop"/>
    </dependencies>
  </distutils>
 
@@ -1315,7 +1237,6 @@
     <dependencies>
       <dep package="mono"/>
       <dep package="gtk-sharp"/>
-      <dep package="gnome-sharp"/>
       <dep package="ndesk-dbus"/>
       <dep package="ndesk-dbus-glib"/>
       <dep package="notify-sharp"/>
@@ -1328,7 +1249,7 @@
             md5sum="dcb81aa203f9ae4167b5045b7b8177e1" size="2059415"/>
     <suggests>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
     </suggests>
   </tarball>
 
@@ -1337,7 +1258,7 @@
             hash="sha256:8fc7dc560167b2cb7193e76aca625a152dc19b0ebf49816b78539cbb90d80d02"
             md5sum="f75dcc9338f182c571b321d37c606a94" size="351277"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="pango"/>
       <dep package="gtk-doc"/>
     </dependencies>
@@ -1348,7 +1269,7 @@
             module="trunk"
             checkoutdir="transmission"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="intltool"/>
     </dependencies>
     <suggests>
@@ -1360,7 +1281,7 @@
   <autotools id="goocanvas">
     <branch/>
     <dependencies>
-      <dep package="gtk+-3"/>
+      <dep package="gtk+"/>
     </dependencies>
   </autotools>
 
@@ -1390,15 +1311,12 @@
     <dependencies>
       <dep package="pygoocanvas"/>
       <dep package="python-vobject"/>
-      <dep package="gnome-python"/>
     </dependencies>
   </autotools>
 
   <autotools id="ldtp">
     <branch repo="ldtp.freedesktop.org" module="ldtp"/>
     <dependencies>
-      <dep package="at-spi"/>
-      <dep package="gnome-python"/>
     </dependencies>
   </autotools>
 
@@ -1407,7 +1325,6 @@
    <dependencies>
      <dep package="pygtk"/>
      <dep package="nautilus-python"/>
-     <dep package="gnome-python"/>
    </dependencies>
   </distutils>
 
@@ -1415,7 +1332,6 @@
     <branch repo="bzr.burtonini.com" module="zebu" checkoutdir="zebu"/>
    <dependencies>
      <dep package="pygtk"/>
-     <dep package="gnome-python"/>
    </dependencies>
   </distutils>
 
@@ -1456,15 +1372,15 @@
   <autotools id="devilspie">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
-      <dep package="libwnck"/>
+      <dep package="gtk+-2"/>
+      <dep package="libwnck-2"/>
     </dependencies>
   </autotools>
 
   <autotools id="murrine">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="intltool"/>
     </dependencies>
   </autotools>
@@ -1472,8 +1388,7 @@
   <autotools id="gtk-css-engine">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
-      <dep package="libccss"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -1489,19 +1404,9 @@
       <dep package="gobject-introspection"/>
     </dependencies>
     <suggests>
-      <dep package="atk"/>
-      <dep package="pango"/>
-      <dep package="gtk+"/>
-      <dep package="clutter"/>
-      <dep package="clutter-gtk"/>
-      <dep package="WebKit"/>
-      <dep package="libsoup"/>
       <dep package="gnome-keyring"/>
       <dep package="poppler"/>
       <dep package="libnotify"/>
-      <dep package="gtksourceview"/>
-      <dep package="vte"/>
-      <dep package="gstreamer"/>
       <dep package="gssdp"/>
       <dep package="gnupnp"/>
     </suggests>
@@ -1514,10 +1419,9 @@
             module="~netbook-remix-team/netbook-remix/maximus"
             checkoutdir="maximus"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gconf"/>
-      <dep package="libwnck"/>
-      <dep package="libgnomeui"/>
+      <dep package="libwnck-2"/>
       <dep package="libfakekey"/>
     </dependencies>
   </autotools>
@@ -1529,8 +1433,8 @@
     <dependencies>
       <dep package="gnome-panel"/>
       <dep package="gconf"/>
-      <dep package="libwnck"/>
-      <dep package="gtk+"/>
+      <dep package="libwnck-2"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -1540,10 +1444,10 @@
             checkoutdir="go-home-applet"/>
     <dependencies>
       <dep package="gnome-panel"/>
-      <dep package="gnome-desktop"/>
+      <dep package="gnome-desktop-2"/>
       <dep package="gconf"/>
-      <dep package="libwnck"/>
-      <dep package="gtk+"/>
+      <dep package="libwnck-2"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -1555,11 +1459,11 @@
       <dep package="clutter-gtk"/>
       <dep package="clutter"/>
       <dep package="startup-notification"/>
-      <dep package="gnome-desktop"/>
+      <dep package="gnome-desktop-2"/>
       <dep package="gnome-menus"/>
-      <dep package="libwnck"/>
+      <dep package="libwnck-2"/>
       <dep package="gconf"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="pango"/>
       <dep package="glib"/>
     </dependencies>
@@ -1570,7 +1474,7 @@
            module="~netbook-remix-team/netbook-remix/desktop-switcher"
            checkoutdir="desktop-switcher"/>
    <dependencies>
-     <dep package="gtk+"/>
+     <dep package="gtk+-2"/>
      <dep package="gconf"/>
    </dependencies>
  </autotools>
@@ -1591,7 +1495,7 @@
     <branch/>
     <dependencies>
       <dep package="intltool"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gconf"/>
       <dep package="sqlite3"/>
     </dependencies>
@@ -1609,10 +1513,8 @@
     </dependencies>
   </autotools>
 
-  <autotools id="dvb-daemon">
-    <branch repo="launchpad.net"
-            module="~gnome-dvb-daemon/gnome-dvb-daemon/trunk"
-            checkoutdir="gnome-dvb-daemon/"/>
+  <autotools id="gnome-dvb-daemon">
+   <branch />
    <dependencies>
      <dep package="glib"/>
      <dep package="gstreamer"/>
@@ -1620,8 +1522,6 @@
      <dep package="vala-trunk"/>
      <dep package="gst-plugins-good"/>
      <dep package="gst-plugins-bad"/>
-     <dep package="gst-python"/>
-     <dep package="dbus-glib"/>
      <dep package="libgee"/>
      <dep package="sqlite3"/>
      <dep package="pygobject"/>
@@ -1639,28 +1539,17 @@
  <autotools id="quick-lounge-applet">
     <branch />
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gnome-panel"/>
       <dep package="gnome-menus"/>
     </dependencies>
   </autotools>
 
-  <tarball id="wv" version="1.2.4">
-    <source href="http://downloads.sourceforge.net/wvware/wv-1.2.4.tar.gz"
-            hash="sha256:673109910e22d4cf94cc8be4dcb9a0c41b5fbdb1736d4b7bdc7778894d57c2d6"
-            md5sum="c1861c560491f121e12917fa76970ac5" size="629554"/>
-    <dependencies>
-      <dep package="glib"/>
-      <dep package="libgsf"/>
-      <dep package="libxml2"/>
-    </dependencies>
-  </tarball>
-
  <autotools id="gpointing-device-settings">
     <branch />
     <dependencies>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gconf"/>
     </dependencies>
   </autotools>
@@ -1700,13 +1589,10 @@
       <dep package="glibmm"/>
       <dep package="gtkmm"/>
       <dep package="gconf"/>
-      <dep package="libgnomeui"/>
-      <dep package="exempi"/>
       <dep package="sqlite3"/>
       <dep package="gegl"/>
       <dep package="geglmm"/>
       <dep package="libxml2"/>
-      <dep package="libopenraw"/>
       <dep package="babl"/>
     </dependencies>
   </autotools>
@@ -1716,7 +1602,7 @@
             module="liferea/trunk/liferea"
             checkoutdir="liferea"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="intltool"/>
       <dep package="glib"/>
       <dep package="pango"/>
@@ -1724,7 +1610,7 @@
       <dep package="libxml2"/>
       <dep package="sqlite3"/>
       <dep package="libsoup"/>
-      <dep package="libunique"/>
+      <dep package="libunique-1"/>
       <dep package="WebKit"/>
     </dependencies>
     <suggests>
@@ -1737,7 +1623,7 @@
   <autotools id="krb5-auth-dialog">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="dbus-glib"/>
       <dep package="glib"/>
       <dep package="gconf"/>
@@ -1752,7 +1638,7 @@
   <autotools id="contacts">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="evolution-data-server"/>
       <dep package="gconf"/>
     </dependencies>
@@ -1761,7 +1647,7 @@
   <autotools id="dates">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="evolution-data-server"/>
       <dep package="gconf"/>
     </dependencies>
@@ -1770,11 +1656,11 @@
   <autotools id="tasks">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="evolution-data-server"/>
     </dependencies>
     <suggests>
-      <dep package="libunique"/>
+      <dep package="libunique-1"/>
     </suggests>
   </autotools>
 
@@ -1792,8 +1678,7 @@
              autogenargs="--disable-libetpan">
     <branch repo="cvs.claws-mail" revision="gtk2" module="claws" checkoutdir="claws-mail"/>
     <dependencies>
-      <dep package="pkg-config"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="glib"/>
       <dep package="enchant"/>
     </dependencies>
@@ -1807,13 +1692,13 @@
   <autotools id="midori">
     <branch repo="git.xfce.org" branch="kalikiana/midori"/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="WebKit"/>
       <dep package="libsoup"/>
       <dep package="libxml2"/>
     </dependencies>
     <suggests>
-      <dep package="libunique"/>
+      <dep package="libunique-1"/>
       <dep package="libnotify"/>
       <dep package="sqlite3"/>
     </suggests>
@@ -1832,7 +1717,6 @@
     <branch/>
     <dependencies>
       <dep package="mm-common"/>
-      <dep package="vte"/>
       <dep package="glibmm"/>
       <dep package="gtkmm"/>
     </dependencies>
@@ -1842,14 +1726,11 @@
     <branch/>
     <dependencies>
       <dep package="libxml2"/>
-      <dep package="libgnome"/>
       <dep package="ORBit2"/>
-      <dep package="libbonobo"/>
       <dep package="gnome-panel"/>
       <dep package="gconf"/>
     </dependencies>
     <suggests>
-      <dep package="hal"/>
     </suggests>
   </autotools>
 
@@ -1875,7 +1756,7 @@
     <branch repo="git.dronelabs.com" />
     <dependencies>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -1892,7 +1773,7 @@
     <branch />
     <dependencies>
       <dep package="glib"/>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="gconf"/>
       <dep package="libchamplain"/>
       <dep package="ethos"/>
@@ -1901,18 +1782,15 @@
   </autotools>
 
   <autotools id="glabels">
-    <branch revision="glabels_2_2"/>
+    <branch/>
     <dependencies>
-      <dep package="intltool"/>
-      <dep package="libgnomeui"/>
-      <dep package="gnome-desktop"/>
-      <dep package="libglade"/>
-      <dep package="gnome-vfs"/>
-      <dep package="gnome-doc-utils"/>
+      <dep package="glib"/>
+      <dep package="gtk+"/>
+      <dep package="libxml2"/>
+      <dep package="pango"/>
+      <dep package="cairo"/>
+      <dep package="librsvg"/>
     </dependencies>
-    <suggests>
-      <dep package="evolution-data-server"/>
-    </suggests>
   </autotools>
 
   <autotools id="pygi">
@@ -1928,20 +1806,9 @@
     <dependencies>
       <dep package="glibmm"/>
       <dep package="gtkmm"/>
-      <dep package="libgnomecanvasmm"/>
       <dep package="libxml2"/>
     </dependencies>
   </waf>
-
-  <distutils id="duplicity">
-    <branch repo="launchpad.net/tarball"
-            module="duplicity/0.6-series/0.6.07/+download/duplicity-0.6.07.tar.gz"
-            version="0.6.07"
-            hash="sha256:5a66ec622c273aef12f0c8ae1635b44f2de920c50395854715c5e4c70ec93c87"
-            md5sum="08efd239362f601b946f4dc2450fc840" size="280311">
-      <dep package="pygobject"/>
-    </branch>
-  </distutils>
 
   <autotools id="hyena">
     <branch/>
@@ -1955,7 +1822,6 @@
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtk-sharp"/>
-      <dep package="gnome-sharp"/>
       <dep package="poppler"/>
       <dep package="hyena"/>
     </dependencies>
@@ -1967,7 +1833,7 @@
       <dep package="libsoup"/>
       <dep package="dbus-glib"/>
       <dep package="json-glib"/>
-      <dep package="gnome-keyring"/>
+      <dep package="gnome-keyring-2"/>
     </dependencies>
   </autotools>
 
@@ -1975,9 +1841,7 @@
     <branch/>
     <dependencies>
       <dep package="glib"/>
-      <dep package="gnome-vfs"/>
-      <dep package="gtk+"/>
-      <dep package="libgnomeui"/>
+      <dep package="gtk+-2"/>
     </dependencies>
   </autotools>
 
@@ -1985,11 +1849,10 @@
     <branch/>
     <dependencies>
       <dep package="glib"/>
+      <dep package="gobject-introspection"/>
     </dependencies>
     <suggests>
-      <dep package="gobject-introspection"/>
-      <dep package="gtk+"/>
-      <dep package="gconf"/>
+      <dep package="gtk+-3"/>
       <dep package="vala"/>
       <dep package="libsoup"/>
     </suggests>
@@ -2008,7 +1871,7 @@
     </suggests>
   </autotools>
 
-  <autotools id="rygel-grilo">
+  <autotools id="grilo-mediaserver2">
     <branch/>
     <dependencies>
       <dep package="grilo"/>
@@ -2022,8 +1885,6 @@
   <autotools id="libgail-gnome">
     <branch/>
     <dependencies>
-      <dep package="at-spi"/>
-      <dep package="libgnomeui"/>
       <dep package="gnome-panel"/>
     </dependencies>
   </autotools>
@@ -2041,7 +1902,6 @@
     <branch/>
     <dependencies>
       <dep package="intltool"/>
-      <dep package="libart_lgpl"/>
       <dep package="glib"/>
       <dep package="gnome-common"/>
       <dep package="pango"/>
@@ -2054,8 +1914,7 @@
     <dependencies>
       <dep package="intltool"/>
       <dep package="libgnomeprint"/>
-      <dep package="gtk+"/>
-      <dep package="libgnomecanvas"/>
+      <dep package="gtk+-2"/>
       <dep package="gnome-icon-theme"/>
     </dependencies>
   </autotools>
@@ -2083,7 +1942,16 @@
       <dep package="pygtk"/>
       <dep package="sqlite3"/>
       <dep package="dbus-python"/>
-      <dep package="raptor"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="libzeitgeist">
+    <branch repo="launchpad.net-lp"
+            module="lp:libzeitgeist"
+            checkoutdir="libzeitgeist"/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="vala"/>
     </dependencies>
   </autotools>
 
@@ -2092,7 +1960,6 @@
             module="lp:fungtk"
             checkoutdir="fungtk"/>
     <dependencies>
-      <dep package="gnome-python"/>
     </dependencies>
   </distutils>
 
@@ -2136,12 +2003,142 @@
   <autotools id="genius">
     <branch/>
     <dependencies>
-      <dep package="gtk+"/>
+      <dep package="gtk+-2"/>
       <dep package="glib"/>
     </dependencies>
     <suggests>
-      <dep package="gtksourceview"/>
     </suggests>
+  </autotools>
+
+  <autotools id="samba4" skip-autogen="never" autogen-sh="configure"
+             autogenargs="--enable-fhs" supports-non-srcdir-builds="no">
+    <branch repo="samba.org"
+            module="samba4/samba-4.0.0alpha11.tar.gz" version="4.0.0alpha11"
+            hash="sha256:ec9f4a9153b9e2c233420642ee98a8b944322e8b39a9b6912430fb24e88b81b9"
+            md5sum="dac98184a01e7e0c171302e3b78bf507" size="13917363"
+	    source-subdir="source4">
+      <patch file="samba.configure-for-libs.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools id="talloc"
+	    makeargs="tallocdir='$(srcdir)'"
+	    makeinstallargs="install tallocdir='$(srcdir)'">
+    <branch repo="samba.org"
+            module="samba4/samba-4.0.0alpha11.tar.gz" version="4.0.0alpha11"
+            hash="sha256:ec9f4a9153b9e2c233420642ee98a8b944322e8b39a9b6912430fb24e88b81b9"
+            md5sum="dac98184a01e7e0c171302e3b78bf507" size="13917363"
+	    source-subdir="lib/talloc">
+      <patch file="samba.configure-for-libs.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools id="tdb">
+    <branch repo="samba.org"
+            module="samba4/samba-4.0.0alpha11.tar.gz" version="4.0.0alpha11"
+            hash="sha256:ec9f4a9153b9e2c233420642ee98a8b944322e8b39a9b6912430fb24e88b81b9"
+            md5sum="dac98184a01e7e0c171302e3b78bf507" size="13917363"
+	    source-subdir="lib/tdb">
+      <patch file="samba.configure-for-libs.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools id="tevent">
+    <branch repo="samba.org"
+            module="samba4/samba-4.0.0alpha11.tar.gz" version="4.0.0alpha11"
+            hash="sha256:ec9f4a9153b9e2c233420642ee98a8b944322e8b39a9b6912430fb24e88b81b9"
+            md5sum="dac98184a01e7e0c171302e3b78bf507" size="13917363"
+	    source-subdir="lib/tevent">
+      <patch file="samba.configure-for-libs.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools id="libmapi" skip-autogen="never" autogen-sh="configure"
+             supports-non-srcdir-builds="no">
+    <branch repo="sourceforge.net"
+            module="openchange/openchange-0.9-COCHRANE.tar.gz" version="0.9"
+            hash="sha256:b8467d1fa9fd025323a2ddc2d4b4a29a78fee1b6cb1f4373725e45f7769b5402"
+            md5sum="9dc6c91ea5d4afce4a5aa81215835b8b" size="1601358"/>
+    <dependencies>
+      <dep package="tdb"/>
+      <dep package="talloc"/>
+      <dep package="tevent"/>
+      <dep package="samba4"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="evolution-mapi">
+    <branch revision="gnome-3-0"/>
+    <dependencies>
+      <dep package="intltool"/>
+      <dep package="evolution-data-server"/>
+      <dep package="evolution"/>
+      <dep package="libmapi"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="libglade">
+    <branch/>
+    <dependencies>
+      <dep package="gtk+-2"/>
+      <dep package="libxml2"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="network-manager-pptp">
+    <branch/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="dbus-glib"/>
+      <dep package="gtk+"/>
+      <dep package="gconf"/>
+      <dep package="gnome-keyring"/>
+      <dep package="NetworkManager"/>
+      <dep package="libnotify"/>
+      <dep package="network-manager-applet"/>
+   </dependencies>
+  </autotools>
+
+  <autotools id="network-manager-openvpn">
+    <branch/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="dbus-glib"/>
+      <dep package="gtk+"/>
+      <dep package="gconf"/>
+      <dep package="gnome-keyring"/>
+      <dep package="NetworkManager"/>
+      <dep package="libnotify"/>
+      <dep package="network-manager-applet"/>
+   </dependencies>
+  </autotools>
+
+  <autotools id="network-manager-vpnc">
+    <branch/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="dbus-glib"/>
+      <dep package="gtk+"/>
+      <dep package="gconf"/>
+      <dep package="gnome-keyring"/>
+      <dep package="NetworkManager"/>
+      <dep package="libnotify"/>
+      <dep package="network-manager-applet"/>
+   </dependencies>
+  </autotools>
+
+  <autotools id="network-manager-openconnect">
+    <branch/>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="dbus-glib"/>
+      <dep package="gtk+"/>
+      <dep package="gconf"/>
+      <dep package="gnome-keyring"/>
+      <dep package="NetworkManager"/>
+      <dep package="libnotify"/>
+      <dep package="network-manager-applet"/>
+   </dependencies>
   </autotools>
 
 </moduleset>

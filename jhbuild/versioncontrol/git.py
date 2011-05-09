@@ -417,6 +417,9 @@ class GitBranch(Branch):
                 raise CommandError(_('Failed to update module as it switched to git (you should check for changes then remove the directory).'))
             raise CommandError(_('Failed to update module (missing .git) (you should check for changes then remove the directory).'))
 
+        buildscript.execute(['git', 'remote', 'set-url', 'origin',
+                self.module], **git_extra_args)
+
         if update_mirror:
             self.update_dvcs_mirror(buildscript)
 
@@ -435,9 +438,7 @@ class GitBranch(Branch):
         return True
 
     def checkout(self, buildscript):
-        if not inpath('git', os.environ['PATH'].split(os.pathsep)) and \
-            (sys.platform.startswith('win') and \
-             not inpath('git.bat', os.environ['PATH'].split(os.pathsep))):
+        if not inpath('git', os.environ['PATH'].split(os.pathsep)):
             raise CommandError(_('%s not found') % 'git')
         Branch.checkout(self, buildscript)
 

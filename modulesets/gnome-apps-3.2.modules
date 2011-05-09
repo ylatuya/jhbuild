@@ -40,9 +40,9 @@
 <repository type="git" name="colord.gitorious.org"
     href="git://gitorious.org/colord/master.git"/>
 
-  <include href="gnome-suites-core-3.0.modules"/>
+  <include href="gnome-suites-core-3.2.modules"/>
 
-  <!-- NOTE: gnome-suites-core-3.0 and gnome-suites-core-deps-3.0
+  <!-- NOTE: gnome-suites-core-3.2 and gnome-suites-core-deps-3.2
        are supposed to remain self-contained. If apps have dependencies
        that are not covered there, add them in here
     -->
@@ -82,7 +82,7 @@
   </autotools>
 
   <autotools id="gnome-keyring-2" autogenargs="--with-gtk=2.0">
-    <branch checkoutdir="gnome-keyring-2" module="gnome-keyring" revision="gnome-3-0"/>
+    <branch checkoutdir="gnome-keyring-2" module="gnome-keyring"/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="dbus"/>
@@ -112,7 +112,7 @@
   </autotools>
 
   <autotools id="gtkhtml">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtk+"/>
@@ -155,8 +155,7 @@
     <branch module="gssdp-0.10.0.tar.gz" version="0.10.0"
             repo="gupnp.org"
             hash="sha256:94de92bb4f7906ed2f047b0146a3b21d53d09908fe1f0149484f61c6afc598ea"
-            size="370461">
-    </branch>
+            size="370461"/>
     <dependencies>
       <dep package="glib"/>
       <dep package="libsoup"/>
@@ -186,8 +185,7 @@
   <autotools id="gupnp-av">
     <branch module="gupnp-av-0.8.0.tar.gz" version="0.8.0" repo="gupnp.org"
             hash="sha256:e6aa032377488cedc4e347519bd30701c583780b7c54f00bab083f2316a93dc9"
-            size="407464">
-    </branch>
+            size="407464"/>
     <dependencies>
       <dep package="glib"/>
       <dep package="gupnp"/>
@@ -198,9 +196,9 @@
   </autotools>
 
   <autotools id="gupnp-dlna" autogen-sh="autogen.sh">
-    <branch module="gupnp-dlna-0.6.1.tar.gz" version="0.6.1" repo="gupnp.org"
-            hash="sha256:b87a5949602a57ab47d1a3210ff199b4b64fd6109476749bcd711db5d7c19e1c"
-            md5sum="0265d8864edcddc3367dcfe431c3bb53" size="388881">
+    <branch module="gupnp-dlna-0.5.1.tar.gz" version="0.5.1" repo="gupnp.org"
+            hash="sha256:9888386ac3fd142a7a09229171201c12f46a122383cbeafd9a3eb77f1a182c52"
+            md5sum="be4d6ab220d29e1c09f0ca9aef7caaae" size="383660">
     </branch>
     <dependencies>
       <dep package="libxml2"/>
@@ -216,10 +214,10 @@
     </suggests>
  </autotools>
 
-  <tarball id="gupnp-vala" version="0.8.0">
-    <source href="http://www.gupnp.org/sites/all/files/sources/gupnp-vala-0.8.0.tar.gz"
-            hash="sha256:052771ca166bceb7b57ab89169235d204b923b205956b96cedc2b8b7f6ba5544"
-            size="114750"/>
+  <tarball id="gupnp-vala" version="0.7.5">
+    <source href="http://www.gupnp.org/sites/all/files/sources/gupnp-vala-0.7.5.tar.gz"
+            hash="sha256:e42e39a7338fddb7d50f4542cb1fd2a65e5df2e82ad3fa88806567f5c2c5f817"
+            size="117081"/>
     <dependencies>
       <dep package="glib"/>
       <dep package="gssdp"/>
@@ -409,7 +407,7 @@
   </tarball>
 
   <autotools id="gdl">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="librsvg"/>
@@ -633,7 +631,7 @@
   </tarball>
 
   <autotools id="gnome-color-manager">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="glib"/>
       <dep package="gnome-control-center"/>
@@ -645,15 +643,13 @@
       <dep package="libcanberra"/>
       <dep package="libnotify"/>
       <dep package="vte"/>
+      <dep package="colord"/>
       <!-- and libtiff -->
     </dependencies>
-    <suggests>
-      <dep package="colord"/>
-    </suggests>
   </autotools>
 
   <autotools id="gnome-devel-docs">
-    <branch revision="gnome-2-32"/>
+    <branch/>
     <dependencies>
       <dep package="gnome-doc-utils"/>
     </dependencies>
@@ -696,7 +692,7 @@
   </autotools>
 
   <autotools id="anjuta">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="glib"/>
@@ -732,7 +728,7 @@
 
 
   <autotools id="cheese">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="glib"/>
@@ -781,7 +777,7 @@
   </autotools>
 
   <autotools id="evolution" autogenargs="--disable-image-inline --disable-pst-import --disable-nm">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtk+"/>
@@ -830,13 +826,13 @@
   </autotools>
 
   <autotools id="gnome-games">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="librsvg"/>
       <dep package="rarian"/>
       <dep package="gtk+"/>
-      <dep package="pygtk"/>
+      <dep package="pygobject"/>
       <dep package="clutter"/>
       <dep package="clutter-gtk"/>
       <dep package="vala"/>
@@ -868,7 +864,7 @@
   </waf>
 
   <autotools id="nautilus-sendto">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="glib"/>
       <dep package="gtk+"/>
@@ -881,7 +877,7 @@
   </autotools>
 
   <autotools id="orca">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="dbus-python"/>
       <dep package="gconf"/>
@@ -920,7 +916,7 @@
   </autotools>
 
   <autotools id="seahorse" autogenargs="--with-gtk=3.0">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="gconf"/>
@@ -963,7 +959,7 @@
   </autotools>
 
   <autotools id="tomboy">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtk-sharp"/>
@@ -978,7 +974,7 @@
   </autotools>
 
   <autotools id="vinagre">
-    <branch revision="gnome-3-0"/>
+    <branch/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="libxml2"/>
@@ -987,10 +983,10 @@
       <dep package="gtk-vnc"/>
       <dep package="libpeas"/>
       <dep package="libgnome-keyring"/>
+      <dep package="vala"/>
     </dependencies>
     <suggests>
       <dep package="avahi"/>
-      <dep package="gnome-panel"/>
       <dep package="telepathy-glib"/>
       <dep package="vte"/>
     </suggests>

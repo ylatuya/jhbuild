@@ -123,7 +123,7 @@ def unpack_archive(buildscript, localfile, target_directory, checkoutdir=None,
     if ext == '.lzma':
         if has_command('lzcat') and has_command('tar'):
             buildscript.execute('lzcat -d "%s" | tar xf -' % localfile,
-                    cwd = target_directory)
+                    cwd=target_directory)
         # MSYS has lzma but not lzcat
         elif has_command('lzma') and has_command('tar'):
             tar_file = localfile[:-5]
