@@ -1,7 +1,7 @@
-AC_INIT([jhbuild], [2.27.91],
+AC_INIT([jhbuild], [2.32.4],
 		[http://bugzilla.gnome.org/enter_bug.cgi?product=jhbuild])
 AC_CONFIG_SRCDIR(jhbuild/main.py)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wno-portability])
 GNOME_COMMON_INIT
 AM_MAINTAINER_MODE
 AC_PREFIX_DEFAULT(~/.local/)
@@ -9,11 +9,14 @@ AC_PREFIX_DEFAULT(~/.local/)
 AM_PATH_PYTHON
 
 # i18n
+IT_PROG_INTLTOOL([0.40.0])
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
+
 GETTEXT_PACKAGE="jhbuild"
 AC_SUBST([GETTEXT_PACKAGE])
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], "$GETTEXT_PACKAGE", [Gettext package])
-AM_GLIB_GNU_GETTEXT
-IT_PROG_INTLTOOL([0.35.0])
 
 AC_PROG_CC
 PKG_PROG_PKG_CONFIG
@@ -47,5 +50,6 @@ AC_CONFIG_FILES([
 	buildbot/Makefile
 ])
 AC_OUTPUT([
+        examples/jhbuild.desktop
 	jhbuild.desktop.in
 ])

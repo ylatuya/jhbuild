@@ -51,13 +51,10 @@ class AntModule(Package, DownloadableModule):
     def get_builddir(self, buildscript):
         if buildscript.config.buildroot and self.supports_non_srcdir_builds:
             d = buildscript.config.builddir_pattern % (
-                os.path.basename(self.get_srcdir(buildscript)))
+                self.branch.checkoutdir or self.branch.get_module_basename())
             return os.path.join(buildscript.config.buildroot, d)
         else:
             return self.get_srcdir(buildscript)
-
-    def get_revision(self):
-        return self.branch.branchname
 
     def do_build(self, buildscript):
         buildscript.set_action(_('Building'), self)

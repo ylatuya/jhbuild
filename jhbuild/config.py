@@ -19,8 +19,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os
+import re
 import sys
 import traceback
+import time
 import types
 import logging
 import __builtin__
@@ -47,16 +49,16 @@ _known_keys = [ 'moduleset', 'modules', 'skip', 'tags', 'prefix',
                 'tarballdir', 'pretty_print', 'svn_program', 'makedist',
                 'makedistcheck', 'nonotify', 'notrayicon', 'cvs_program',
                 'checkout_mode', 'copy_dir', 'module_checkout_mode',
-                'build_policy', 'trycheckout', 'min_time',
-                'nopoison', 'forcecheck', 'makecheck_advisory',
-                'quiet_mode', 'progress_bar', 'module_extra_env',
-                'jhbuildbot_master', 'jhbuildbot_slavename', 'jhbuildbot_password',
-                'jhbuildbot_svn_commits_box', 'jhbuildbot_slaves_dir',
-                'jhbuildbot_dir', 'jhbuildbot_mastercfg',
-                'use_local_modulesets', 'ignore_suggests', 'modulesets_dir',
-                'mirror_policy', 'module_mirror_policy', 'dvcs_mirror_dir',
-                'build_targets',
-                ]
+                'build_policy', 'trycheckout', 'min_age',
+                'nopoison', 'module_nopoison', 'forcecheck',
+                'makecheck_advisory', 'quiet_mode', 'progress_bar',
+                'module_extra_env', 'jhbuildbot_master', 'jhbuildbot_slavename',
+                'jhbuildbot_password', 'jhbuildbot_svn_commits_box',
+                'jhbuildbot_slaves_dir', 'jhbuildbot_dir',
+                'jhbuildbot_mastercfg', 'use_local_modulesets',
+                'ignore_suggests', 'modulesets_dir', 'mirror_policy',
+                'module_mirror_policy', 'dvcs_mirror_dir', 'build_targets',
+                'cmakeargs', 'module_cmakeargs' ]
 
 env_prepends = {}
 def prependpath(envvar, path):
@@ -64,19 +66,14 @@ def prependpath(envvar, path):
 
 def addpath(envvar, path):
     '''Adds a path to an environment variable.'''
-
-    # special case ACLOCAL/ACLOCAL_FLAGS
-    if envvar in [ 'ACLOCAL', 'ACLOCAL_FLAGS' ] :
+    # special case ACLOCAL_FLAGS
+    if envvar in [ 'ACLOCAL_FLAGS' ]:
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
 
-        # Always set both vars, the worst that can happen is redundant path entries. To do the Right
-        # Thing we need to access config.use_autoreconf.
-        envvar = 'ACLOCAL'
-        envval = os.environ.get(envvar, 'aclocal -I %s' % path)
-        parts = ['aclocal', '-I', path] + envval.split()[1:]
-        i = 3
-
+        envval = os.environ.get(envvar, '-I %s' % path)
+        parts = ['-I', path] + envval.split()
+        i = 2
         while i < len(parts)-1:
             if parts[i] == '-I':
                 # check if "-I parts[i]" comes earlier
@@ -89,9 +86,6 @@ def addpath(envvar, path):
             else:
                 i += 1
         envval = ' '.join(parts)
-
-        os.environ['ACLOCAL_FLAGS'] = ' '.join(parts[1:])
-
     elif envvar in [ 'LDFLAGS', 'CFLAGS', 'CXXFLAGS' ]:
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
@@ -114,7 +108,8 @@ def addpath(envvar, path):
             if sys.platform.startswith('win'):
                 path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
 
-            if sys.platform.startswith('win') and path[1]==':':
+            if sys.platform.startswith('win') and len(path) > 1 and \
+               path[1] == ':':
                 # Windows: Don't allow c:/ style paths in :-separated env vars
                 # for obvious reasons. /c/ style paths are valid - if a var is
                 # separated by : it will only be of interest to programs inside
@@ -143,7 +138,7 @@ def parse_relative_time(s):
         coeffs = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w':7*86400}
         return float(m.group(1)) * coeffs[m.group(2)]
     else:
-        raise ValueError(_('unable to parse \'%s\' as relative time.') % s)
+        raise ValueError
 
 
 class Config:
@@ -159,7 +154,7 @@ class Config:
 
         if not self._orig_environ:
             self.__dict__['_orig_environ'] = os.environ.copy()
-            os.environ['UNMANGLED_PATH'] = os.environ.get('PATH', '')
+        os.environ['UNMANGLED_PATH'] = os.environ.get('PATH', '')
 
         try:
             SRCDIR
@@ -294,10 +289,6 @@ class Config:
     def setup_env(self):
         '''set environment variables for using prefix'''
 
-        if self.prefix[len(self.prefix)-1] != '/':
-            self.prefix += '/'
-            print "Warning: added '/' to prefix '%s'\n" % self.prefix
-
         if not os.path.exists(self.prefix):
             try:
                 os.makedirs(self.prefix)
@@ -306,11 +297,17 @@ class Config:
 
         os.environ['UNMANGLED_LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '')
 
+        if not os.environ.get('DBUS_SYSTEM_BUS_ADDRESS'):
+            # Use the distribution's D-Bus for the system bus. JHBuild's D-Bus
+            # will # be used for the session bus
+            os.environ['DBUS_SYSTEM_BUS_ADDRESS'] = 'unix:path=/var/run/dbus/system_bus_socket'
+
         # LD_LIBRARY_PATH
         if self.use_lib64:
             libdir = os.path.join(self.prefix, 'lib64')
         else:
             libdir = os.path.join(self.prefix, 'lib')
+        self.libdir = libdir
         addpath('LD_LIBRARY_PATH', libdir)
 
         # LDFLAGS and C_INCLUDE_PATH are required for autoconf configure
@@ -336,6 +333,7 @@ class Config:
 
         # MANPATH
         manpathdir = os.path.join(self.prefix, 'share', 'man')
+        addpath('MANPATH', '')
         addpath('MANPATH', manpathdir)
 
         # PKG_CONFIG_PATH
@@ -354,6 +352,17 @@ class Config:
         addpath('PKG_CONFIG_PATH', pkgconfigdatadir)
         addpath('PKG_CONFIG_PATH', pkgconfigdir)
 
+        # GI_TYPELIB_PATH
+        if not 'GI_TYPELIB_PATH' in os.environ:
+            if self.use_lib64:
+                full_name = '/usr/lib64/girepository-1.0'
+            else:
+                full_name = '/usr/lib/girepository-1.0'
+            if os.path.exists(full_name):
+                addpath('GI_TYPELIB_PATH', full_name)
+        typelibpath = os.path.join(self.libdir, 'girepository-1.0')
+        addpath('GI_TYPELIB_PATH', typelibpath)
+
         # XDG_DATA_DIRS
         xdgdatadir = os.path.join(self.prefix, 'share')
         addpath('XDG_DATA_DIRS', xdgdatadir)
@@ -366,19 +375,28 @@ class Config:
         xcursordir = os.path.join(self.prefix, 'share', 'icons')
         addpath('XCURSOR_PATH', xcursordir)
 
-        # ACLOCAL
+        # ACLOCAL_FLAGS
         aclocaldir = os.path.join(self.prefix, 'share', 'aclocal')
         if not os.path.exists(aclocaldir):
             try:
                 os.makedirs(aclocaldir)
             except:
                 raise FatalError(_("Can't create %s directory") % aclocaldir)
-        addpath('ACLOCAL', aclocaldir)
+        if os.path.exists('/usr/share/aclocal'):
+            addpath('ACLOCAL_FLAGS', '/usr/share/aclocal')
+        if os.path.exists('/usr/local/share/aclocal'):
+            addpath('ACLOCAL_FLAGS', '/usr/local/share/aclocal')
+        addpath('ACLOCAL_FLAGS', aclocaldir)
 
         # PERL5LIB
         perl5lib = os.path.join(self.prefix, 'lib', 'perl5')
         addpath('PERL5LIB', perl5lib)
 
+        # These two variables are so that people who use "jhbuild shell"
+        # can tweak their shell prompts and such to show "I'm under jhbuild".
+        # The first variable is the obvious one to look for; the second
+        # one is for historical reasons.
+        os.environ['UNDER_JHBUILD'] = 'true'
         os.environ['CERTIFIED_GNOMIE'] = 'yes'
 
         # PYTHONPATH
@@ -397,9 +415,9 @@ class Config:
         # actual value by asking distutils
         # <http://bugzilla.gnome.org/show_bug.cgi?id=575426>
         try:
-            python_packages_dir = get_output([python_bin, 'c',
+            python_packages_dir = get_output([python_bin, '-c',
                 'import os, distutils.sysconfig; '\
-                'print distutils.sysconfig.get_python_lib(prefix="").split(os.path.sep)[-1]'],
+                'print distutils.sysconfig.get_python_lib(prefix="%s").split(os.path.sep)[-1]' % self.prefix],
                 get_stderr=False).strip()
         except CommandError:
             python_packages_dir = 'site-packages'
@@ -499,6 +517,9 @@ class Config:
         if hasattr(options, 'clean') and (
                 options.clean and not 'clean' in self.build_targets):
             self.build_targets.insert(0, 'clean')
+        if hasattr(options, 'check') and (
+                options.check and not 'check' in self.build_targets):
+            self.build_targets.insert(0, 'check')
         if hasattr(options, 'dist') and (
                 options.dist and not 'dist' in self.build_targets):
             self.build_targets.append('dist')
@@ -529,10 +550,10 @@ class Config:
             self.build_policy = 'all'
         if hasattr(options, 'min_age') and options.min_age:
             try:
-                self.min_time = time.time() - parse_relative_time(options.min_age)
+                self.min_age = time.time() - parse_relative_time(options.min_age)
             except ValueError:
-                raise FatalError(_('Failed to parse relative time'))
-
+                raise FatalError(_('Failed to parse \'min_age\' relative '
+                                   'time'))
 
     def __setattr__(self, k, v):
         '''Override __setattr__ for additional checks on some options.'''

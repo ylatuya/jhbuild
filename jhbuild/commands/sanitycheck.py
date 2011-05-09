@@ -23,10 +23,10 @@ import re
 
 from jhbuild.commands import Command, register_command
 from jhbuild.utils.cmds import get_output, check_version
-from jhbuild.errors import UsageError, FatalError
+from jhbuild.errors import UsageError, CommandError
 
-def get_aclocal_path(version):
-    data = get_output(['aclocal-%s' % version, '--print-ac-dir'])
+def get_aclocal_path():
+    data = get_output(['aclocal', '--print-ac-dir'])
     path = [data[:-1]]
     env = os.environ.get('ACLOCAL', '').split()
     i = 1
@@ -54,7 +54,7 @@ class cmd_sanitycheck(Command):
     name = 'sanitycheck'
     usage_args = ''
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         if args:
             raise UsageError(_('no extra arguments expected'))
     
@@ -76,42 +76,30 @@ class cmd_sanitycheck(Command):
         if not check_version(['pkg-config', '--version'],
                              r'^([\d.]+)', '0.14.0'):
             uprint(_('%s not found') % 'pkg-config >= 0.14.0')
-        if not check_version(['db2html', '--version'],
-                             r'.* ([\d.]+)', '0.0'):
-            uprint(_('%s not found') % 'db2html')
         if not check_version(['autoconf', '--version'],
                              r'autoconf \([^)]*\) ([\d.]+)', '2.53'):
             uprint(_('%s not found') % 'autoconf >= 2.53')
-        if not check_version(['automake-1.4', '--version'],
-                             r'automake \([^)]*\) ([\d.]+)', '1.4'):
-            uprint(_('%s not found') % 'automake-1.4')
-        if not check_version(['automake-1.7', '--version'],
-                             r'automake \([^)]*\) ([\d.]+)', '1.7'):
-            uprint(_('%s not found') % 'automake-1.7')
-        if not check_version(['automake-1.8', '--version'],
-                             r'automake \([^)]*\) ([\d.]+)', '1.8'):
-            uprint(_('%s not found') % 'automake-1.8')
-        if not check_version(['automake-1.9', '--version'],
-                             r'automake \([^)]*\) ([\d.]+)', '1.9'):
-            uprint(_('%s not found') % 'automake-1.9')
+        if not check_version(['automake', '--version'],
+                             r'automake \([^)]*\) ([\d.]+)', '1.10'):
+            uprint(_('%s not found') % 'automake >= 1.10')
 
-        not_in_path = []
-        for amver in ('1.4', '1.7', '1.8', '1.9'):
-            try:
-                path = get_aclocal_path(amver)
-            except:
-                continue # exception raised if aclocal-ver not runnable
+        try:
+            not_in_path = []
+            path = get_aclocal_path()
 
             macros = ['libtool.m4', 'gettext.m4', 'pkg.m4']
             for macro in macros:
                 if not inpath (macro, path):
-                    uprint(_("aclocal-%s can't see %s macros") % (amver, macro.split('.m4')[0]))
+                    uprint(_("aclocal can't see %s macros") % (macro.split('.m4')[0]))
                     if not_in_path.count(macro) == 0:
                         not_in_path.append(macro)
 
-        if len(not_in_path) > 0:
-            uprint(_("Please copy the lacking macros (%s) in one of the following paths: %s" 
-                     % (', '.join(not_in_path), ', '.join(path))))
+            if len(not_in_path) > 0:
+                uprint(_("Please copy the lacking macros (%s) in one of the following paths: %s"
+                         % (', '.join(not_in_path), ', '.join(path))))
+
+        except CommandError, exc:
+            uprint(str(exc))
 
         # XML catalog sanity checks
         if not os.access('/etc/xml/catalog', os.R_OK):
@@ -141,6 +129,10 @@ class cmd_sanitycheck(Command):
         if not inpath('svn', os.environ['PATH'].split(os.pathsep)):
             uprint(_('%s not found') % 'svn')
 
+        if not (inpath('curl', os.environ['PATH'].split(os.pathsep)) or
+                inpath('wget', os.environ['PATH'].split(os.pathsep))):
+            uprint(_('%s or %s not found') % ('curl', 'wget'))
+
         # check for git:
         if not inpath('git', os.environ['PATH'].split(os.pathsep)):
             uprint(_('%s not found') % 'git')
@@ -155,5 +147,13 @@ class cmd_sanitycheck(Command):
                          uprint(_('%s not found') % 'git >= 1.5.6')
             except:
                 uprint(_('Could not check git program'))
+
+        # check for flex/bison:
+        if not inpath('flex', os.environ['PATH'].split(os.pathsep)):
+            uprint(_('%s not found') % 'flex')
+        if not inpath('bison', os.environ['PATH'].split(os.pathsep)):
+            uprint(_('%s not found') % 'bison')
+        if not inpath('xzcat', os.environ['PATH'].split(os.pathsep)):
+            uprint(_('%s not found') % 'xzcat')
 
 register_command(cmd_sanitycheck)

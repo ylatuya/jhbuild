@@ -31,6 +31,7 @@ from optparse import make_option
 import socket
 import __builtin__
 import csv
+import logging
 
 try:
     import elementtree.ElementTree as ET
@@ -86,7 +87,7 @@ class cmd_bot(Command):
                         help=_('log file location')),
             make_option('--slaves-dir', metavar='SLAVESDIR',
                         action='store', dest='slaves_dir', default=None,
-                        help=_('directory with slaves files (only with --start-server)')),
+                        help=_('directory with slave files (only with --start-server)')),
             make_option('--buildbot-dir', metavar='BUILDBOTDIR',
                         action='store', dest='buildbot_dir', default=None,
                         help=_('directory with buildbot work files (only with --start-server)')),
@@ -98,7 +99,7 @@ class cmd_bot(Command):
                         help=_('exec a buildbot step (internal use only)')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         if options.setup:
             return self.setup(config)
 
@@ -162,15 +163,19 @@ class cmd_bot(Command):
                     phases = ['checkout']
                 elif args[0] == 'build':
                     config.alwaysautogen = True
+                    # make check will be run in another step
+                    config.makecheck = False
                     config.build_targets = ['install']
                 elif args[0] == 'check':
+                    config.makecheck = True
+                    config.build_targets = ['check']
                     phases = ['check']
                 elif args[0] == 'clean':
                     phases = ['clean']
                 rc = buildscript.build(phases=phases)
             else:
                 command = args[0]
-                rc = jhbuild.commands.run(command, config, args[1:])
+                rc = jhbuild.commands.run(command, config, args[1:], help=None)
             sys.exit(rc)
 
         if options.start_server:
@@ -276,23 +281,33 @@ class cmd_bot(Command):
             version = None
 
             max_builds = 2
+            scheduler = None
 
             run_checks = True
             run_coverage_report = False
             run_clean_afterwards = False
 
             def load_extra_configuration(self, slaves_dir):
+                from twisted.python import log
                 slave_xml_file = os.path.join(slaves_dir, self.slavename + '.xml')
                 if not os.path.exists(slave_xml_file):
+                    log.msg(_('No description for slave %s.') % self.slavename)
                     return
                 try:
                     cfg = ET.parse(slave_xml_file)
                 except: # parse error
+                    log.msg(_('Failed to parse slave config for %s.') % self.slavename)
                     return
 
                 for attribute in ('config/max_builds', 'config/missing_timeout',
                             'config/run_checks', 'config/run_coverage_report',
                             'config/run_clean_afterwards',
+                            'config/scheduler',
+                            'nightly_scheduler/minute',
+                            'nightly_scheduler/hour',
+                            'nightly_scheduler/dayOfMonth',
+                            'nightly_scheduler/month',
+                            'nightly_scheduler/dayOfWeek',
                             'info/contact_name', 'info/contact_email',
                             'info/url', 'info/distribution', 'info/architecture',
                             'info/version'):
@@ -311,7 +326,19 @@ class cmd_bot(Command):
                     if attr_name in ('run_checks', 'run_coverage_report', 'run_clean_afterwards'):
                         value = (value == 'yes')
 
+                    if attr_name in ('minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek'):
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            value = '*'
+
                     setattr(self, attr_name, value)
+
+                if self.scheduler == 'nightly':
+                    self.nightly_kwargs = {}
+                    for attr_name in ('minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek'):
+                        if hasattr(self, attr_name):
+                            self.nightly_kwargs[attr_name] = getattr(self, attr_name)
 
         class JhBuildMaster(BuildMaster):
             jhbuild_config = config
@@ -338,10 +365,13 @@ class cmd_bot(Command):
 
                 known_keys = ("bots", "slaves",
                               "sources", "change_source",
-                              "schedulers", "builders",
-                              "slavePortnum", "debugPassword", "manhole",
-                              "status", "projectName", "projectURL", "buildbotURL",
-                              "properties"
+                              "schedulers", "builders", "mergeRequests",
+                              "slavePortnum", "debugPassword", "logCompressionLimit",
+                              "manhole", "status", "projectName", "projectURL",
+                              "buildbotURL", "properties", "prioritizeBuilders",
+                              "eventHorizon", "buildCacheSize", "logHorizon", "buildHorizon",
+                              "changeHorizon", "logMaxSize", "logMaxTailSize",
+                              "logCompressionMethod",
                               )
                 for k in config.keys():
                     if k not in known_keys:
@@ -379,6 +409,7 @@ class cmd_bot(Command):
                     from jhbuild.buildbot.changes import GnomeMaildirSource
                     config['change_source'] = GnomeMaildirSource(
                             self.jhbuild_config.jhbuildbot_svn_commits_box,
+                            modules=module_list,
                             prefix=None)
                 else:
                     # support injection (use 'buildbot sendchange')
@@ -386,14 +417,21 @@ class cmd_bot(Command):
                     config['change_source'] = PBChangeSource()
 
                 # Schedulers
-                from jhbuild.buildbot.scheduler import SerialScheduler, OnCommitScheduler
+                from jhbuild.buildbot.scheduler import SerialScheduler, NightlySerialScheduler, OnCommitScheduler
                 config['schedulers'] = []
                 for slave in config['slaves']:
                     s = None
                     for project in config['projects']:
                         buildername = str('%s-%s' % (project, slave.slavename))
-                        s = SerialScheduler(buildername, project, upstream=s,
-                                            builderNames=[buildername])
+                        scheduler_kwargs = {}
+                        if slave.scheduler == 'nightly':
+                            scheduler_class = NightlySerialScheduler
+                            scheduler_kwargs = slave.nightly_kwargs
+                        else:
+                            scheduler_class = SerialScheduler
+                        s = scheduler_class(buildername, project, upstream=s,
+                                            builderNames=[buildername],
+                                            **scheduler_kwargs)
                         config['schedulers'].append(s)
                         if self.jhbuild_config.jhbuildbot_svn_commits_box:
                             # schedulers that will launch job when receiving
@@ -437,13 +475,6 @@ class cmd_bot(Command):
                     # required
                     schedulers = config['schedulers']
                     builders = config['builders']
-                    for k in builders:
-                        if k['name'].startswith("_"):
-                            errmsg = ("builder names must not start with an "
-                                      "underscore: " + k['name'])
-                            log.err(errmsg)
-                            raise ValueError(errmsg)
-
                     slavePortnum = config['slavePortnum']
                     #slaves = config['slaves']
                     #change_source = config['change_source']
@@ -456,6 +487,34 @@ class cmd_bot(Command):
                     projectURL = config.get('projectURL')
                     buildbotURL = config.get('buildbotURL')
                     properties = config.get('properties', {})
+                    buildCacheSize = config.get('buildCacheSize', None)
+                    eventHorizon = config.get('eventHorizon', None)
+                    logHorizon = config.get('logHorizon', None)
+                    buildHorizon = config.get('buildHorizon', None)
+                    logCompressionLimit = config.get('logCompressionLimit', 4*1024)
+                    if logCompressionLimit is not None and not \
+                            isinstance(logCompressionLimit, int):
+                        raise ValueError("logCompressionLimit needs to be bool or int")
+                    logCompressionMethod = config.get('logCompressionMethod', "bz2")
+                    if logCompressionMethod not in ('bz2', 'gz'):
+                        raise ValueError("logCompressionMethod needs to be 'bz2', or 'gz'")
+                    logMaxSize = config.get('logMaxSize')
+                    if logMaxSize is not None and not \
+                            isinstance(logMaxSize, int):
+                        raise ValueError("logMaxSize needs to be None or int")
+                    logMaxTailSize = config.get('logMaxTailSize')
+                    if logMaxTailSize is not None and not \
+                            isinstance(logMaxTailSize, int):
+                        raise ValueError("logMaxTailSize needs to be None or int")
+                    mergeRequests = config.get('mergeRequests')
+                    if mergeRequests is not None and not callable(mergeRequests):
+                        raise ValueError("mergeRequests must be a callable")
+                    prioritizeBuilders = config.get('prioritizeBuilders')
+                    if prioritizeBuilders is not None and not callable(prioritizeBuilders):
+                        raise ValueError("prioritizeBuilders must be callable")
+                    changeHorizon = config.get("changeHorizon")
+                    if changeHorizon is not None and not isinstance(changeHorizon, int):
+                        raise ValueError("changeHorizon needs to be an int")
 
                 except KeyError, e:
                     log.msg("config dictionary is missing a required parameter")
@@ -482,6 +541,9 @@ class cmd_bot(Command):
                 #if "sources" in config:
                 #    raise KeyError("c['sources'] is no longer accepted")
 
+                if changeHorizon is not None:
+                    self.change_svc.changeHorizon = changeHorizon
+
                 change_source = config.get('change_source', [])
                 if isinstance(change_source, (list, tuple)):
                     change_sources = change_source
@@ -497,9 +559,10 @@ class cmd_bot(Command):
 
                 # do some validation first
                 for s in slaves:
-                    assert isinstance(s, JhBuildSlave)
+                    assert interfaces.IBuildSlave.providedBy(s)
                     if s.slavename in ("debug", "change", "status"):
-                        raise KeyError, "reserved name '%s' used for a bot" % s.slavename
+                        raise KeyError(
+                            "reserved name '%s' used for a bot" % s.slavename)
                 if config.has_key('interlocks'):
                     raise KeyError("c['interlocks'] is no longer accepted")
 
@@ -519,10 +582,19 @@ class cmd_bot(Command):
                 slavenames = [s.slavename for s in slaves]
                 buildernames = []
                 dirnames = []
+
+                # convert builders from objects to config dictionaries
+                builders_dicts = []
                 for b in builders:
-                    if type(b) is tuple:
-                        raise ValueError("builder %s must be defined with a dict, "
-                                         "not a tuple" % b[0])
+                    if isinstance(b, buildbot.config.BuilderConfig):
+                        builders_dicts.append(b.getConfigDict())
+                    elif type(b) is dict:
+                        builders_dicts.append(b)
+                    else:
+                        raise ValueError("builder %s is not a BuilderConfig object (or a dict)" % b)
+                builders = builders_dicts
+
+                for b in builders:
                     if b.has_key('slavename') and b['slavename'] not in slavenames:
                         raise ValueError("builder %s uses undefined slave %s" \
                                          % (b['name'], b['slavename']))
@@ -534,6 +606,19 @@ class cmd_bot(Command):
                         raise ValueError("duplicate builder name %s"
                                          % b['name'])
                     buildernames.append(b['name'])
+
+                    # sanity check name (BuilderConfig does this too)
+                    if b['name'].startswith("_"):
+                        errmsg = ("builder names must not start with an "
+                                  "underscore: " + b['name'])
+                        log.err(errmsg)
+                        raise ValueError(errmsg)
+
+                    # Fix the dictionnary with default values, in case this wasn't
+                    # specified with a BuilderConfig object (which sets the same defaults)
+                    b.setdefault('builddir', buildbot.util.safeTranslate(b['name']))
+                    b.setdefault('slavebuilddir', b['builddir'])
+
                     if b['builddir'] in dirnames:
                         raise ValueError("builder %s reuses builddir %s"
                                          % (b['name'], b['builddir']))
@@ -564,28 +649,32 @@ class cmd_bot(Command):
 
                 # assert that all locks used by the Builds and their Steps are
                 # uniquely named.
-                locks = {}
+                lock_dict = {}
                 for b in builders:
                     for l in b.get('locks', []):
-                        if locks.has_key(l.name):
-                            if locks[l.name] is not l:
+                        if isinstance(l, locks.LockAccess): # User specified access to the lock
+                            l = l.lockid
+                        if lock_dict.has_key(l.name):
+                            if lock_dict[l.name] is not l:
                                 raise ValueError("Two different locks (%s and %s) "
                                                  "share the name %s"
-                                                 % (l, locks[l.name], l.name))
+                                                 % (l, lock_dict[l.name], l.name))
                         else:
-                            locks[l.name] = l
+                            lock_dict[l.name] = l
                     # TODO: this will break with any BuildFactory that doesn't use a
                     # .steps list, but I think the verification step is more
                     # important.
                     for s in b['factory'].steps:
                         for l in s[1].get('locks', []):
-                            if locks.has_key(l.name):
-                                if locks[l.name] is not l:
+                            if isinstance(l, locks.LockAccess): # User specified access to the lock
+                                l = l.lockid
+                            if lock_dict.has_key(l.name):
+                                if lock_dict[l.name] is not l:
                                     raise ValueError("Two different locks (%s and %s)"
                                                      " share the name %s"
-                                                     % (l, locks[l.name], l.name))
+                                                     % (l, lock_dict[l.name], l.name))
                             else:
-                                locks[l.name] = l
+                                lock_dict[l.name] = l
 
                 if not isinstance(properties, dict):
                     raise ValueError("c['properties'] must be a dictionary")
@@ -604,9 +693,32 @@ class cmd_bot(Command):
                 self.projectName = projectName
                 self.projectURL = projectURL
                 self.buildbotURL = buildbotURL
-                
+
                 self.properties = Properties()
                 self.properties.update(properties, self.configFileName)
+
+                self.status.logCompressionLimit = logCompressionLimit
+                self.status.logCompressionMethod = logCompressionMethod
+                self.status.logMaxSize = logMaxSize
+                self.status.logMaxTailSize = logMaxTailSize
+                # Update any of our existing builders with the current log parameters.
+                # This is required so that the new value is picked up after a
+                # reconfig.
+                for builder in self.botmaster.builders.values():
+                    builder.builder_status.setLogCompressionLimit(logCompressionLimit)
+                    builder.builder_status.setLogCompressionMethod(logCompressionMethod)
+                    builder.builder_status.setLogMaxSize(logMaxSize)
+                    builder.builder_status.setLogMaxTailSize(logMaxTailSize)
+
+                if mergeRequests is not None:
+                    self.botmaster.mergeRequests = mergeRequests
+                if prioritizeBuilders is not None:
+                    self.botmaster.prioritizeBuilders = prioritizeBuilders
+
+                self.buildCacheSize = buildCacheSize
+                self.eventHorizon = eventHorizon
+                self.logHorizon = logHorizon
+                self.buildHorizon = buildHorizon
 
                 # self.slaves: Disconnect any that were attached and removed from the
                 # list. Update self.checker with the new list of passwords, including

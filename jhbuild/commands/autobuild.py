@@ -36,6 +36,9 @@ class cmd_autobuild(Command):
             make_option('-c', '--clean',
                         action='store_true', dest='clean', default=False,
                         help=_('run make clean before make')),
+            make_option('--distcheck',
+                        action='store_true', dest='distcheck', default=False,
+                        help=_('run make distcheck after building')),
             make_option('-s', '--skip', metavar='MODULES',
                         action='append', dest='skip', default=[],
                         help=_('treat the given modules as up to date')),
@@ -49,18 +52,15 @@ class cmd_autobuild(Command):
                         action='store_true', dest='verbose', default=False,
                         help=_('verbose mode')),
             ])
-    
-    def run(self, config, options, args):
+
+    def run(self, config, options, args, help=None):
+        config.set_from_cmdline_options(options)
         config.buildscript = 'autobuild'
 
         config.autobuild_report_url = None
         config.verbose = False
         config.interact = False
 
-        if options.autogen:
-            config.alwaysautogen = True
-        if options.clean:
-            config.makeclean = True
         if options.reporturl is not None:
             config.autobuild_report_url = options.reporturl
         if options.verbose:

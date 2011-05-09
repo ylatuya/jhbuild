@@ -29,7 +29,8 @@ __all__ = [
 
 import os
 
-from jhbuild.errors import FatalError, CommandError, BuildStateError, SkipToEnd
+from jhbuild.errors import FatalError, CommandError, BuildStateError, \
+             SkipToEnd, UndefinedRepositoryError
 from jhbuild.utils.sxml import sxml
 
 _module_types = {}
@@ -98,14 +99,16 @@ def get_branch(node, repositories, default_repo, config):
         try:
             repo = repositories[childnode.getAttribute('repo')]
         except KeyError:
-            raise FatalError(_('Repository=%s not found for module id=%s. Possible repositories are %s' )
-                             % (childnode.getAttribute('repo'), name, repositories))
+            raise UndefinedRepositoryError(
+                _('Repository=%s not found for module id=%s. Possible repositories are %s')
+                  % (childnode.getAttribute('repo'), name, repositories))
     else:
         try:
             repo = repositories[default_repo]
         except KeyError:
-            raise FatalError(_('Default Repository=%s not found for module id=%s. Possible repositories are %s')
-                             % (default_repo, name, repositories))
+            raise UndefinedRepositoryError(
+                _('Default Repository=%s not found for module id=%s. Possible repositories are %s')
+                % (default_repo, name, repositories))
 
     if repo.mirrors:
         mirror_type = config.mirror_policy
@@ -142,7 +145,7 @@ class Package:
         raise NotImplementedError
 
     def get_revision(self):
-        return None
+        return self.branch.tree_id()
 
     def skip_phase(self, buildscript, phase, last_phase):
         try:
@@ -174,6 +177,12 @@ class Package:
     def check_build_policy(self, buildscript):
         if not buildscript.config.build_policy in ('updated', 'updated-deps'):
             return
+
+        # Always trigger a build for dirty branches if supported by the version
+        # control module.
+        if hasattr(self.branch, 'is_dirty') and self.branch.is_dirty():
+            return
+
         if not buildscript.packagedb.check(self.name, self.get_revision() or ''):
             # package has not been updated
             return
@@ -277,6 +286,8 @@ class MetaModule(Package):
     def get_builddir(self, buildscript):
         return buildscript.config.buildroot or \
                self.get_srcdir(buildscript)
+    def get_revision(self):
+        return None
 
     def to_sxml(self):
         return [sxml.metamodule(id=self.name),

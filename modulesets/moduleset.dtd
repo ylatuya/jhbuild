@@ -5,7 +5,7 @@
 <!ELEMENT repository (mirror*)>
 <!ATTLIST repository
 	name	 CDATA  #REQUIRED
-	type	 (bzr|cvs|darcs|git|hg|svn|tarball|arch|mtn)  #REQUIRED
+	type	 (arch|bzr|cvs|darcs|fossil|git|hg|svn|tarball)  #REQUIRED
 	default  (yes|no)  "no"
 	password CDATA  #IMPLIED
 	cvsroot	 CDATA  #IMPLIED
@@ -14,15 +14,19 @@
 	server   CDATA  #IMPLIED
 	database CDATA  #IMPLIED
 	defbranch CDATA #IMPLIED
-	developer-href-example CDATA #IMPLIED>
+	developer-href-example CDATA #IMPLIED
+	trunk-template CDATA #IMPLIED
+	branches-template CDATA #IMPLIED
+	tags-template CDATA #IMPLIED>
 <!-- note the following attributes are specific to some repository types:
       - CVS: password & cvsroot
       - Arch: archive & href
-      - Monotone: server, database, defbranch -->
+      - Monotone: server, database, defbranch
+      - Subversion: *-template -->
 
 <!ELEMENT mirror EMPTY>
 <!ATTLIST mirror
-	type	(bzr|cvs|darcs|git|hg|svn|tarball|arch|mtn)  #REQUIRED
+	type	(arch|bzr|cvs|darcs|fossil|git|hg|svn|tarball)  #REQUIRED
 	trunk-template CDATA #IMPLIED
 	branches-template CDATA #IMPLIED
 	href	CDATA  #IMPLIED>
@@ -76,6 +80,7 @@
 <!ELEMENT cmake (branch?,dependencies?,after?)>
 <!ATTLIST cmake
 	id		CDATA	#REQUIRED
+	cmakeargs	CDATA	#IMPLIED
 	makeargs	CDATA	#IMPLIED>
 
 <!ELEMENT perl (branch?,dependencies?,after?)>
@@ -159,6 +164,9 @@
 	source-subdir   CDATA   #IMPLIED
 	revision	CDATA	#IMPLIED
 	tag             CDATA   #IMPLIED
+        user            CDATA   #IMPLIED
+        revspec         CDATA   #IMPLIED
+        branch          CDATA   #IMPLIED
 	version		CDATA	#IMPLIED
 	size		CDATA	#IMPLIED
 	md5sum		CDATA	#IMPLIED

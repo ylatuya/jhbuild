@@ -43,6 +43,7 @@ class Config(jhbuild.config.Config):
     nopoison = False
     makecheck_advisory = False
     module_makecheck = {}
+    module_nopoison = {}
     forcecheck = False
     autogenargs = ''
     module_autogenargs = {}
@@ -51,7 +52,7 @@ class Config(jhbuild.config.Config):
     module_makeargs = {}
     build_targets = ['install']
 
-    min_time = None
+    min_age = None
 
     prefix = '/tmp/'
 

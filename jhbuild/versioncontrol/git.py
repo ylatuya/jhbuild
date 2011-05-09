@@ -56,6 +56,14 @@ def get_git_extra_env():
     return { 'LD_LIBRARY_PATH': os.environ.get('UNMANGLED_LD_LIBRARY_PATH'),
              'PATH': os.environ.get('UNMANGLED_PATH')}
 
+def get_git_mirror_directory(mirror_root, checkoutdir, module):
+    """Calculate the mirror directory from the arguments and return it."""
+    mirror_dir = os.path.join(mirror_root, checkoutdir or
+            os.path.basename(module))
+    if mirror_dir.endswith('.git'):
+        return mirror_dir
+    else:
+        return mirror_dir + '.git'
 
 class GitUnknownBranchNameError(Exception):
     pass
@@ -84,19 +92,32 @@ class GitRepository(Repository):
 
         mirror_module = None
         if self.config.dvcs_mirror_dir:
-            mirror_module = os.path.join(self.config.dvcs_mirror_dir, module)
+            mirror_module = get_git_mirror_directory(
+                    self.config.dvcs_mirror_dir, checkoutdir, module)
 
-        # allow remapping of branch for module
+        # allow remapping of branch for module, it supports two modes of
+        # operation
         if name in self.config.branches:
-            try:
-                new_module, revision = self.config.branches.get(name)
-            except (ValueError, TypeError):
-                logging.warning(_('ignored bad branch redefinition for module:') + ' ' + name)
+            branch_mapping = self.config.branches.get(name)
+            if type(branch_mapping) is str:
+                # passing a single string will override the branch name
+                revision = branch_mapping
             else:
-                if new_module:
-                    module = new_module
+                # otherwise it is assumed it is a pair, redefining both
+                # git URI and the branch to use
+                try:
+                    new_module, revision = self.config.branches.get(name)
+                except (ValueError, TypeError):
+                    logging.warning(_('ignored bad branch redefinition for module:') + ' ' + name)
+                else:
+                    if new_module:
+                        module = new_module
         if not (urlparse.urlparse(module)[0] or module[0] == '/'):
-            module = urlparse.urljoin(self.href, module)
+            if self.href.endswith('/'):
+                base_href = self.href
+            else:
+                base_href = self.href + '/'
+            module = base_href + module
 
         if mirror_module:
             return GitBranch(self, mirror_module, subdir, checkoutdir,
@@ -110,6 +131,8 @@ class GitRepository(Repository):
 
 class GitBranch(Branch):
     """A class representing a GIT branch."""
+
+    dirty_branch_suffix = '-dirty'
 
     def __init__(self, repository, module, subdir, checkoutdir=None,
                  branch=None, tag=None, unmirrored_module=None):
@@ -130,35 +153,174 @@ class GitBranch(Branch):
         if self.checkoutdir:
             path_elements.append(self.checkoutdir)
         else:
-            path_elements.append(self.get_basename())
+            path_elements.append(self.get_module_basename())
         if self.subdir:
             path_elements.append(self.subdir)
         return os.path.join(*path_elements)
     srcdir = property(srcdir)
 
-    def local_branch_exist(self, branch, buildscript=None):
-        try:
-            cmd = ['git', 'show-ref', '--quiet', '--verify', 'refs/heads/' + branch]
-            if buildscript:
-                buildscript.execute(cmd, cwd=self.get_checkoutdir(),
-                        extra_env=get_git_extra_env())
-            else:
-                get_output(cmd, cwd=self.get_checkoutdir(),
-                        extra_env=get_git_extra_env())
-        except CommandError:
-            return False
-        return True
-
     def branchname(self):
         return self.branch
     branchname = property(branchname)
 
+    def execute_git_predicate(self, predicate):
+        """A git command wrapper for the cases, where only the boolean outcome
+        is of interest.
+        """
+        try:
+            get_output(predicate, cwd=self.get_checkoutdir(),
+                    extra_env=get_git_extra_env())
+        except CommandError:
+            return False
+        return True
+
+    def is_local_branch(self, branch):
+        return self.execute_git_predicate( ['git', 'show-ref', '--quiet',
+                '--verify', 'refs/heads/' + branch])
+
+    def is_inside_work_tree(self):
+        return self.execute_git_predicate(
+                ['git', 'rev-parse', '--is-inside-work-tree'])
+
+    def is_tracking_a_remote_branch(self, local_branch):
+        if not local_branch:
+            return False
+        current_branch_remote_config = 'branch.%s.remote' % local_branch
+        return self.execute_git_predicate(
+                ['git', 'config', '--get', current_branch_remote_config])
+
+    def is_dirty(self, ignore_submodules=True):
+        submodule_options = []
+        if ignore_submodules:
+            if not self.check_version_git('1.5.6'):
+                raise CommandError(_('Need at least git-1.5.6 from June/08 '
+                        'to operate'))
+            submodule_options = ['--ignore-submodules']
+        return not self.execute_git_predicate(
+                ['git', 'diff', '--exit-code', '--quiet'] + submodule_options
+                + ['HEAD'])
+
+    def check_version_git(self, version_spec):
+        return check_version(['git', '--version'], r'git version ([\d.]+)',
+                version_spec, extra_env=get_git_extra_env())
+
     def get_current_branch(self):
-        for line in get_output(['git', 'branch'],
-                cwd=self.get_checkoutdir(), extra_env=get_git_extra_env()).splitlines():
-            if line[0] == '*':
-                return line[2:]
+        """Returns either a branchname or None if head is detached"""
+        if not self.is_inside_work_tree():
+            raise CommandError(_('Unexpected: Checkoutdir is not a git '
+                    'repository:' + self.get_checkoutdir()))
+        try:
+            return os.path.basename(
+                    get_output(['git', 'symbolic-ref', '-q', 'HEAD'],
+                            cwd=self.get_checkoutdir(),
+                            extra_env=get_git_extra_env()).strip())
+        except CommandError:
+            return None
+
+    def find_remote_branch_online_if_necessary(self, buildscript,
+            remote_name, branch_name):
+        """Try to find the given branch first, locally, then remotely, and state
+        the availability in the return value."""
+        wanted_ref = remote_name + '/' + branch_name
+        if self.execute_git_predicate( ['git', 'show-ref', wanted_ref]):
+            return True
+        buildscript.execute(['git', 'fetch'], cwd=self.get_checkoutdir(),
+                extra_env=get_git_extra_env())
+        return self.execute_git_predicate( ['git', 'show-ref', wanted_ref])
+
+    def get_branch_switch_destination(self):
+        current_branch = self.get_current_branch()
+        wanted_branch = self.branch or 'master'
+
+        # Always switch away from a detached head.
+        if not current_branch:
+            return wanted_branch
+
+        assert(current_branch and wanted_branch)
+        # If the current branch is not tracking a remote branch it is assumed to
+        # be a local work branch, and it won't be considered for a change.
+        if current_branch != wanted_branch \
+                and self.is_tracking_a_remote_branch(current_branch):
+            return wanted_branch
+
         return None
+
+    def switch_branch_if_necessary(self, buildscript):
+        """
+        The switch depends on the requested tag, the requested branch, and the
+        state and type of the current branch.
+
+        An imminent branch switch generates an error if there are uncommited
+        changes.
+        """
+        wanted_branch = self.get_branch_switch_destination()
+        switch_command = []
+        if self.tag:
+            switch_command= ['git', 'checkout', self.tag]
+        elif wanted_branch:
+            if self.is_local_branch(wanted_branch):
+                switch_command = ['git', 'checkout', wanted_branch]
+            else:
+                if not self.find_remote_branch_online_if_necessary(
+                        buildscript, 'origin', wanted_branch):
+                    raise CommandError(_('The requested branch "%s" is '
+                            'not available. Neither locally, nor remotely '
+                            'in the origin remote.' % wanted_branch))
+                switch_command = ['git', 'checkout', '--track', '-b',
+                        wanted_branch, 'origin/' + wanted_branch]
+
+        if switch_command:
+            if self.is_dirty():
+                raise CommandError(_('Refusing to switch a dirty tree.'))
+            buildscript.execute(switch_command, cwd=self.get_checkoutdir(),
+                    extra_env=get_git_extra_env())
+
+    def pull_current_branch(self, buildscript):
+        """Pull the current branch if it is tracking a remote branch."""
+        if not self.is_tracking_a_remote_branch(self.get_current_branch()):
+            return
+
+        git_extra_args = {'cwd': self.get_checkoutdir(),
+                'extra_env': get_git_extra_env()}
+
+        stashed = False
+        if self.is_dirty(ignore_submodules=True):
+            stashed = True
+            buildscript.execute(['git', 'stash', 'save', 'jhbuild-stash'],
+                    **git_extra_args)
+
+        buildscript.execute(['git', 'pull', '--rebase'], **git_extra_args)
+
+        if stashed:
+            # git stash pop was introduced in 1.5.5,
+            if self.check_version_git('1.5.5'):
+                buildscript.execute(['git', 'stash', 'pop'], **git_extra_args)
+            else:
+                buildscript.execute(['git', 'stash', 'apply', 'jhbuild-stash'],
+                        **git_extra_args)
+
+    def move_to_sticky_date(self, buildscript):
+        if self.config.quiet_mode:
+            quiet = ['-q']
+        else:
+            quiet = []
+        commit = self._get_commit_from_date()
+        branch = 'jhbuild-date-branch'
+        branch_cmd = ['git', 'checkout'] + quiet + [branch]
+        git_extra_args = {'cwd': self.get_checkoutdir(),
+                'extra_env': get_git_extra_env()}
+        if self.config.sticky_date == 'none':
+            current_branch = self.get_current_branch()
+            if current_branch and current_branch == branch:
+                buildscript.execute(['git', 'checkout'] + quiet + ['master'],
+                        **git_extra_args)
+            return
+        try:
+            buildscript.execute(branch_cmd, **git_extra_args)
+        except CommandError:
+            branch_cmd = ['git', 'checkout'] + quiet + ['-b', branch]
+            buildscript.execute(branch_cmd, **git_extra_args)
+        buildscript.execute(['git', 'reset', '--hard', commit], **git_extra_args)
 
     def get_remote_branches_list(self):
         return [x.strip() for x in get_output(['git', 'branch', '-r'],
@@ -177,8 +339,8 @@ class GitBranch(Branch):
         return True
 
     def _get_commit_from_date(self):
-        cmd = ['git', 'log', '--max-count=1',
-               '--until=%s' % self.config.sticky_date]
+        cmd = ['git', 'log', '--max-count=1', '--first-parent',
+                '--until=%s' % self.config.sticky_date, 'master']
         cmd_desc = ' '.join(cmd)
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                 cwd=self.get_checkoutdir(),
@@ -212,17 +374,17 @@ class GitBranch(Branch):
         if self.config.nonetwork:
             return
 
-        mirror_dir = os.path.join(self.config.dvcs_mirror_dir,
-                os.path.basename(self.module) + '.git')
+        # Calculate anew in case a configuration reload changed the mirror root.
+        mirror_dir = get_git_mirror_directory(self.config.dvcs_mirror_dir,
+                self.checkoutdir, self.unmirrored_module)
 
         if os.path.exists(mirror_dir):
             buildscript.execute(['git', 'fetch'], cwd=mirror_dir,
                     extra_env=get_git_extra_env())
         else:
             buildscript.execute(
-                    ['git', 'clone', '--mirror', self.unmirrored_module],
-                    cwd=self.config.dvcs_mirror_dir,
-                    extra_env=get_git_extra_env())
+                    ['git', 'clone', '--mirror', self.unmirrored_module,
+                    mirror_dir], extra_env=get_git_extra_env())
 
     def _checkout(self, buildscript, copydir=None):
 
@@ -255,72 +417,18 @@ class GitBranch(Branch):
                 raise CommandError(_('Failed to update module as it switched to git (you should check for changes then remove the directory).'))
             raise CommandError(_('Failed to update module (missing .git) (you should check for changes then remove the directory).'))
 
-        if self.config.quiet_mode:
-            quiet = ['-q']
-        else:
-            quiet = []
+        buildscript.execute(['git', 'remote', 'set-url', 'origin',
+                self.module], **git_extra_args)
 
         if update_mirror:
             self.update_dvcs_mirror(buildscript)
 
-        stashed = False
-        if get_output(['git', 'diff'], **git_extra_args):
-            stashed = True
-            buildscript.execute(['git', 'stash', 'save', 'jhbuild-stash'],
-                    **git_extra_args)
-
-        current_branch = self.get_current_branch()
-        if current_branch is None:
-            # things are getting out of hand, check the git repository is
-            # correct
-            try:
-                get_output(['git', 'show'], **git_extra_args)
-            except CommandError:
-                raise CommandError(_('Failed to update module (corrupt .git?)'))
-
-        if current_branch not in ('(no branch)', None):
-            buildscript.execute(['git', 'pull', '--rebase'], **git_extra_args)
-
-        would_be_branch = self.branch or 'master'
-        if self.tag:
-            buildscript.execute(['git', 'checkout', self.tag], **git_extra_args)
-        else:
-            current_branch = self.get_current_branch()
-            if current_branch != would_be_branch or current_branch == '(no branch)':
-                if current_branch in ('(no branch)', None):
-                    # if user was not on any branch, get back to a known track
-                    current_branch = 'master'
-                # if current branch doesn't exist as origin/$branch it is assumed
-                # a local work branch, and it won't be changed
-                if ('origin/' + current_branch) in self.get_remote_branches_list():
-                    if self.local_branch_exist(would_be_branch, buildscript):
-                        buildscript.execute(['git', 'checkout', would_be_branch],
-                                **git_extra_args)
-                    else:
-                        buildscript.execute(['git', 'checkout', '--track', '-b',
-                            would_be_branch, 'origin/' + would_be_branch],
-                            **git_extra_args)
-
-        if stashed:
-            # git stash pop was introduced in 1.5.5, 
-            if check_version(['git', '--version'],
-                         r'git version ([\d.]+)', '1.5.5',
-                         extra_env=get_git_extra_env()):
-                buildscript.execute(['git', 'stash', 'pop'], **git_extra_args)
-            else:
-                buildscript.execute(['git', 'stash', 'apply', 'jhbuild-stash'],
-                        **git_extra_args)
-
         if self.config.sticky_date:
-            commit = self._get_commit_from_date()
-            branch = 'jhbuild-date-branch'
-            branch_cmd = ['git', 'checkout'] + quiet + [branch]
-            try:
-                buildscript.execute(branch_cmd, **git_extra_args)
-            except CommandError:
-                branch_cmd = ['git', 'checkout'] + quiet + ['-b', branch]
-                buildscript.execute(branch_cmd, **git_extra_args)
-            buildscript.execute(['git', 'reset', '--hard', commit], **git_extra_args)
+            self.move_to_sticky_date(buildscript)
+
+        self.switch_branch_if_necessary(buildscript)
+
+        self.pull_current_branch(buildscript)
 
         self._update_submodules(buildscript)
 
@@ -330,9 +438,7 @@ class GitBranch(Branch):
         return True
 
     def checkout(self, buildscript):
-        if not inpath('git', os.environ['PATH'].split(os.pathsep)) and \
-            (sys.platform.startswith('win') and \
-             not inpath('git.bat', os.environ['PATH'].split(os.pathsep))):
+        if not inpath('git', os.environ['PATH'].split(os.pathsep)):
             raise CommandError(_('%s not found') % 'git')
         Branch.checkout(self, buildscript)
 
@@ -347,12 +453,19 @@ class GitBranch(Branch):
             return None
         except GitUnknownBranchNameError:
             return None
-        return output.strip()
+        id_suffix = ''
+        if self.is_dirty():
+            id_suffix = self.dirty_branch_suffix
+        return output.strip() + id_suffix
 
     def to_sxml(self):
         attrs = {}
         if self.branch:
-            attrs['branch'] = self.branch
+            attrs['revision'] = self.branch
+        if self.checkoutdir:
+            attrs['checkoutdir'] = self.checkoutdir
+        if self.subdir:
+            attrs['subdir'] = self.subdir
         return [sxml.branch(repo=self.repository.name,
                             module=self.module,
                             tag=self.tree_id(),

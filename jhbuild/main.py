@@ -57,6 +57,12 @@ def uencode(s):
     else:
         return s
 
+def udecode(s):
+    if type(s) is not unicode:
+        return s.decode(_encoding, 'replace')
+    else:
+        return s
+
 def uprint(*args):
     '''Print Unicode string encoded for the terminal'''
     for s in args[:-1]:
@@ -66,6 +72,7 @@ def uprint(*args):
 
 __builtin__.__dict__['uprint'] = uprint
 __builtin__.__dict__['uencode'] = uencode
+__builtin__.__dict__['udecode'] = udecode
 
 class LoggingFormatter(logging.Formatter):
     def __init__(self):
@@ -75,26 +82,10 @@ class LoggingFormatter(logging.Formatter):
         record.level_name_initial = record.levelname[0]
         return logging.Formatter.format(self, record)
 
-def help_commands(option, opt_str, value, parser):
-    thisdir = os.path.abspath(os.path.dirname(__file__))
-    
-    # import all available commands
-    for fname in os.listdir(os.path.join(thisdir, 'commands')):
-        name, ext = os.path.splitext(fname)
-        if not ext == '.py':
-            continue
-        try:
-            __import__('jhbuild.commands.%s' % name)
-        except ImportError:
-            pass
-    
-    uprint(_('JHBuild commands are:'))
-    commands = [(x.name, x.doc) for x in jhbuild.commands.get_commands().values()]
-    commands.sort()
-    for name, description in commands:
-        uprint('  %-15s %s' % (name, description))
+def print_help(parser):
+    parser.print_help()
     print
-    uprint(_('For more information run "jhbuild <command> --help"'))
+    jhbuild.commands.print_help()
     parser.exit()
 
 def main(args):
@@ -103,17 +94,25 @@ def main(args):
         localedir = None
     gettext.install('jhbuild', localedir=localedir, unicode=True)
 
+    if hasattr(os, 'getuid') and os.getuid() == 0:
+        sys.stderr.write(_('You should not run jhbuild as root.\n').encode(_encoding, 'replace'))
+        sys.exit(1)
+
     logging.getLogger().setLevel(logging.INFO)
     logging_handler = logging.StreamHandler()
     logging_handler.setFormatter(LoggingFormatter())
     logging.getLogger().addHandler(logging_handler)
     parser = optparse.OptionParser(
         usage=_('%prog [ -f config ] command [ options ... ]'),
+        add_help_option=False,
         description=_('Build a set of modules from diverse repositories in correct dependency order (such as GNOME).'))
     parser.disable_interspersed_args()
+    parser.add_option('-h', '--help', action='callback',
+                      callback=lambda *args: print_help(parser),
+                      help=_("Display this help and exit"))
     parser.add_option('--help-commands', action='callback',
-                      callback=help_commands,
-                      help=_('Information about available jhbuild commands'))
+                      callback=lambda *args: print_help(parser),
+                      help=optparse.SUPPRESS_HELP)
     parser.add_option('-f', '--file', action='store', metavar='CONFIG',
                       type='string', dest='configfile',
                       default=os.environ.get("JHBUILDRC", os.path.join(os.environ['HOME'], '.jhbuildrc')),
@@ -145,7 +144,7 @@ def main(args):
     warn_local_modulesets(config)
 
     try:
-        rc = jhbuild.commands.run(command, config, args)
+        rc = jhbuild.commands.run(command, config, args, help=lambda: print_help(parser))
     except UsageError, exc:
         sys.stderr.write('jhbuild %s: %s\n' % (command, exc.args[0].encode(_encoding, 'replace')))
         parser.print_usage()

@@ -58,7 +58,7 @@ class cmd_update(Command):
                         help=_('ignore all soft-dependencies')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         config.set_from_cmdline_options(options)
         module_set = jhbuild.moduleset.load(config)
         module_list = module_set.get_module_list(args or config.modules,
@@ -94,7 +94,7 @@ class cmd_updateone(Command):
                         help=_('set a sticky date when checking out modules')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         config.set_from_cmdline_options(options)
         module_set = jhbuild.moduleset.load(config)
         try:
@@ -128,7 +128,7 @@ class cmd_cleanone(Command):
                         help=_('honour the makeclean setting in config file')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         if options.honour_config is False:
             config.makeclean = True
         module_set = jhbuild.moduleset.load(config)
@@ -144,10 +144,9 @@ class cmd_cleanone(Command):
             logging.info(
                     _('clean command called while makeclean is set to False, skipped.'))
             return 0
-        config.build_targets = ['clean']
 
         build = jhbuild.frontends.get_buildscript(config, module_list)
-        return build.build()
+        return build.build(phases=['clean'])
 
 register_command(cmd_cleanone)
 
@@ -215,6 +214,9 @@ class cmd_build(Command):
             make_option('-c', '--clean',
                         action='store_true', dest='clean', default=False,
                         help=_('run make clean before make')),
+            make_option('--check',
+                        action='store_true', dest='check', default=False,
+                        help=_('run make check after building')),
             make_option('-d', '--dist',
                         action='store_true', dest='dist', default=False,
                         help=_('run make dist after building')),
@@ -262,7 +264,7 @@ class cmd_build(Command):
                         help=_('skip modules installed less than the given time ago')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         config.set_from_cmdline_options(options)
 
         if not config.quiet_mode:
@@ -306,6 +308,9 @@ class cmd_buildone(Command):
             make_option('-c', '--clean',
                         action='store_true', dest='clean', default=False,
                         help=_('run make clean before make')),
+            make_option('--check',
+                        action='store_true', dest='check', default=False,
+                        help=_('run make check after building')),
             make_option('-d', '--dist',
                         action='store_true', dest='dist', default=False,
                         help=_('run make dist after building')),
@@ -332,17 +337,27 @@ class cmd_buildone(Command):
                         help=_('skip modules installed less than the given time ago')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         config.set_from_cmdline_options(options)
 
         if not config.quiet_mode:
             check_bootstrap_updateness(config)
 
         module_set = jhbuild.moduleset.load(config)
-        try:
-            module_list = [module_set.get_module(modname, ignore_case = True) for modname in args]
-        except KeyError, e:
-            raise FatalError(_("A module called '%s' could not be found.") % e)
+        module_list = []
+        for modname in args:
+            try:
+                module = module_set.get_module(modname, ignore_case=True)
+            except KeyError, e:
+                default_repo = jhbuild.moduleset.get_default_repo()
+                if not default_repo:
+                    continue
+                from jhbuild.modtypes.autotools import AutogenModule
+                module = AutogenModule(modname, default_repo.branch(modname))
+                module.config = config
+                logging.info(_('module "%s" does not exist, created automatically using repository "%s"') % \
+                                (modname, default_repo.name))
+            module_list.append(module)
 
         if not module_list:
             self.parser.error(_('This command requires a module parameter.'))
@@ -364,10 +379,16 @@ class cmd_run(Command):
             make_option('--in-builddir', metavar='MODULE',
                         action='store', dest='in_builddir', default = None,
                         help=_('run command in build dir of the given module')),
+            make_option('--in-checkoutdir', metavar='MODULE',
+                        action='store', dest='in_checkoutdir', default = None,
+                        help=_('run command in checkout dir of the given module')),
             ])
 
-    def execute(self, config, args):
-        if not args or args[0] in ('--', '--in-builddir', '--help'):
+    def execute(self, config, args, help=None):
+        # Do a shallow check of the arguments list
+        # so that '--' isn't always required when command has arguments, 
+        # only if some of them look like they might be for us
+        if not args or args[0] in ('--', '--help') or args[0].startswith('--in-builddir') or args[0].startswith('--in-checkoutdir'):
             options, args = self.parse_args(args)
             return self.run(config, options, args)
         try:
@@ -376,7 +397,7 @@ class cmd_run(Command):
             raise FatalError(_("Unable to execute the command '%(command)s': %(err)s") % {
                     'command':args[0], 'err':str(exc)})
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         if options.in_builddir:
             module_set = jhbuild.moduleset.load(config)
             try:
@@ -389,6 +410,23 @@ class cmd_run(Command):
             builddir = module_list[0].get_builddir(build)
             try:
                 build.execute(args, cwd=builddir)
+            except CommandError, exc:
+                if args:
+                    raise FatalError(_("Unable to execute the command '%s'") % args[0])
+                else:
+                    raise FatalError(str(exc))
+        elif options.in_checkoutdir:
+            module_set = jhbuild.moduleset.load(config)
+            try:
+                module_list = [module_set.get_module(options.in_checkoutdir, ignore_case = True)
+                               for modname in args]
+            except KeyError, e:
+                raise FatalError(_("A module called '%s' could not be found.") % e)
+
+            build = jhbuild.frontends.get_buildscript(config, module_list)
+            checkoutdir = module_list[0].get_srcdir(build)
+            try:
+                build.execute(args, cwd=checkoutdir)
             except CommandError, exc:
                 if args:
                     raise FatalError(_("Unable to execute the command '%s'") % args[0])
@@ -412,7 +450,7 @@ class cmd_shell(Command):
     name = 'shell'
     usage_args = ''
 
-    def execute(self, config, args):
+    def execute(self, config, args, help=None):
         if "--help" in args:
             self.parse_args(args) # This doesn't return
         user_shell = os.environ.get('SHELL', '/bin/sh')
@@ -452,9 +490,14 @@ class cmd_list(Command):
                         help=_('list all modules, not only those that would be built')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         config.set_from_cmdline_options(options)
         module_set = jhbuild.moduleset.load(config)
+        if options.startat and options.list_all_modules:
+            raise UsageError(_('Conflicting options specified '
+                               '(\'%s\' and \'%s\')') % \
+                               ('--start-at', '--all-modules'))
+
         if options.list_all_modules:
             module_list = module_set.modules.values()
         else:
@@ -499,7 +542,7 @@ class cmd_dot(Command):
                         help=_('group modules from metamodule together')),
             ])
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         module_set = jhbuild.moduleset.load(config)
         if args:
             modules = args
