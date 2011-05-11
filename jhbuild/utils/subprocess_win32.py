@@ -85,7 +85,7 @@ def cmdline2list(cmd_string):
 list2cmdline = real_subprocess.list2cmdline
 
 def route_through_shell(command):
-    return ['sh.exe', '-c', '"%s' % ' '.join([command[0]] + command[1:])]
+    return ['sh.exe', '-c', '%s' % ' '.join([command[0]] + command[1:])]
 
 class Popen(real_subprocess.Popen):
     __emulate_close_fds = False
