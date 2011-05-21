@@ -278,6 +278,9 @@ class Config:
         if seen_copy_mode and not self.copy_dir:
             raise FatalError(_('copy mode requires copy_dir to be set'))
 
+        if not self.prefix.endswith('/'):
+            raise FatalError(_('prefix must end with a /'))
+
         if not os.path.exists(self.modulesets_dir):
             if self.use_local_modulesets:
                 logging.warning(
