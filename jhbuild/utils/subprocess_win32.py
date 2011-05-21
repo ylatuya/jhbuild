@@ -91,8 +91,7 @@ class Popen(real_subprocess.Popen):
     __emulate_close_fds = False
 
     def __init__(self, command, **kws):
-        # command could be string or list - our kludges require list.
-        # subprocess converts the list back to a string using list2cmdline.
+        # Force the command line to be a list so we can mess with it
         if not isinstance(command, list):
             command = cmdline2list(command)
 
@@ -117,8 +116,7 @@ class Popen(real_subprocess.Popen):
 
         # 'shell' flag will execute 'command' using cmd.exe. Don't use cmd.exe
         # when running shell scripts.
-        if 'shell' in kws and kws['shell'] and len(command) > 0 \
-        and command[0] == 'sh':
+        if getattr(kws, 'shell', False) and len(command) > 0 and command[0] == 'sh':
             kws['shell'] = False
 
         # default Windows implementation of close_fds is useless, we have to
@@ -127,24 +125,20 @@ class Popen(real_subprocess.Popen):
             kws['close_fds'] = False
             self.__emulate_close_fds = True
 
-        # If there's no extension, CreateProcess adds '.exe'. We try a .bat extension first 
-        # (to make wrappers like git.bat work).
+        # If there's no extension, CreateProcess automatically adds '.exe'.
+        # Let's try '.bat' first (to make wrapper hacks like git.bat work).
         if '.' not in command[0]:
-            command_base = command[0]
-            command[0] = command_base + '.bat'
             try:
-                p = real_subprocess.Popen.__init__(self, command, **kws)
-                # Wait and see if this works
-                # FIXME: currently cmd.exe prints an error message when it doesn't.
-                # We need to not pass shell=True and run cmd /q /c
-                if p:
-                    p.wait()
-                    return p
+                bat_exec_command = ['cmd.exe', '/q', '/c',
+                                    ' '.join([command[0] + '.bat'] + command[1:])]
+                real_subprocess.Popen.__init__(self, bat_exec_command, **kws)
+                result = self.wait()
+                if result == 0:
+                    return
             except WindowsError:
                 pass
-            command[0] = command_base
 
-        return real_subprocess.Popen.__init__(self, command, **kws)
+        real_subprocess.Popen.__init__(self, command, **kws)
 
     def __del__(self):
         if self.__emulate_close_fds:

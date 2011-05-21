@@ -42,8 +42,10 @@ def inpath(filename, path):
     for dir in path:
         if os.path.isfile(os.path.join(dir, filename)):
             return True
-        # also check for filename.exe on Windows
-        if sys.platform.startswith('win') and os.path.isfile(os.path.join(dir, filename + '.exe')):
+        # also check for filename.exe and filename.bat on Windows
+        if sys.platform.startswith('win') and \
+          os.path.isfile(os.path.join(dir, filename + '.exe')) or \
+          os.path.isfile(os.path.join(dir, filename + '.bat')):
             return True
     return False
 
