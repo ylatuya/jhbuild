@@ -1,23 +1,24 @@
-PATCHES
-
-libxml2
-    <patches>
-      <patch file="libxml2-configure-windows.patch" strip="1" />
-      <patch file="libxml2-mingw-exports.patch" strip="1" />
-      <patch file="libxml2-pc-windows.patch" strip="1" />
-    </patches>
-
-
 Aims
 ----
 
-* Build gtk + soc stuff from its own moduleset, with no interference
+* Build gtk3 on Windows. Maybe Clutter as well for good measure.
 
-* Make all unit tests pass
+* Make all jhbuild unit tests pass
 
+* Make unit tests of all modules pass
+
+* Facilitate producing binary packages like tml's ...
+
+* Make cross-compiling from linux work ... perhaps fix the WINE bugs
+  that currently prevent Gtk+ applications from working so you can test
+  apps in WINE as well? Or test in a virtualbox.
+
+* Automate building packages somehow - openbuildservice?
 
 Todo
 ----
+
+* Fix jhbuild sanity check
 
 Line endings:
  http://mail.gnome.org/archives/gtk-devel-list/2009-July/msg00041.html
@@ -43,6 +44,9 @@ Line endings:
 
 * Merge intltool-update perl patch
 
+* Binary module type:
+    - only run install when updated
+    - make most common form (cp * prefix) implicit
 
 More longterm
 -------------
@@ -68,8 +72,6 @@ Little things
 
 Long term things
 ----------------
-
-* It's SO SLOW !@!@!!!
 
 * If jhbuild is becoming a binary package manager, can it also manage mingw and msys ??
 
