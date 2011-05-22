@@ -6,8 +6,10 @@
 
   <repository type="tarball" name="ftp.gnome.org"
               href="http://ftp.gnome.org/pub/gnome/sources/"/>
-  <repository type="tarball" name="ftp.imagemagick.org"
-              href="ftp://ftp.imagemagick.org/pub/"/>
+  <repository type="tarball" name="icon-theme.freedesktop.org"
+              href="http://icon-theme.freedesktop.org/releases/"/>
+  <repository type="tarball" name="launchpad.net" 
+              href="http://launchpad.net/"/>
   <repository type="tarball" name="tango.freedesktop.org"
               href="http://tango.freedesktop.org/releases/"/>
 
@@ -28,6 +30,16 @@
     <dependencies><dep package="glib-bin"/><dep package="glib-dev"/></dependencies>
   </metamodule>
   -->
+
+  <!-- No point getting binary versions of a perl script - and Tor's binary package hardcodes
+       Perl to some random location making it all the more pointless -->
+  <!-- FIXME: would be nice if we could substitute $INTLTOOL_PERL for this hardcoded path. 
+       Or if intltool paid attention to INTLTOOL_PERL. -->
+  <!-- Need 0.41.1 or greater due to bug 406810:
+       https://bugs.launchpad.net/intltool/+bug/406810 -->
+  <autotools id="intltool" version="0.41.1">
+    <branch repo="launchpad.net" module="intltool/trunk/0.41.1/+download/intltool-0.41.1.tar.gz" version="0.41.1"/>
+  </autotools>
 
 
   <!-- 
@@ -242,6 +254,43 @@
 
 
   <!--
+       Icon themes
+    -->
+
+  <autotools id="icon-naming-utils" version="0.8.90">
+    <branch repo="tango.freedesktop.org" module="icon-naming-utils-0.8.90.tar.bz2" version="0.8.90" />
+  </autotools>
+
+  <autotools id="hicolor-icon-theme" version="0.12">
+    <branch repo="icon-theme.freedesktop.org" module="hicolor-icon-theme-0.12.tar.gz" version="0.12"/>
+  </autotools>
+
+  <autotools id="gnome-icon-theme" version="3.0.0">
+    <branch repo="ftp.gnome.org" module="gnome-icon-theme/3.0/gnome-icon-theme-3.0.0.tar.bz2" version="3.0.0"/>
+    <dependencies>
+      <dep package="hicolor-icon-theme"/>
+      <dep package="icon-naming-utils"/>
+      <dep package="intltool"/>
+      <dep package="glib"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gnome-icon-theme-symbolic" version="3.0.0">
+    <branch repo="ftp.gnome.org" module="gnome-icon-theme-symbolic/3.0/gnome-icon-theme-symbolic-3.0.0.tar.bz2" version="3.0.0"/>
+    <dependencies>
+      <dep package="icon-naming-utils"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="tango-icon-theme" version="0.8.90">
+    <branch repo="tango.freedesktop.org" module="tango-icon-theme-0.8.90.tar.bz2" version="0.8.90"/>
+    <dependencies>
+      <dep package="icon-naming-utils"/>
+    </dependencies>
+  </autotools>
+
+
+  <!--
        libsoup 2.30  (built from source to avoid requiring gnutls, unlike Tor's win32 binary)
     -->
 
@@ -300,21 +349,6 @@
     </dependencies>
   </metamodule>
 
-
-  <!--
-       Tango icon theme
-    -->
-
-  <autotools id="icon-naming-utils" version="0.8.90">
-    <branch repo="tango.freedesktop.org" module="icon-naming-utils-0.8.90.tar.bz2" version="0.8.90" />
-  </autotools>
-
-  <autotools id="tango-icon-theme" version="0.8.90">
-    <branch repo="tango.freedesktop.org" module="tango-icon-theme-0.8.90.tar.bz2" version="0.8.90"/>
-    <dependencies>
-      <dep package="icon-naming-utils"/>
-    </dependencies>
-  </autotools>
 
 
   <!--
