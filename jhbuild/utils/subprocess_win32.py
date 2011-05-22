@@ -84,8 +84,13 @@ def cmdline2list(cmd_string):
 
 list2cmdline = real_subprocess.list2cmdline
 
-def route_through_shell(command):
-    return ['sh.exe', '-c', '%s' % ' '.join([command[0]] + command[1:])]
+def route_through_shell(path, command):
+    program = os.path.abspath(os.path.join(path, command[0]))
+    return ['sh.exe', '-c', ' '.join([program] + command[1:])]
+
+def route_through_cmd(path, command):
+    program = os.path.abspath(os.path.join(path, command[0]))
+    return [program] + command[1:]
 
 class Popen(real_subprocess.Popen):
     __emulate_close_fds = False
@@ -95,48 +100,39 @@ class Popen(real_subprocess.Popen):
         if not isinstance(command, list):
             command = cmdline2list(command)
 
+        if command[0] == '/bin/sh':
+            command[0] = 'sh'
+
         # ./ confuses windows, and these are normally shell scripts so use
         # sh.exe
         if command[0] != 'sh':
             if command[0].startswith('./'):
-                command = route_through_shell(command)
-            elif not command[0].endswith('.exe'):
-                # check if program has no extension or has .sh extension - it
-                # probably needs executing by sh rather than by Windows directly
+                kws['shell'] = False
+                command = route_through_shell(kws.get('cwd', ''), command)
+            elif not command[0].endswith('.exe') or kws['shell']:
+                # Check if program is actually a script
                 for path in os.environ['PATH'].split(os.pathsep):
                     prog = os.path.abspath(os.path.join(path, command[0]))
-                    if os.path.exists(prog) or os.path.exists(prog+".sh"):
-                        command = route_through_shell(command)
+                    if os.path.exists(prog + '.bat'):
+                        kws['shell'] = True
+                        command = route_through_cmd(path, command)
                         break
+                    if os.path.exists(prog) or os.path.exists(prog + ".sh"):
+                        kws['shell'] = False
+                        command = route_through_shell(path, command)
+                        break
+
 
         # fix all backslashes to forward slashes - MSYS is smart about doing
         # this but we're not always running things via sh.exe.
         for i in range(0,len(command)):
             command[i] = fix_path_for_msys(command[i])
 
-        # 'shell' flag will execute 'command' using cmd.exe. Don't use cmd.exe
-        # when running shell scripts.
-        if getattr(kws, 'shell', False) and len(command) > 0 and command[0] == 'sh':
-            kws['shell'] = False
-
         # default Windows implementation of close_fds is useless, we have to
         # emulate it
         if 'close_fds' in kws and kws['close_fds']:
             kws['close_fds'] = False
             self.__emulate_close_fds = True
-
-        # If there's no extension, CreateProcess automatically adds '.exe'.
-        # Let's try '.bat' first (to make wrapper hacks like git.bat work).
-        if '.' not in command[0]:
-            try:
-                bat_exec_command = ['cmd.exe', '/q', '/c',
-                                    ' '.join([command[0] + '.bat'] + command[1:])]
-                real_subprocess.Popen.__init__(self, bat_exec_command, **kws)
-                result = self.wait()
-                if result == 0:
-                    return
-            except WindowsError:
-                pass
 
         real_subprocess.Popen.__init__(self, command, **kws)
 
