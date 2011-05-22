@@ -315,7 +315,8 @@ class TerminalBuildScript(buildscript.BuildScript):
                 except OSError:
                     os.chdir(self.config.checkoutroot)
                 uprint(_('exit shell to continue with build'))
-                os.system(user_shell)
+                p = subprocess.Popen(user_shell)
+                p.wait()
                 os.chdir(cwd) # restor working directory
             elif val == '5':
                 self.config.reload()
