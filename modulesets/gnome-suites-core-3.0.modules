@@ -27,7 +27,7 @@
 <!-- Core User Shell -->
 
   <autotools id="at-spi2-core">
-    <branch/>
+    <branch revision="gnome-3-0"/>
     <dependencies>
       <dep package="dbus"/>
       <dep package="glib"/>
@@ -35,7 +35,7 @@
   </autotools>
 
   <autotools id="at-spi2-atk">
-    <branch/>
+    <branch revision="gnome-3-0"/>
     <dependencies>
       <dep package="dbus"/>
       <dep package="glib"/>
@@ -90,7 +90,7 @@
   </autotools>
 
   <autotools id="gnome-control-center" supports-non-srcdir-builds="no">
-    <branch/>
+    <branch revision="gnome-3-0"/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="iso-codes"/>
@@ -116,7 +116,7 @@
   </autotools>
 
   <autotools id="gnome-desktop" autogenargs="--with-gnome-distributor=JHBuild">
-    <branch/>
+    <branch revision="gnome-3-0"/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="glib"/>
@@ -167,7 +167,7 @@
   </autotools>
 
   <autotools id="gnome-menus">
-    <branch/>
+    <branch revision="gnome-3-0"/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="gnome-common"/>
@@ -798,7 +798,7 @@
   </autotools>
 
   <autotools id="gdm">
-    <branch/>
+    <branch revision="gnome-3-0"/>
     <dependencies>
       <dep package="intltool"/>
       <dep package="gtk+"/>

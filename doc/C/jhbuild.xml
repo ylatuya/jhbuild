@@ -229,8 +229,9 @@
           </term>
           <listitem>
             <simpara>A string specifying the prefix to install modules to.
-              This directory must be writable. Defaults to
-              <literal>'/opt/gnome'</literal>.</simpara>
+              <varname>prefix</varname> must be an absolute path. This directory
+              must be writable. Defaults to <literal>'/opt/gnome'</literal>.
+            </simpara>
           </listitem>
         </varlistentry>
         <varlistentry>
@@ -1547,10 +1548,10 @@ libgnomecanvas is missing branch definition for gnome-2-20
             <varname>branches</varname>
           </term>
           <listitem>
-            <simpara>A dictionary that can be used to override the branch used
-              for a particular module. This is useful if you are making some
-              changes on a branch of a module and want JHBuild to build that
-              branch instead of the one listed in the module set.</simpara>
+            <simpara>A dictionary specifying which branch to use for specific
+              modules. This is useful if you are making some changes on a branch
+              of a module and want JHBuild to build that branch instead of the
+              one listed in the module set.</simpara>
 
             <simpara>The definition of branches depends on the module VCS:
             </simpara>
@@ -1573,9 +1574,7 @@ libgnomecanvas is missing branch definition for gnome-2-20
 
                 <example>
                   <title>Simple example</title>
-<programlisting>
-		    branches['modulename'] = (None, 'branchname')
-		  </programlisting>
+<programlisting>branches['modulename'] = (None, 'branchname')</programlisting>
                 </example>
               </listitem>
               <listitem>
@@ -1936,9 +1935,8 @@ libgnomecanvas is missing branch definition for gnome-2-20
           <listitem>
             <simpara>A boolean value specifying whether to emit notifications
               using the notification daemon. If set to
-              <constant>True</constant>, notifications are not emitted. Defaults
-              to <constant>False</constant>, except on Win32 where it defaults
-              to <constant>True</constant>.</simpara>
+              <constant>False</constant>, notifications are emitted. Defaults to
+              <constant>True</constant>.</simpara>
           </listitem>
         </varlistentry>
         <varlistentry>
@@ -1959,10 +1957,9 @@ libgnomecanvas is missing branch definition for gnome-2-20
           </term>
           <listitem>
             <simpara>A boolean value specifying whether to show an icon in the
-              system tray using Zenity. If set to <constant>True</constant>,
-              notifications are not emitted. Defaults to
-              <constant>False</constant> except from on Win32, where it defaults
-              to <constant>True</constant>.</simpara>
+              system tray using Zenity. If set to <constant>False</constant>,
+              notifications are emitted. Defaults to <constant>True</constant>.
+            </simpara>
           </listitem>
         </varlistentry>
         <varlistentry>
@@ -1983,8 +1980,9 @@ libgnomecanvas is missing branch definition for gnome-2-20
           </term>
           <listitem>
             <simpara>A string specifying the prefix to install modules to.
-              This directory must be writable. Defaults to
-              <literal>'/opt/gnome'</literal>.</simpara>
+              <varname>prefix</varname> must be an absolute path. This directory
+              must be writable. Defaults to <literal>'/opt/gnome'</literal>.
+            </simpara>
           </listitem>
         </varlistentry>
         <varlistentry>
