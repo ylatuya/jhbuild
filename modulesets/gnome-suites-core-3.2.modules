@@ -105,6 +105,7 @@
       <dep package="gnome-doc-utils"/>
       <dep package="gnome-settings-daemon"/>
       <dep package="upower"/>
+      <dep package="colord"/>
       <dep package="libgtop"/>
       <dep package="sound-theme-freedesktop"/>
     </dependencies>
@@ -254,6 +255,7 @@
       <dep package="dbus-glib"/>
       <dep package="libnotify"/>
       <dep package="gsettings-desktop-schemas"/>
+      <dep package="colord"/>
     </dependencies>
     <suggests>
       <dep package="gstreamer"/>
@@ -391,10 +393,10 @@
     </after>
   </autotools>
 
-  <tarball id="telepathy-mission-control" version="5.7.6">
-    <source href="http://telepathy.freedesktop.org/releases/telepathy-mission-control/telepathy-mission-control-5.7.6.tar.gz"
-            hash="sha256:24fb388f5e916243d226b3e184fabdf3142682521de12a587574ba2f266c0e5d"
-            md5sum="fcfc077949d910e3c619d2193f236606" size="1102338"/>
+  <tarball id="telepathy-mission-control" version="5.9.0">
+    <source href="http://telepathy.freedesktop.org/releases/telepathy-mission-control/telepathy-mission-control-5.9.0.tar.gz"
+            hash="sha256:b4a91daacacafa80c872b127c90babf650e6b1fafc6f4e5cadcfa0795ee91fc2"
+            md5sum="008674ac0ba9fcc161cd222b720a9011" size="1125657"/>
     <dependencies>
       <dep package="dbus"/>
       <dep package="dbus-glib"/>
@@ -619,6 +621,7 @@
     <branch/>
     <dependencies>
       <dep package="gnome-doc-utils"/>
+      <dep package="yelp-tools"/>
     </dependencies>
   </autotools>
 
@@ -661,7 +664,6 @@
       <dep package="exempi"/>
     </suggests>
     <after>
-      <dep package="beagle"/>
       <dep package="tracker"/>
     </after>
   </autotools>
@@ -678,6 +680,9 @@
       <dep package="iso-codes"/>
       <dep package="totem-pl-parser"/>
       <dep package="libpeas"/>
+      <dep package="clutter-gst"/>
+      <dep package="clutter-gtk"/>
+      <dep package="mx"/>
     </dependencies>
     <suggests>
       <dep package="libepc"/>

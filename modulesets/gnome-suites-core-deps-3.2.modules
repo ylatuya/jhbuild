@@ -374,8 +374,9 @@
   <autotools id="gjs">
     <branch/>
     <dependencies>
+      <dep package="dbus-glib"/>
       <dep package="gobject-introspection"/>
-      <dep package="mozilla"/>
+      <dep package="js185"/>
     </dependencies>
   </autotools>
 
@@ -408,8 +409,7 @@
     </after>
   </tarball>
 
-  <!-- work around -Werror usage and failure with GCC 4.6.0 using makeargs for now: https://bugzilla.gnome.org/show_bug.cgi?id=645267 -->
-  <autotools id="gstreamer" autogenargs="-- --disable-tests" supports-non-srcdir-builds="no" makeargs="ERROR_CFLAGS=">
+  <autotools id="gstreamer" autogenargs="-- --disable-tests" supports-non-srcdir-builds="no">
     <branch repo="gstreamer.freedesktop.org" module="gstreamer"/>
     <dependencies>
       <dep package="glib"/>
@@ -548,17 +548,21 @@
             md5sum="90472da66aa4460b04f39c324208f8f2" size="6105567"/>
   </tarball>
 
-  <tarball id="json-glib" version="0.12.4">
-    <source href="http://download.gnome.org/sources/json-glib/0.12/json-glib-0.12.4.tar.bz2"
-            hash="sha256:462cd611016ae189d5e3f258dc7741e6a2e8267404b4e3806aaf346d50f1df7e"
-            size="448904"/>
+  <tarball id="itstool" version="1.0.1">
+    <source href="http://files.itstool.org/itstool/itstool-1.0.1.tar.bz2"
+            hash="sha256:4c4f1488d0fe3e6531f41725deebae77d4f2f5c5415d95bb9837054c0d0356dd"
+            size="73238"/>
+  </tarball>
+
+  <autotools id="json-glib">
+    <branch/>
     <dependencies>
       <dep package="glib"/>
     </dependencies>
     <suggests>
       <dep package="gobject-introspection"/>
     </suggests>
-  </tarball>
+  </autotools>
 
   <tarball id="libatasmart" version="0.17">
     <source href="http://0pointer.de/public/libatasmart-0.17.tar.gz"
@@ -741,7 +745,7 @@
   </autotools>
 
   <cmake id="libproxy"
-         cmakeargs="-DCMAKE_BUILD_TYPE=None -DWITH_KDE4=OFF -DWITH_PYTHON=OFF -DWITH_PERL=OFF -DWITH_VALA=ON -DWITH_DOTNET=OFF -DWITH_MOZJS=OFF -DWITH_WEBKIT=OFF -DGAC_DIR=${prefix}/lib/mono">
+         cmakeargs="-DCMAKE_BUILD_TYPE=None -DWITH_KDE4=OFF -DWITH_PYTHON=OFF -DWITH_PERL=OFF -DWITH_VALA=ON -DWITH_DOTNET=OFF -DWITH_MOZJS=OFF -DWITH_WEBKIT=ON -DGAC_DIR=${prefix}/lib/mono">
     <branch repo="libproxy.googlecode.com"
             module="libproxy-0.4.6.tar.gz" version="0.4.6"
             hash="sha256:9ad912e63b1efca98fb442240a2bc7302e6021c1d0b1b9363327729f29462f30"
@@ -753,7 +757,6 @@
       <dep package="NetworkManager"/>
     </suggests>
     <after>
-      <dep package="mozilla"/>
       <dep package="WebKit"/>
     </after>
   </cmake>
@@ -862,8 +865,10 @@
   </autotools>
 
 <!-- Begin Mozilla stuff subsection -->
+
   <repository type="tarball" name="ftp.mozilla.org"
       href="https://ftp.mozilla.org/pub/mozilla.org/"/>
+
   <autotools id="nspr" autogen-sh="autogen.sh"
              autogenargs="--enable-ipv6 --with-mozilla" check-target="false">
     <branch repo="ftp.mozilla.org"
@@ -876,6 +881,20 @@
       <patch file="nspr.autogen.patch" strip="1"/>
       <patch file="nspr.hostcompiler.patch" strip="1"/>
     </branch>
+  </autotools>
+
+  <autotools id="js185" check-target="false"
+	     autogenargs="--enable-threadsafe --with-system-nspr">
+    <branch repo="ftp.mozilla.org"
+	    module="js/js185-1.0.0.tar.gz"
+            version="1.0.0"
+	    checkoutdir="js185-1.0.0"
+	    source-subdir="js/src"
+	    md5sum="a4574365938222adca0a6bd33329cb32" size="6164605">
+    </branch>
+    <dependencies>
+      <dep package="nspr"/>
+    </dependencies>
   </autotools>
 
   <autotools id="nss" autogen-sh="autogen.sh" supports-non-srcdir-builds="no"
@@ -1024,19 +1043,16 @@
     </branch>
   </autotools>
 
-  <tarball id="startup-notification" version="0.10">
-    <source href="http://www.freedesktop.org/software/startup-notification/releases/startup-notification-0.10.tar.gz"
-            hash="sha256:64bbeb5c28619721fc19d6920ad2b8bf6c0dc3a0e96a1b0bc26f480fbc525459"
-            size="328787"/>
-    <patches>
-      <patch file="startup-notification-0.10-support-app-id.patch" strip="1"/>
-    </patches>
+  <tarball id="startup-notification" version="0.12">
+    <source href="http://www.freedesktop.org/software/startup-notification/releases/startup-notification-0.12.tar.gz"
+            hash="sha256:3c391f7e930c583095045cd2d10eb73a64f085c7fde9d260f2652c7cb3cfbe4a"
+            size="355285"/>
   </tarball>
 
-  <tarball id="telepathy-glib" version="0.14.5" autogenargs="--enable-vala-bindings">
-    <source href="http://telepathy.freedesktop.org/releases/telepathy-glib/telepathy-glib-0.14.5.tar.gz"
-            hash="sha256:01e9c79b358aa2e06b49a539158e20cfea44541d5fcb4d5a8f707a59acc6eb08"
-            md5sum="2911d33b45744cdc41774c91f6b837c2" size="3060043"/>
+  <tarball id="telepathy-glib" version="0.15.1" autogenargs="--enable-vala-bindings">
+    <source href="http://telepathy.freedesktop.org/releases/telepathy-glib/telepathy-glib-0.15.1.tar.gz"
+            hash="sha256:2c395f5dafe01add15e9266d1e32f59f915df07980a88f7035eec429780dfe6e"
+            md5sum="5e7ff2219734cc0ba08d53fc0ef7105d" size="3066067"/>
     <dependencies>
       <dep package="glib"/>
       <dep package="dbus"/>
@@ -1159,12 +1175,24 @@
     </dependencies>
   </autotools>
 
+  <autotools id="yelp-tools">
+    <branch/>
+    <dependencies>
+      <dep package="libxslt"/>
+      <dep package="libxml2"/>
+      <dep package="intltool"/>
+      <dep package="yelp-xsl"/>
+      <dep package="gnome-doc-utils"/>
+    </dependencies>
+  </autotools>
+
   <autotools id="yelp-xsl">
     <branch/>
     <dependencies>
       <dep package="libxslt"/>
       <dep package="libxml2"/>
       <dep package="intltool"/>
+      <dep package="itstool"/>
     </dependencies>
   </autotools>
 
