@@ -143,21 +143,6 @@ class AutogenModule(Package, DownloadableModule):
 
         cmd = template % vars
 
-        if self.autogen_sh == 'autoreconf':
-            # autoreconf doesn't honour ACLOCAL_FLAGS, therefore we pass
-            # a crafted ACLOCAL variable.  (GNOME bug 590064)
-            extra_env = {}
-            if self.extra_env:
-                extra_env = self.extra_env.copy()
-            extra_env['ACLOCAL'] = ' '.join((
-                extra_env.get('ACLOCAL', os.environ.get('ACLOCAL', 'aclocal')),
-                extra_env.get('ACLOCAL_FLAGS', os.environ.get('ACLOCAL_FLAGS', ''))))
-            buildscript.execute(['autoreconf', '-i'], cwd=srcdir,
-                    extra_env=extra_env)
-            os.chmod(os.path.join(srcdir, 'configure'), 0755)
-            cmd = cmd.replace('autoreconf', 'configure')
-            cmd = cmd.replace('--enable-maintainer-mode', '')
-
         # Fix up the arguments for special cases:
         #   tarballs: remove --enable-maintainer-mode to avoid breaking build
         #   tarballs: remove '-- ' to avoid breaking build (GStreamer weirdness)

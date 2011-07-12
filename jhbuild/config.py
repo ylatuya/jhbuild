@@ -66,8 +66,8 @@ def prependpath(envvar, path):
 
 def addpath(envvar, path):
     '''Adds a path to an environment variable.'''
-    # special case ACLOCAL_FLAGS
-    if envvar in [ 'ACLOCAL_FLAGS' ]:
+    # special case ACLOCAL
+    if envvar in [ 'ACLOCAL' ]:
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
 
@@ -85,7 +85,8 @@ def addpath(envvar, path):
                     i += 2
             else:
                 i += 1
-        envval = ' '.join(parts)
+        aclocal = os.environ.get('ACLOCAL', 'aclocal')
+        envval = aclocal + ' ' + ' '.join(parts)
     elif envvar in [ 'LDFLAGS', 'CFLAGS', 'CXXFLAGS' ]:
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
@@ -382,14 +383,20 @@ class Config:
         xcursordir = os.path.join(self.prefix, 'share', 'icons')
         addpath('XCURSOR_PATH', xcursordir)
 
-        # ACLOCAL_FLAGS
+        # ACLOCAL (flags)
+        # Note that autoreconf only honours ACLOCAL, so to set flags
+        # consistently we must use that variable instead of ACLOCAL_FLAGS.
+        # See: https://bugzilla.gnome.org/show_bug.cgi?id=590064
+        # I don't agree with the solution in GNOME jhbuild, because it
+        # doesn't work, and adding another hack to the Makefile.am of every
+        # project to fix the issue doesn't appeal either.
         aclocaldir = os.path.join(self.prefix, 'share', 'aclocal')
         if not os.path.exists(aclocaldir):
             try:
                 os.makedirs(aclocaldir)
             except:
                 raise FatalError(_("Can't create %s directory") % aclocaldir)
-        addpath('ACLOCAL_FLAGS', aclocaldir)
+        addpath('ACLOCAL', aclocaldir)
 
         # PERL5LIB
         perl5lib = os.path.join(self.prefix, 'lib', 'perl5')
