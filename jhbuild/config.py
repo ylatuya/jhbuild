@@ -67,7 +67,7 @@ def prependpath(envvar, path):
 def addpath(envvar, path):
     '''Adds a path to an environment variable.'''
     # special case ACLOCAL
-    if envvar in [ 'ACLOCAL' ]:
+    if envvar in [ 'ACLOCAL', 'ACLOCAL_FLAGS' ]:
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
 
@@ -85,8 +85,16 @@ def addpath(envvar, path):
                     i += 2
             else:
                 i += 1
+
         aclocal = os.environ.get('ACLOCAL', 'aclocal')
-        envval = aclocal + ' ' + ' '.join(parts)
+        flags = ' '.join(parts)
+
+        os.environ['ACLOCAL'] = aclocal + ' ' + flags
+
+        # shared-mime-info is the only package that doesn't work with ACLOCAL
+        # (while all autoreconf-based ones don't work with ACLOCAL_FLAGS). FYI.
+        os.environ['ACLOCAL_FLAGS'] = flags
+
     elif envvar in [ 'LDFLAGS', 'CFLAGS', 'CXXFLAGS' ]:
         if sys.platform.startswith('win'):
             path = jhbuild.utils.subprocess_win32.fix_path_for_msys(path)
