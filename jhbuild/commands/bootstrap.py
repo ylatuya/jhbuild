@@ -44,7 +44,7 @@ class cmd_bootstrap(cmd_build):
 
     def run(self, config, options, args, help=None):
         if sys.platform.startswith('win'):
-            config.moduleset = 'bootstrap-msys'
+            config.moduleset = 'windows-bootstrap'
         else:
             config.moduleset = 'bootstrap'
 
