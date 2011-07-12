@@ -5,12 +5,24 @@
   <!-- Some build tools that don't come as part of MSYS -->
 
   <!-- Do not upgrade to 0.25 - see http://bugs.freedesktop.org/show_bug.cgi?id=17053 -->
-  <binary id="pkg-config" version="0.23-3">
+  <binary id="pkg-config-bin" version="0.23-3">
     <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/pkg-config_0.23-3_win32.zip"/>
     <install>
       <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
     </install>
   </binary>
+  <binary id="pkg-config-dev" version="0.23-3">
+    <source href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/pkg-config-dev_0.23-3_win32.zip" />
+    <install>
+      <cmd execute="['cp', '-r', '@@SRCDIR@@/*', '@@PREFIX@@']"/>
+    </install>
+  </binary>
+  <metamodule id="pkg-config">
+    <dependencies>
+      <dep package="pkg-config-bin" />
+      <dep package="pkg-config-dev" />
+    </dependencies>
+  </metamodule>
 
   <binary id="gtk-doc-fake" version="1.17">
     <source href="http://ftp.gnome.org/pub/gnome/sources/gtk-doc/1.17/gtk-doc-1.17.tar.bz2"/>
