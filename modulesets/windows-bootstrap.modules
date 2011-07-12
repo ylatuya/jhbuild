@@ -48,6 +48,7 @@
           output-file='@@PREFIX@@/bin/gtkdoc-rebase'/>
       <cmd execute="['mkdir', '-p', '@@PREFIX@@/share/gtk-doc/data/']"/>
       <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.17/gtk-doc.make', '@@PREFIX@@/share/gtk-doc/data/']"/>
+      <cmd execute="['cp', '@@SRCDIR@@/gtk-doc-1.17/gtk-doc.notmpl.make', '@@PREFIX@@/share/gtk-doc/data/']"/>
     </install>
   </binary>
 
