@@ -94,6 +94,7 @@ def addpath(envvar, path):
         # shared-mime-info is the only package that doesn't work with ACLOCAL
         # (while all autoreconf-based ones don't work with ACLOCAL_FLAGS). FYI.
         os.environ['ACLOCAL_FLAGS'] = flags
+        return
 
     elif envvar in [ 'LDFLAGS', 'CFLAGS', 'CXXFLAGS' ]:
         if sys.platform.startswith('win'):
