@@ -25,7 +25,10 @@ import sys
 import time
 import os
 import signal
-import fcntl
+try:
+    import fcntl
+except ImportError:
+    pass
 import select
 import subprocess
 
